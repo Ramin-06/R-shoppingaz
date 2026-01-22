@@ -55,6 +55,18 @@
                 max-width: 500px; 
                 height: 220px;    /* Masaüstü üçün ideal hündürlük */
             }
+            
+            /* Məhsul kartlarını 4-lü sütun edən hissə */
+            .product-grid {
+                grid-template-columns: repeat(4, 1fr); /* 4 bərabər sütun */
+                gap: 20px; /* Kartlar arası məsafəni bir az artırdıq */
+                max-width: 1200px; /* Ekran çox böyükdürsə, grid həddindən artıq yayılmasın */
+                margin: 0 auto; /* Grid-i mərkəzləşdirir */
+            }
+            
+            .product-card {
+                padding: 20px; /* Masaüstündə kartların daxili boşluğunu artırdıq */
+            }
         }
 
         /* Ölçü Seçimi Düymələri */
