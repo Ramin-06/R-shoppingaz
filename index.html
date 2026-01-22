@@ -55,13 +55,22 @@
                 max-width: 500px; 
                 height: 220px;    /* Masaüstü üçün ideal hündürlük */
             }
-            
-            /* Məhsul kartlarını 4-lü sütun edən hissə */
+            /* Məhsul kartlarını masaüstündə 4-lü sütun edirik */
             .product-grid {
-                grid-template-columns: repeat(4, 1fr); /* 4 bərabər sütun */
-                gap: 20px; /* Kartlar arası məsafəni bir az artırdıq */
-                max-width: 1200px; /* Ekran çox böyükdürsə, grid həddindən artıq yayılmasın */
-                margin: 0 auto; /* Grid-i mərkəzləşdirir */
+                grid-template-columns: repeat(4, 1fr) !important;
+                gap: 20px !important;
+                max-width: 1200px !important;
+                margin: 0 auto !important;
+            }
+            
+            .product-card {
+                padding: 20px;
+            }
+           /* ümumi grid mobil üçün */
+            .product-grid {
+                display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 12px;
             }
             
             .product-card {
