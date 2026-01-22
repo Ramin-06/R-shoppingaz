@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RShoppingaz</title>
+    <title>R-Shoppingaz</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -98,22 +98,8 @@
         .price-text { color: var(--main-blue); font-weight: bold; margin-bottom: 10px; display: block; }
         .btn-add { background: var(--bright-orange); color: white; border: none; padding: 10px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; }
 
-        #productDetail { 
-    position: fixed; 
-    top: 0; 
-    left: 100%; 
-    width: 100%; 
-    height: 100%; 
-    background: white; 
-    z-index: 9999 !important; /* Qiyməti artırdıq */
-    transition: 0.3s ease-in-out; 
-    overflow-y: auto; 
-    display: block; /* Hidden olmamalıdır, left ilə idarə olunur */
-}
-
-#productDetail.active { 
-    left: 0; 
-}
+        #productDetail, #infoModal { position: fixed; top: 0; left: 100%; width: 100%; height: 100%; background: white; z-index: 2000; transition: 0.3s; overflow-y: auto; }
+        #productDetail.active, #infoModal.active { left: 0; }
         .det-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
         .det-img-big { width: 100%; height: 200px; background: #f4f4f4; border-radius: 25px; display: flex; align-items: center; justify-content: center; font-size: 50px; color: var(--main-blue); margin-bottom: 20px; }
 
@@ -227,54 +213,19 @@
         <div class="nav-item" onclick="showPage('favPage', this)"><i class="fas fa-heart"></i><br>Favori</div>
         <div class="nav-item" onclick="showPage('cartPage', this)"><i class="fas fa-shopping-cart"></i><div id="cartBadge" class="badge">0</div><br>Səbət</div>
     </nav>
-    
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
     <script>
-        // 2. Firebase Konfiqurasiyası
-        const firebaseConfig = {
-          apiKey: "AIzaSyA5eb16DAKSVLkEzYsUrgxL9vfrJP7w-es",
-          authDomain: "etir-magazasi-d7679.firebaseapp.com",
-          projectId: "etir-magazasi-d7679",
-          storageBucket: "etir-magazasi-d7679.firebasestorage.app",
-          messagingSenderId: "1045258773680",
-          appId: "1:1045258773680:web:ab2edd54ba3f0ef0530775"
-        };
+        const products = [
+            { id: 1, name: 'Dior Sauvage', cat: 'kisi', notes: 'Berqamot, Bibər', stay: '24 saat' },
+            { id: 2, name: 'Chanel No.5', cat: 'qadin', notes: 'Jasmin, Qızılgül', stay: '18 saat' },
+            { id: 3, name: 'Versace Eros', cat: 'kisi', notes: 'Nanə, Alma', stay: '12 saat' },
+            { id: 4, name: 'Tom Ford', cat: 'unisex', notes: 'Tütün, Vanil', stay: '48 saat' },
+            { id: 5, name: 'Armani Si', cat: 'qadin', notes: 'Frenk üzümü, Gül', stay: '20 saat' }
+        ];
 
-        firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
-    // 2. Dəyişənlər (Köhnə const products siyahısını sildik!)
-    let products = []; 
-    let cart = [], favs = [], currentProd = null, currentQty = 1;
-    let selectedSize = 30;
-    let currentPrice = 10;
-
-    // 3. Firestore-dan məlumatları çəkən funksiya
-    function fetchProducts() {
-    console.log("Məlumatlar gətirilir...");
-    db.collection("products").onSnapshot((querySnapshot) => {
-        products = []; 
-        querySnapshot.forEach((doc) => {
-            let data = doc.data();
-            products.push({
-                id: doc.id, // Firestore-un verdiyi unikal ID
-                name: data.name || "Adsız",
-                cat: data.cat || "unisex",
-                notes: data.notes || "-",
-                stay: data.stay || "-"
-            });
-        });
-        console.log("Yüklənən məhsul sayısı:", products.length);
-        renderAll(); // Məlumatlar dolandan SONRA səhifəni qurur
-    }, (error) => {
-        console.error("Firestore xətası:", error);
-    });
-}
-
-        // Səhifə yüklənəndə işə düşsün
-        window.onload = fetchProducts;
-              
+        let cart = [], favs = [], currentProd = null, currentQty = 1;
+        let selectedSize = 30;
+        let currentPrice = 10;
 
         const slider = document.getElementById('slider');
         let isDown = false; let startX; let scrollLeft;
@@ -400,34 +351,22 @@
         }
 
         function openDetail(id) {
-    // ID-ni string kimi qəbul edirik
-    currentProd = products.find(p => p.id === id);
-    
-    if (!currentProd) {
-        console.error("Məhsul tapılmadı! ID:", id);
-        return;
-    }
-
-    // Qiymətləri və miqdarı sıfırla
-    currentQty = 1;
-    selectedSize = 30;
-    currentPrice = 10;
-
-    // Modalın içini doldur
-    document.getElementById('qtyVal').innerText = currentQty;
-    document.getElementById('detTitle').innerText = currentProd.name;
-    document.getElementById('detPrice').innerText = "10 AZN";
-    document.getElementById('detImg').innerText = currentProd.name[0];
-    document.getElementById('detNotes').innerText = currentProd.notes;
-    document.getElementById('detStay').innerText = currentProd.stay;
-
-    // Ölçü düyməsini sıfırla (30ml-i aktiv et)
-    document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.size-btn')[0].classList.add('active');
-
-    // Modalı göstər
-    document.getElementById('productDetail').classList.add('active');
-}
+            currentProd = products.find(p => p.id === id);
+            currentQty = 1;
+            selectedSize = 30;
+            currentPrice = 10;
+            document.getElementById('qtyVal').innerText = currentQty;
+            document.getElementById('detTitle').innerText = currentProd.name;
+            document.getElementById('detPrice').innerText = "10 AZN";
+            document.getElementById('detImg').innerText = currentProd.name[0];
+            document.getElementById('detNotes').innerText = currentProd.notes;
+            document.getElementById('detStay').innerText = currentProd.stay;
+            document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.size-btn')[0].classList.add('active');
+            const isFav = favs.some(f => f.id === id);
+            document.getElementById('detFavBtn').style.color = isFav ? '#ff4757' : '#ccc';
+            document.getElementById('productDetail').classList.add('active');
+        }
 
         function closeDetail() { document.getElementById('productDetail').classList.remove('active'); }
         function searchPerfume() {
@@ -450,17 +389,17 @@
         }
 
         function createCard(p) {
-    const isFav = favs.some(f => f.id === p.id);
-    return `<div class="product-card">
-        <i class="fas fa-heart" style="position:absolute; top:12px; right:12px; color:${isFav?'#ff4757':'#ddd'}; cursor:pointer;" onclick="toggleFav(event, '${p.id}')"></i>
-        <div onclick="openDetail('${p.id}')" style="cursor:pointer;">
-            <div class="prod-img">${p.name[0]}</div>
-            <h4>${p.name}</h4>
-            <span class="price-text">10 - 13 AZN</span>
-        </div>
-        <button class="btn-add" onclick="openDetail('${p.id}')">Seçim et</button>
-    </div>`;
-}
+            const isFav = favs.some(f => f.id === p.id);
+            return `<div class="product-card">
+                <i class="fas fa-heart" style="position:absolute; top:12px; right:12px; color:${isFav?'#ff4757':'#ddd'}; cursor:pointer;" onclick="toggleFav(event, ${p.id})"></i>
+                <div onclick="openDetail(${p.id})">
+                    <div class="prod-img">${p.name[0]}</div>
+                    <h4>${p.name}</h4>
+                    <span class="price-text">10 - 13 AZN</span>
+                </div>
+                <button class="btn-add" onclick="openDetail(${p.id})">Seçim et</button>
+            </div>`;
+        }
 
         function applyFilter(cat, btn) {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
