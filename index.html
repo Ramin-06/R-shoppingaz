@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfume App</title>
+    <title>R-Shoppingaz</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -139,11 +139,11 @@
         </div>
         <div id="mainContent">
             <div class="slider-area" id="slider">
-               <div class="slide-card" onclick="openInfoModal()">
-    <img src="kampaniya_sertleri.jpg" alt="Kampaniya Sertleri">
-</div>
-<div class="slide-card" onclick="openInfoModal()">
-    <img src="xidmetler_ve_catdirilma.jpg" alt="Xidmetler ve Catdirilma">
+               <div class="slide-card" onclick="openCampaignModal()">
+        <img src="kampaniya_sertleri.jpg" alt="Kampaniya Sertleri">
+    </div>
+    <div class="slide-card" onclick="openDeliveryModal()">
+        <img src="xidmetler_ve_catdirilma.jpg" alt="Xidmetler ve Catdirilma">
     </div>
             </div>
             <h4 id="gridTitle" style="color:var(--dark-blue)">Populyar</h4>
@@ -237,6 +237,111 @@
         function openInfoModal() { document.getElementById('infoModal').classList.add('active'); }
         function closeInfoModal() { document.getElementById('infoModal').classList.remove('active'); }
 
+
+        // KAMPANİYA ÜÇÜN CƏDVƏLLİ MODAL
+        function openCampaignModal() {
+            const modal = document.getElementById('infoModal');
+            modal.querySelector('b').innerText = "Kampaniya Şərtləri";
+            
+            const campaignHTML = `
+                <div style="padding:10px;">
+                    <h3 style="color:var(--dark-blue); margin-bottom:10px;">Dəyərli istifadəçilər</h3>
+                    <p style="font-size:14px; color:#555; line-height:1.5;">
+                        Kampaniya çərçivəsində etmiş olduğunuz alışlar zamanı aşağıdakı cədvəldə yazılan tariflər tətbiq olunacaq. 
+                        Xüsusi qablaşdırma və zövqünüzə uyğun olan 1000-ə yaxın ətir çeşidi ilə kampaniyadan faydalana bilərsiniz.
+                    </p>
+                    
+                    <table style="width:100%; border-collapse: collapse; margin-top:15px; text-align:center; font-size:14px; border: 1px solid #eee;">
+                        <thead>
+                            <tr style="background:var(--main-blue); color:white;">
+                                <th style="padding:8px; border:1px solid #ddd;">Miqdar</th>
+                                <th style="padding:8px; border:1px solid #ddd;">50 ml Ətirlər</th>
+                                <th style="padding:8px; border:1px solid #ddd;">30 ml Ətirlər</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding:8px; border:1px solid #ddd; font-weight:bold;">5 ədəd</td>
+                                <td style="padding:8px; border:1px solid #ddd;">₼ 45</td>
+                                <td style="padding:8px; border:1px solid #ddd;">₼ 32</td>
+                            </tr>
+                            <tr style="background:#f9f9f9;">
+                                <td style="padding:8px; border:1px solid #ddd; font-weight:bold;">10 ədəd</td>
+                                <td style="padding:8px; border:1px solid #ddd;">₼ 75</td>
+                                <td style="padding:8px; border:1px solid #ddd;">₼ 64</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:8px; border:1px solid #ddd; font-weight:bold;">15 ədəd</td>
+                                <td style="padding:8px; border:1px solid #ddd;">₼ 110</td>
+                                <td style="padding:8px; border:1px solid #ddd;">₼ 96</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p style="font-size:13px; color:#666; margin-top:15px; border-top: 1px solid #eee; pt:10px;">
+                        Əlavə məlumatlar <b>Xidmətlər və çatdırılma</b>-da verilmişdir. 
+                        Dəstək və əməkdaşlıq üçün <b>Əlaqə</b> bölməsindən bizə yaza bilərsiniz.
+                    </p>
+                    <button class="btn-add" style="margin-top:15px;" onclick="closeInfoModal()">ANLADIM</button>
+                </div>
+            `;
+            
+            modal.querySelector('div[style="padding:20px;"]').innerHTML = campaignHTML;
+            modal.classList.add('active');
+        }
+
+        // XİDMƏTLƏR, ÇATDIRILMA VƏ BONUS SİSTEMİ MODALI
+        function openDeliveryModal() {
+            const modal = document.getElementById('infoModal');
+            modal.querySelector('b').innerText = "Xidmətlər və Çatdırılma";
+            
+            const deliveryHTML = `
+                <div style="padding:10px; font-size:14px; color:#444; line-height:1.6;">
+                    <h3 style="color:var(--dark-blue); margin-bottom:10px;">Hörmətli alıcılar!</h3>
+                    <p>
+                        Ətirlərin tək-tək sifarişi zamanı <b>30 ml</b> ətirlər üçün biri <b>10 AZN</b>, <b>50 ml</b> ətirlər üçün isə biri <b>13 AZN</b> olacaq. 
+                        Belə olan halda <b>çatdırılma xərci ödəmirsiniz.</b>
+                    </p>
+                    <p style="background:#fff3e0; padding:10px; border-radius:10px; border-left:4px solid var(--bright-orange);">
+                        Əgər topdansatış olaraq sifariş etsəniz, çatdırılma xərci alıcıya aid olur. Sifariş sayından asılı olaraq müxtəlif hədiyyələr və güzəştlər edilir.
+                    </p>
+
+                    <h3 style="color:var(--main-blue); margin-top:20px;"><i class="fas fa-coins"></i> Bonus Sistemi (Rcoin)</h3>
+                    <p>
+                        Bonus sistemi vasitəsilə siz həm satış edərək, həm də bonus toplayaraq qazanc əldə edə bilərsiniz. 
+                        Hər bir ətir <b>2 Rcoin</b> olaraq qiymətləndirilir.
+                    </p>
+
+                    <table style="width:100%; border-collapse: collapse; margin-top:10px; text-align:center; background:white;">
+                        <thead>
+                            <tr style="background:#eee; color:var(--dark-blue);">
+                                <th style="padding:8px; border:1px solid #ddd;">Rcoin Miqdarı</th>
+                                <th style="padding:8px; border:1px solid #ddd;">Qazanc (AZN)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td style="padding:8px; border:1px solid #ddd;">100 Rcoin</td><td style="padding:8px; border:1px solid #ddd; font-weight:bold;">30 AZN</td></tr>
+                            <tr><td style="padding:8px; border:1px solid #ddd;">200 Rcoin</td><td style="padding:8px; border:1px solid #ddd; font-weight:bold;">80 AZN</td></tr>
+                            <tr><td style="padding:8px; border:1px solid #ddd;">400 Rcoin</td><td style="padding:8px; border:1px solid #ddd; font-weight:bold;">150 AZN</td></tr>
+                            <tr><td style="padding:8px; border:1px solid #ddd;">600 Rcoin</td><td style="padding:8px; border:1px solid #ddd; font-weight:bold;">200 AZN</td></tr>
+                        </tbody>
+                    </table>
+
+                    <p style="font-size:12px; color:#777; margin-top:15px; font-style:italic;">
+                        <b>Diqqət:</b> Rcoin R-Shoppingaz onlayn platformasının rəsmi tokeni olaraq qəbul edilmişdir.
+                    </p>
+                    
+                    <button class="btn-add" style="margin-top:15px;" onclick="closeInfoModal()">ANLADIM</button>
+                </div>
+            `;
+            
+            // Bu hissə modalın içini təmizləyib yeni mətni yazır
+            const modalBody = modal.querySelector('div[style="padding:20px;"]');
+            if(modalBody) {
+                modalBody.innerHTML = deliveryHTML;
+            }
+            modal.classList.add('active');
+        }
         function updatePrice(btn, size, price) {
             selectedSize = size;
             currentPrice = price;
