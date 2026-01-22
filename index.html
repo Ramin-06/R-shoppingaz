@@ -456,7 +456,7 @@
             let msg = "Yeni Sifariş:\n\n";
             cart.forEach(i => msg += `🛍️ ${i.name} (${i.size}ml) x ${i.qty}\n`);
             msg += `\n📍 Ünvan: ${addr}\n💵 Cəmi: ${cart.reduce((s,i)=>s+(i.price*i.qty),0)} AZN`;
-            window.open(`https://wa.me/994XXXXXXXXX?text=${encodeURIComponent(msg)}`);
+            window.open(`https://wa.me/994515817772?text=${encodeURIComponent(msg)}`);
         }
 
         function remCart(i) { cart.splice(i, 1); updateBadge(); renderCart(); }
