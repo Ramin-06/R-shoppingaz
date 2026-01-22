@@ -98,8 +98,22 @@
         .price-text { color: var(--main-blue); font-weight: bold; margin-bottom: 10px; display: block; }
         .btn-add { background: var(--bright-orange); color: white; border: none; padding: 10px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; }
 
-        #productDetail, #infoModal { position: fixed; top: 0; left: 100%; width: 100%; height: 100%; background: white; z-index: 2000; transition: 0.3s; overflow-y: auto; }
-        #productDetail.active, #infoModal.active { left: 0; }
+        #productDetail { 
+    position: fixed; 
+    top: 0; 
+    left: 100%; 
+    width: 100%; 
+    height: 100%; 
+    background: white; 
+    z-index: 9999 !important; /* Qiyməti artırdıq */
+    transition: 0.3s ease-in-out; 
+    overflow-y: auto; 
+    display: block; /* Hidden olmamalıdır, left ilə idarə olunur */
+}
+
+#productDetail.active { 
+    left: 0; 
+}
         .det-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
         .det-img-big { width: 100%; height: 200px; background: #f4f4f4; border-radius: 25px; display: flex; align-items: center; justify-content: center; font-size: 50px; color: var(--main-blue); margin-bottom: 20px; }
 
@@ -238,20 +252,25 @@
 
     // 3. Firestore-dan məlumatları çəkən funksiya
     function fetchProducts() {
-        db.collection("products").onSnapshot((querySnapshot) => {
-            products = []; 
-            querySnapshot.forEach((doc) => {
-                let data = doc.data();
-                products.push({
-                    name: data.name || "Adsız",
-                    cat: data.cat || "unisex",
-                    notes: data.notes || "-",
-                    stay: data.stay || "-"
-                });
+    console.log("Məlumatlar gətirilir...");
+    db.collection("products").onSnapshot((querySnapshot) => {
+        products = []; 
+        querySnapshot.forEach((doc) => {
+            let data = doc.data();
+            products.push({
+                id: doc.id, // Firestore-un verdiyi unikal ID
+                name: data.name || "Adsız",
+                cat: data.cat || "unisex",
+                notes: data.notes || "-",
+                stay: data.stay || "-"
             });
-            renderAll(); 
         });
-    }
+        console.log("Yüklənən məhsul sayısı:", products.length);
+        renderAll(); // Məlumatlar dolandan SONRA səhifəni qurur
+    }, (error) => {
+        console.error("Firestore xətası:", error);
+    });
+}
 
         // Səhifə yüklənəndə işə düşsün
         window.onload = fetchProducts;
