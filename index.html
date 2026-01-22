@@ -23,15 +23,39 @@
         .search-container { background: #fff; padding: 12px; border-radius: 15px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 15px; }
         .search-container input { border: none; outline: none; width: 100%; margin-left: 10px; font-size: 15px; }
         
-        /* Slider - Masaüstü üçün drag dəstəyi */
+      /* Slider - Masaüstü üçün drag dəstəyi */
         .slider-area { 
             display: flex; overflow-x: auto; gap: 10px; scrollbar-width: none; 
             margin-bottom: 20px; cursor: grab; user-select: none;
         }
         .slider-area:active { cursor: grabbing; }
         .slider-area::-webkit-scrollbar { display: none; }
-        .slide-card { min-width: 85%; height: 160px; background: #eee; border-radius: 20px; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        
+        /* Mobil üçün standart ölçü */
+        .slide-card { 
+            min-width: 85%; 
+            height: 160px; 
+            background: #eee; 
+            border-radius: 20px; 
+            overflow: hidden; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            flex-shrink: 0; 
+        }
         .slide-card img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+
+        /* MASAÜSTÜ ÜÇÜN DÜZƏLİŞ (Bura əlavə olundu) */
+        @media (min-width: 768px) {
+            .slider-area {
+                justify-content: center; /* Şəkilləri ortaya çəkir */
+            }
+            .slide-card { 
+                min-width: 400px; /* Masaüstündə çox enli olmasın */
+                max-width: 500px; 
+                height: 220px;    /* Masaüstü üçün ideal hündürlük */
+            }
+        }
 
         /* Ölçü Seçimi Düymələri */
         .size-container { display: flex; gap: 10px; margin: 15px 0; }
