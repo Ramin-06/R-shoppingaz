@@ -256,6 +256,27 @@
     });
     }
 
+function copyCardNumber() {
+    const cardNumber = document.getElementById('cardNumber').innerText;
+    
+    // Müasir brauzerlər üçün kopyalama metodu
+    navigator.clipboard.writeText(cardNumber).then(() => {
+        // İstifadəçiyə kopyalandığını bildirmək üçün vizual effekt
+        const copyBtn = event.currentTarget;
+        const originalText = copyBtn.innerHTML;
+        
+        copyBtn.innerHTML = '<i class="fas fa-check"></i> Kopyalandı';
+        copyBtn.style.background = '#28a745';
+        
+        setTimeout(() => {
+            copyBtn.innerHTML = originalText;
+            copyBtn.style.background = 'var(--main-blue)';
+        }, 2000);
+    }).catch(err => {
+        alert('Kopyalama zamanı xəta baş verdi');
+    });
+}
+        
         const slider = document.getElementById('slider');
         let isDown = false; let startX; let scrollLeft;
         slider.addEventListener('mousedown', (e) => { isDown = true; startX = e.pageX - slider.offsetLeft; scrollLeft = slider.scrollLeft; });
@@ -493,11 +514,17 @@
                 <i class="fas fa-exclamation-triangle"></i> DİQQƏT:
             </p>
             <p style="margin:5px 0; font-size:13px; color:#333; line-height:1.4;">
-                Sifarişin qəbul edilməsi üçün ödəniş edib, <b>qəbzi (çeki) WhatsApp-a göndərməyiniz mütləqdir.</b> Əks halda sifariş ləğv ediləcək.
+                Sifarişin təsdiqi üçün ödəniş edib, <b>qəbzi WhatsApp-a göndərməyiniz mütləqdir.</b>
             </p>
-            <div style="margin-top:10px; padding:8px; background:#fff; border-radius:8px; border:1px solid #eee; font-size:14px;">
-                <b>Kart:</b> 4127 0000 0000 0000<br>
-                <b>Sahib:</b> R-Shopping AZ
+            
+            <div style="margin-top:10px; padding:10px; background:#fff; border-radius:10px; border:1px solid #eee;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:14px; color:#555;">Kart: <b id="cardNumber">4127000000000000</b></span>
+                    <button onclick="copyCardNumber()" style="background:var(--main-blue); color:white; border:none; padding:5px 10px; border-radius:6px; font-size:12px; cursor:pointer;">
+                        <i class="fas fa-copy"></i> Kopyala
+                    </button>
+                </div>
+                <div style="font-size:14px; color:#555; margin-top:5px;">Sahib: <b>R-Shopping AZ</b></div>
             </div>
         </div>
     </div>
