@@ -240,18 +240,20 @@
     // 3. Firestore-dan məlumatları çəkən funksiya
     function fetchProducts() {
         db.collection("products").onSnapshot((querySnapshot) => {
-            products = []; 
-            querySnapshot.forEach((doc) => {
-                let data = doc.data();
-                products.push({
-                    name: data.name || "Adsız",
-                    cat: data.cat || "unisex",
-                    notes: data.notes || "-",
-                    stay: data.stay || "-"
-                });
+        products = []; 
+        querySnapshot.forEach((doc) => {
+            let data = doc.data();
+            products.push({
+                id: doc.id, // Firestore-dakı sənəd ID-sini mütləq bura mənimsədirik
+                name: data.name || "Adsız",
+                cat: data.cat || "unisex",
+                notes: data.notes || "-",
+                stay: data.stay || "-",
+                // Əgər bazada qiymət varsa bura əlavə edə bilərsiniz
             });
-            renderAll(); 
         });
+        renderAll(); // Məlumatlar gələn kimi ekranı yeniləyirik
+    });
     }
 
         const slider = document.getElementById('slider');
@@ -417,15 +419,16 @@
 
         function createCard(p) {
             const isFav = favs.some(f => f.id === p.id);
-            return `<div class="product-card">
-                <i class="fas fa-heart" style="position:absolute; top:12px; right:12px; color:${isFav?'#ff4757':'#ddd'}; cursor:pointer;" onclick="toggleFav(event, ${p.id})"></i>
-                <div onclick="openDetail(${p.id})">
-                    <div class="prod-img">${p.name[0]}</div>
-                    <h4>${p.name}</h4>
-                    <span class="price-text">10 - 13 AZN</span>
-                </div>
-                <button class="btn-add" onclick="openDetail(${p.id})">Seçim et</button>
-            </div>`;
+    // Diqqət: openDetail('${p.id}') və toggleFav(event, '${p.id}') - dırnaq əlavə edildi
+    return `<div class="product-card">
+        <i class="fas fa-heart" style="position:absolute; top:12px; right:12px; color:${isFav?'#ff4757':'#ddd'}; cursor:pointer;" onclick="toggleFav(event, '${p.id}')"></i>
+        <div onclick="openDetail('${p.id}')">
+            <div class="prod-img">${p.name[0]}</div>
+            <h4>${p.name}</h4>
+            <span class="price-text">10 - 13 AZN</span>
+        </div>
+        <button class="btn-add" onclick="openDetail('${p.id}')">Seçim et</button>
+    </div>`;
         }
 
         function applyFilter(cat, btn) {
@@ -437,11 +440,10 @@
 
         function toggleFav(e, id) {
             e.stopPropagation();
-            const idx = favs.findIndex(f => f.id === id);
-            if(idx > -1) favs.splice(idx, 1);
-            else favs.push(products.find(p => p.id === id));
-            renderAll();
-            if(document.getElementById('favPage').classList.contains('active')) renderFavs();
+    const idx = favs.findIndex(f => f.id === id);
+    if(idx > -1) favs.splice(idx, 1);
+    else favs.push(products.find(p => p.id === id));
+    renderAll();
         }
 
         function renderFavs() {
@@ -488,7 +490,7 @@
 
         function remCart(i) { cart.splice(i, 1); updateBadge(); renderCart(); }
         function renderAll() { document.getElementById('homeGrid').innerHTML = products.map(p => createCard(p)).join(''); document.getElementById('catalogGrid').innerHTML = products.map(p => createCard(p)).join(''); }
-        renderAll();
+        fetchProducts();
     </script>
 </body>
 </html>
