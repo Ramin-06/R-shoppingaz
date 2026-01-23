@@ -359,32 +359,36 @@ function closeAdminLogin() {
 
 // FİRESTORE-DAN ADMİNİ YOXLAMAQ
 async function checkAdminLogin() {
-    const inputID = document.getElementById('adminID').value;
-    const inputPass = document.getElementById('adminPass').value;
+    const inputID = document.getElementById('adminID').value.trim(); // Boşluqları silir
+    const inputPass = document.getElementById('adminPass').value.trim();
 
     if(!inputID || !inputPass) { alert("Xanaları doldurun!"); return; }
 
     try {
-        const snapshot = await db.collection("admins").where("adminID", "==", inputID).get();
-        
-        if (snapshot.empty) {
-            alert("Admin ID yanlışdır!");
-            return;
-        }
+        // Konsola yazırıq ki, nəyi axtardığımızı görək (Yoxlamaq üçün F12-yə bas)
+        console.log("Axtarılan ID:", inputID);
 
+        const snapshot = await db.collection("admins").get();
         let isMatch = false;
+
         snapshot.forEach(doc => {
-            if (doc.data().password === inputPass) isMatch = true;
+            const data = doc.data();
+            console.log("Bazadakı məlumat:", data); // Bazadan gələni görmək üçün
+            if (data.adminID === inputID && data.password === inputPass) {
+                isMatch = true;
+            }
         });
 
         if (isMatch) {
             closeAdminLogin();
             showPage('adminPage', document.createElement('div'));
+            switchAdminTab('add');
         } else {
-            alert("Şifrə yanlışdır!");
+            alert("Admin ID və ya Şifrə yanlışdır!");
         }
     } catch (e) {
-        alert("Bağlantı xətası!");
+        console.error("Xəta baş verdi:", e);
+        alert("Bağlantı xətası: " + e.message);
     }
 }
 
