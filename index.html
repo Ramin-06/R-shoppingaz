@@ -256,15 +256,20 @@
     });
     }
 
-function copyCardNumber() {
+function copyCardNumber(e) {
     const cardNumber = document.getElementById('cardNumber').innerText;
+    const copyBtn = e.currentTarget; // Artıq 'e' vasitəsilə düyməni tanıyacaq
+    const originalText = copyBtn.innerHTML;
+
+    // Kopyalama əməliyyatı
+    const textArea = document.createElement("textarea");
+    textArea.value = cardNumber;
+    document.body.appendChild(textArea);
+    textArea.select();
     
-    // Müasir brauzerlər üçün kopyalama metodu
-    navigator.clipboard.writeText(cardNumber).then(() => {
-        // İstifadəçiyə kopyalandığını bildirmək üçün vizual effekt
-        const copyBtn = event.currentTarget;
-        const originalText = copyBtn.innerHTML;
-        
+    try {
+        document.execCommand('copy');
+        // Vizual effekt
         copyBtn.innerHTML = '<i class="fas fa-check"></i> Kopyalandı';
         copyBtn.style.background = '#28a745';
         
@@ -272,9 +277,11 @@ function copyCardNumber() {
             copyBtn.innerHTML = originalText;
             copyBtn.style.background = 'var(--main-blue)';
         }, 2000);
-    }).catch(err => {
-        alert('Kopyalama zamanı xəta baş verdi');
-    });
+    } catch (err) {
+        alert('Kopyalama dəstəklənmir, zəhmət olmasa əllə kopyalayın.');
+    }
+    
+    document.body.removeChild(textArea);
 }
         
         const slider = document.getElementById('slider');
@@ -520,7 +527,7 @@ function copyCardNumber() {
             <div style="margin-top:10px; padding:10px; background:#fff; border-radius:10px; border:1px solid #eee;">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <span style="font-size:14px; color:#555;">Kart: <b id="cardNumber">4127000000000000</b></span>
-                    <button onclick="copyCardNumber()" style="background:var(--main-blue); color:white; border:none; padding:5px 10px; border-radius:6px; font-size:12px; cursor:pointer;">
+                    <button onclick="copyCardNumber(event)" style="background:var(--main-blue); color:white; border:none; padding:5px 10px; border-radius:6px; font-size:12px; cursor:pointer;">
                         <i class="fas fa-copy"></i> Kopyala
                     </button>
                 </div>
