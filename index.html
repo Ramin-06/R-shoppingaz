@@ -214,18 +214,45 @@
         <div class="nav-item" onclick="showPage('cartPage', this)"><i class="fas fa-shopping-cart"></i><div id="cartBadge" class="badge">0</div><br>Səbət</div>
     </nav>
 
+   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script>
-        const products = [
-            { id: 1, name: 'Dior Sauvage', cat: 'kisi', notes: 'Berqamot, Bibər', stay: '24 saat' },
-            { id: 2, name: 'Chanel No.5', cat: 'qadin', notes: 'Jasmin, Qızılgül', stay: '18 saat' },
-            { id: 3, name: 'Versace Eros', cat: 'kisi', notes: 'Nanə, Alma', stay: '12 saat' },
-            { id: 4, name: 'Tom Ford', cat: 'unisex', notes: 'Tütün, Vanil', stay: '48 saat' },
-            { id: 5, name: 'Armani Si', cat: 'qadin', notes: 'Frenk üzümü, Gül', stay: '20 saat' }
-        ];
+        
+        // 2. Firebase Konfiqurasiyası
+        const firebaseConfig = {
+          apiKey: "AIzaSyA5eb16DAKSVLkEzYsUrgxL9vfrJP7w-es",
+          authDomain: "etir-magazasi-d7679.firebaseapp.com",
+          projectId: "etir-magazasi-d7679",
+          storageBucket: "etir-magazasi-d7679.firebasestorage.app",
+          messagingSenderId: "1045258773680",
+          appId: "1:1045258773680:web:ab2edd54ba3f0ef0530775"
+        };
 
-        let cart = [], favs = [], currentProd = null, currentQty = 1;
-        let selectedSize = 30;
-        let currentPrice = 10;
+        firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // 2. Dəyişənlər (Köhnə const products siyahısını sildik!)
+    let products = []; 
+    let cart = [], favs = [], currentProd = null, currentQty = 1;
+    let selectedSize = 30;
+    let currentPrice = 10;
+
+    // 3. Firestore-dan məlumatları çəkən funksiya
+    function fetchProducts() {
+        db.collection("products").onSnapshot((querySnapshot) => {
+            products = []; 
+            querySnapshot.forEach((doc) => {
+                let data = doc.data();
+                products.push({
+                    name: data.name || "Adsız",
+                    cat: data.cat || "unisex",
+                    notes: data.notes || "-",
+                    stay: data.stay || "-"
+                });
+            });
+            renderAll(); 
+        });
+    }
 
         const slider = document.getElementById('slider');
         let isDown = false; let startX; let scrollLeft;
