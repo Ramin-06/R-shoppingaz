@@ -202,7 +202,7 @@
             <div class="spec-container">
                 <div class="spec-item"><i class="fas fa-wind"></i> <b>Qoxu:</b> <span id="detNotes">-</span></div>
                 <div class="spec-item"><i class="fas fa-hourglass-half"></i> <b>Qalıcılıq:</b> <span id="detStay">-</span></div>
-                <div class="spec-item"><i class="fas fa-check-circle"></i> <b>Növ:</b> <span>Orijinal Tester</span></div>
+                <div class="spec-item"><i class="fas fa-check-circle"></i> <b>Kateqoriya:</b> <span id="detCat">-</span></div>
             </div>
         </div>
     </div>
@@ -381,20 +381,29 @@
 
         function openDetail(id) {
             currentProd = products.find(p => p.id === id);
-            currentQty = 1;
-            selectedSize = 30;
-            currentPrice = 10;
-            document.getElementById('qtyVal').innerText = currentQty;
-            document.getElementById('detTitle').innerText = currentProd.name;
-            document.getElementById('detPrice').innerText = "10 AZN";
-            document.getElementById('detImg').innerText = currentProd.name[0];
-            document.getElementById('detNotes').innerText = currentProd.notes;
-            document.getElementById('detStay').innerText = currentProd.stay;
-            document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.size-btn')[0].classList.add('active');
-            const isFav = favs.some(f => f.id === id);
-            document.getElementById('detFavBtn').style.color = isFav ? '#ff4757' : '#ccc';
-            document.getElementById('productDetail').classList.add('active');
+    if (!currentProd) return;
+
+    currentQty = 1;
+    selectedSize = 30;
+    currentPrice = 10;
+    
+    document.getElementById('qtyVal').innerText = currentQty;
+    document.getElementById('detTitle').innerText = currentProd.name;
+    document.getElementById('detPrice').innerText = "10 AZN";
+    document.getElementById('detImg').innerText = currentProd.name[0];
+    document.getElementById('detNotes').innerText = currentProd.notes;
+    document.getElementById('detStay').innerText = currentProd.stay;
+
+    // KATEQORİYA BURADA YENİLƏNİR:
+    let displayCat = currentProd.cat;
+    if(displayCat === 'qadin') displayCat = 'Qadın';
+    else if(displayCat === 'kisi') displayCat = 'Kişi';
+    else if(displayCat === 'unisex') displayCat = 'Unisex';
+    
+    document.getElementById('detCat').innerText = displayCat; // Firestore-dan gələn 'cat' bura yazılır
+
+    // ... qalan kodlar (size-btn və fav-btn hissələri)
+    document.getElementById('productDetail').classList.add('active');
         }
 
         function closeDetail() { document.getElementById('productDetail').classList.remove('active'); }
