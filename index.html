@@ -235,16 +235,9 @@
 
 <div id="adminPage" class="page">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-    <h2 style="margin:0; color:var(--dark-blue)">Admin Panel</h2>
-    <div style="display: flex; gap: 10px;">
-        <button onclick="logoutAdmin()" style="border:none; background:#ffebee; color:#ff4757; padding:10px 15px; border-radius:12px; cursor:pointer;" title="Çıxış">
-            <i class="fas fa-sign-out-alt"></i>
-        </button>
-        <button onclick="showPage('homePage', document.querySelector('.nav-item'))" style="border:none; background:#eee; padding:10px 15px; border-radius:12px; cursor:pointer;">
-            <i class="fas fa-times"></i>
-        </button>
+        <h2 style="margin:0; color:var(--dark-blue)">Admin Panel</h2>
+        <button onclick="showPage('homePage', this)" style="border:none; background:#eee; padding:10px 15px; border-radius:12px; cursor:pointer;"><i class="fas fa-times"></i></button>
     </div>
-</div>
 
     <div style="display: flex; gap: 10px; margin-bottom: 20px; background: #f0f0f0; padding: 5px; border-radius: 15px;">
         <button id="tabAdd" class="filter-btn active" style="flex: 1; border:none;" onclick="switchAdminTab('add')">Məhsul Əlavə Et</button>
@@ -300,11 +293,8 @@
         firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-
-        
     // 2. Dəyişənlər (Köhnə const products siyahısını sildik!)
     let products = []; 
-    let isAdminLoggedIn = false; // Adminin daxil olub-olmadığını yadda saxlayır
     let editMode = false; // Redaktə rejimi üçün
     let editId = null;    // Redaktə edilən məhsulun ID-si
     let cart = [], favs = [], currentProd = null, currentQty = 1;
@@ -360,10 +350,10 @@ function copyCardNumber(e) {
 
 // MODALİ AÇIB-BAĞLAMAQ
 function openAdminLogin() {
-   document.getElementById('adminLoginModal').style.display = 'none';
-    // Xanaları təmizləyək ki, növbəti dəfə boş görünsün
-    document.getElementById('adminID').value = "";
-    document.getElementById('adminPass').value = "";
+    document.getElementById('adminLoginModal').style.display = 'flex';
+}
+function closeAdminLogin() {
+    document.getElementById('adminLoginModal').style.display = 'none';
 }
 
 // FİRESTORE-DAN ADMİNİ YOXLAMAQ
@@ -398,11 +388,11 @@ async function checkAdminLogin() {
             }
         });
 
-       if (isMatch) {
-            isAdminLoggedIn = true; // Giriş statusunu aktivləşdiririk
+        if (isMatch) {
             console.log("Giriş uğurludur!");
-            document.getElementById('adminLoginModal').style.display = 'none';
-            showPage('adminPage', document.querySelector('.nav-item i.fa-user-lock').parentElement);
+            closeAdminLogin();
+            showPage('adminPage', document.createElement('div'));
+            // Admin panelinə keçəndə 'Əlavə et' bölməsini aktiv et
             switchAdminTab('add');
         } else {
             alert("Admin ID və ya Şifrə yanlışdır!");
@@ -413,14 +403,6 @@ async function checkAdminLogin() {
     }
 }
 
-        function logoutAdmin() {
-    if(confirm("Admin panelindən çıxış etmək istəyirsiniz?")) {
-        isAdminLoggedIn = false;
-        // Əsas səhifəyə qayıt və naviqasiyada 'Əsas' ikonunu aktiv et
-        showPage('homePage', document.querySelector('.nav-item'));
-        alert("Çıxış edildi.");
-    }
-}
 // ADMİN TABLARI ARASINDA KEÇİD
 function switchAdminTab(tab) {
     if(tab === 'add') {
@@ -728,18 +710,12 @@ function renderAdminList() {
         }
 
         function showPage(pId, el) {
-            // Bütün səhifələri gizlət
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    
-    // Admin login modalını hər ehtimala qarşı gizlət
-    document.getElementById('adminLoginModal').style.display = 'none';
-
-    // Seçilən səhifəni göstər
-    document.getElementById(pageId).classList.add('active');
-
-    // Nav-item-lərin aktivlik rəngini tənzimlə
-    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-    if(element) element.classList.add('active');
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(pId).classList.add('active');
+            el.classList.add('active');
+            if(pId === 'favPage') renderFavs();
+            if(pId === 'cartPage') renderCart();
         }
 
         function createCard(p) {
