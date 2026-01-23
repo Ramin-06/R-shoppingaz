@@ -360,13 +360,10 @@ function copyCardNumber(e) {
 
 // MODALİ AÇIB-BAĞLAMAQ
 function openAdminLogin() {
-    if (isAdminLoggedIn) {
-        // Əgər artıq giriş edilibsə, birbaşa panelə get
-        showPage('adminPage', document.querySelector('.nav-item i.fa-user-lock').parentElement);
-    } else {
-        // Giriş edilməyibsə, login pəncərəsini aç
-        document.getElementById('adminLoginModal').style.display = 'flex';
-    }
+   document.getElementById('adminLoginModal').style.display = 'none';
+    // Xanaları təmizləyək ki, növbəti dəfə boş görünsün
+    document.getElementById('adminID').value = "";
+    document.getElementById('adminPass').value = "";
 }
 
 // FİRESTORE-DAN ADMİNİ YOXLAMAQ
@@ -404,7 +401,7 @@ async function checkAdminLogin() {
        if (isMatch) {
             isAdminLoggedIn = true; // Giriş statusunu aktivləşdiririk
             console.log("Giriş uğurludur!");
-            closeAdminLogin();
+            document.getElementById('adminLoginModal').style.display = 'none';
             showPage('adminPage', document.querySelector('.nav-item i.fa-user-lock').parentElement);
             switchAdminTab('add');
         } else {
