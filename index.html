@@ -492,11 +492,25 @@ function copyCardNumber(e) {
         }
 
         function toggleFav(e, id) {
-            e.stopPropagation();
+           e.stopPropagation();
     const idx = favs.findIndex(f => f.id === id);
-    if(idx > -1) favs.splice(idx, 1);
-    else favs.push(products.find(p => p.id === id));
+    
+    if (idx > -1) {
+        // Əgər artıq favoridədirsə, çıxarırıq
+        favs.splice(idx, 1);
+    } else {
+        // Yoxdursa, əlavə edirik
+        const productToAdd = products.find(p => p.id === id);
+        if (productToAdd) favs.push(productToAdd);
+    }
+
+    // Ana səhifəni və kataloqu yeniləyir (ürəyin rəngi dəyişsin deyə)
     renderAll();
+
+    // Əgər istifadəçi hal-hazırda Favori səhifəsindədirsə, siyahını dərhal yeniləyirik
+    if (document.getElementById('favPage').classList.contains('active')) {
+        renderFavs();
+    }
         }
 
         function renderFavs() {
