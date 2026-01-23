@@ -256,67 +256,6 @@
     });
     }
 
-// --- SİFARİŞ VƏ YADDAŞ FUNKSİYALARI ---
-
-function saveDraft() {
-    const addr = document.getElementById('orderAddress').value;
-    localStorage.setItem('draftAddress', addr);
-}
-
-function syncCart() {
-    localStorage.setItem('userCart', JSON.stringify(cart));
-    updateBadge();
-}
-
-function handleFileSelect(input) {
-    const btn = document.getElementById('finalOrderBtn');
-    const uploadBtn = document.getElementById('uploadBtn');
-    const uploadBtnText = document.getElementById('uploadBtnText');
-    
-    if (input.files && input.files[0]) {
-        uploadBtn.style.background = "#e6fffa";
-        uploadBtn.style.borderColor = "#38a169";
-        uploadBtn.style.color = "#38a169";
-        uploadBtnText.innerText = "Çek Yükləndi ✓";
-        
-        btn.disabled = false;
-        btn.style.opacity = "1";
-        btn.style.cursor = "pointer";
-    }
-}
-
-async function sendOrder() {
-    const addr = document.getElementById('orderAddress').value.trim();
-    const btn = document.getElementById('finalOrderBtn');
-
-    if(!addr) {
-        alert("Zəhmət olmasa çatdırılma ünvanını qeyd edin!");
-        return;
-    }
-
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Göndərilir...';
-    btn.disabled = true;
-
-    let msg = "✨ *YENİ SİFARİŞ (ÖDƏNİLDİ)* ✨\n\n";
-    cart.forEach(i => {
-        msg += `🛍️ *${i.name}*\n   Ölçü: ${i.size}ml | Say: ${i.qty} | Qiymət: ${i.price * i.qty} AZN\n`;
-    });
-    msg += `\n--------------------------\n`;
-    msg += `📍 *Ünvan:* ${addr}\n`;
-    msg += `💰 *Cəmi:* ${cart.reduce((s,i)=>s+(i.price*i.qty),0)} AZN\n`;
-    msg += `✅ _Ödəniş çeki hazırda bu söhbətə əlavə edilir..._`;
-
-    localStorage.removeItem('draftAddress');
-    localStorage.removeItem('userCart');
-    
-    window.open(`https://wa.me/994515817772?text=${encodeURIComponent(msg)}`);
-    
-    cart = [];
-    syncCart();
-    renderCart();
-    alert("UĞURLU! WhatsApp açıldıqda 'Göndər' düyməsini sıxın və çek şəklini ora əlavə edin.");
-}
-        
         const slider = document.getElementById('slider');
         let isDown = false; let startX; let scrollLeft;
         slider.addEventListener('mousedown', (e) => { isDown = true; startX = e.pageX - slider.offsetLeft; scrollLeft = slider.scrollLeft; });
@@ -529,9 +468,7 @@ async function sendOrder() {
             const item = { ...currentProd, qty: currentQty, size: selectedSize, price: currentPrice };
             const existing = cart.find(c => c.id === item.id && c.size === item.size);
             if(existing) existing.qty += currentQty; else cart.push(item);
-            syncCart(); // Yaddaşla sinxronizasiya
-    updateBadge(); 
-    closeDetail();
+            updateBadge(); closeDetail();
         }
 
         function updateBadge() { const totalItems = cart.reduce((sum, item) => sum + item.qty, 0); const b = document.getElementById('cartBadge'); b.innerText = totalItems; b.style.display = totalItems > 0 ? 'flex' : 'none'; }
@@ -547,38 +484,7 @@ async function sendOrder() {
                     total += item.price * item.qty;
                     list.innerHTML += `<div class="cart-item"><div style="flex:1"><b>${item.name} (${item.size}ml)</b><br><small>${item.price} AZN x ${item.qty}</small></div><div style="font-weight:bold; margin-right:15px;">${item.price * item.qty} AZN</div><i class="fas fa-trash" style="color:#ff4757" onclick="remCart(${i})"></i></div>`;
                 });
-                footer.innerHTML = `
-    <div style="background:#fff; padding:15px; border-radius:15px; margin-top:10px; border:1px solid #eee;">
-        <label style="font-weight:bold; color:var(--dark-blue); font-size:14px;">Çatdırılma Ünvanı:</label>
-        <textarea id="orderAddress" oninput="saveDraft()" placeholder="Küçə, ev, mənzil..." style="width:100%; border:1px solid #eee; border-radius:10px; padding:10px; margin-top:8px; font-family:inherit; resize:none; box-sizing:border-box;"></textarea>
-        
-        <div style="margin-top:15px; padding:12px; background:#eef6ff; border-radius:12px; border:1px solid #d0e4ff;">
-            <p style="margin:0; font-size:13px; color:var(--main-blue); font-weight:bold;"><i class="fas fa-university"></i> Ödəniş Məlumatları:</p>
-            <p style="margin:5px 0; font-size:14px; color:#333;"><b>Kart:</b> 4127 0000 0000 0000</p>
-            <p style="margin:5px 0; font-size:14px; color:#333;"><b>Sahib:</b> R-Shopping AZ (Nümunə)</p>
-            <p style="margin:0; font-size:12px; color:#666;">Ödənişi edib çeki aşağıya yükləyin.</p>
-        </div>
-
-        <div style="margin-top:15px;">
-            <label style="font-weight:bold; color:var(--dark-blue); font-size:14px;">Ödəniş Çekini Yüklə:</label>
-            <input type="file" id="receiptFile" accept="image/*" style="display:none;" onchange="handleFileSelect(this)">
-            <button onclick="document.getElementById('receiptFile').click()" id="uploadBtn" style="width:100%; padding:15px; border:2px dashed #ff8c00; border-radius:12px; background:#fffcf9; color:#ff8c00; cursor:pointer; margin-top:8px; transition:0.3s;">
-                <i class="fas fa-camera"></i> <span id="uploadBtnText">Çeki Şəkil Olaraq Yüklə</span>
-            </button>
-        </div>
-    </div>
-    
-    <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:18px; margin-top:15px; padding:0 10px;">
-        <span>Cəmi:</span> <span>${total} AZN</span>
-    </div>
-    
-    <button id="finalOrderBtn" onclick="sendOrder()" class="whatsapp-btn" style="opacity:0.4; cursor:not-allowed; width:100%;" disabled>
-        <i class="fab fa-whatsapp"></i> SİFARİŞİ TAMAMLA
-    </button>
-`;
-// Səhifə yüklənəndə qaralamadan ünvanı bərpa et
-const draftAddr = localStorage.getItem('draftAddress');
-if(draftAddr) document.getElementById('orderAddress').value = draftAddr;
+                footer.innerHTML = `<div style="background:#fff; padding:15px; border-radius:15px; margin-top:10px;"><label style="font-weight:bold; color:var(--dark-blue); font-size:14px;">Çatdırılma Ünvanı:</label><textarea id="orderAddress" placeholder="Ünvan..." style="width:100%; border:1px solid #eee; border-radius:10px; padding:10px; margin-top:8px; font-family:inherit; resize:none; box-sizing:border-box;"></textarea></div><div style="display:flex; justify-content:space-between; font-weight:bold; font-size:18px; margin-top:15px;"><span>Cəmi:</span> <span>${total} AZN</span></div><button onclick="sendOrder()" class="whatsapp-btn"><i class="fab fa-whatsapp"></i> Sifarişi tamamla</button>`;
             }
         }
 
@@ -591,16 +497,9 @@ if(draftAddr) document.getElementById('orderAddress').value = draftAddr;
             window.open(`https://wa.me/994515817772?text=${encodeURIComponent(msg)}`);
         }
 
-        function remCart(i) { cart.splice(i, 1); updateBadge(); syncCart(); renderCart(); }
+        function remCart(i) { cart.splice(i, 1); updateBadge(); renderCart(); }
         function renderAll() { document.getElementById('homeGrid').innerHTML = products.map(p => createCard(p)).join(''); document.getElementById('catalogGrid').innerHTML = products.map(p => createCard(p)).join(''); }
-       
-        window.addEventListener('DOMContentLoaded', (event) => {
-            const savedCart = localStorage.getItem('userCart');
-            if(savedCart) {
-                cart = JSON.parse(savedCart);
-                updateBadge(); // Səbət nişanını yeniləyir
-            }
-            fetchProducts();
+        fetchProducts();
     </script>
 </body>
 </html>
