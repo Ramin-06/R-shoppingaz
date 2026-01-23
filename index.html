@@ -215,6 +215,27 @@
         </div>
     </div>
 
+<div id="adminPage" class="page">
+    <h4 style="color:var(--dark-blue)">Admin Panel - Məhsul Əlavə Et</h4>
+    <div style="background:white; padding:15px; border-radius:15px; box-shadow:0 2px 10px rgba(0,0,0,0.05);">
+        <input type="text" id="adminProdName" placeholder="Ətir adı" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #eee; border-radius:8px;">
+        
+        <select id="adminProdCat" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #eee; border-radius:8px;">
+            <option value="qadin">Qadın</option>
+            <option value="kisi">Kişi</option>
+            <option value="unisex">Unisex</option>
+        </select>
+
+        <input type="text" id="adminProdNotes" placeholder="Qoxu qeydləri (məs: Jasmin, Vanil)" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #eee; border-radius:8px;">
+        <input type="text" id="adminProdStay" placeholder="Qalıcılıq (məs: 24 saat)" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #eee; border-radius:8px;">
+        
+        <button class="btn-add" onclick="saveProductToFirebase()">MƏHSULU YADDA SAXLA</button>
+    </div>
+
+    <h4 style="margin-top:20px; color:var(--dark-blue)">Mövcud Məhsullar</h4>
+    <div id="adminProductList"></div>
+</div>
+    
     <nav class="bottom-nav">
         <div class="nav-item active" onclick="showPage('homePage', this)"><i class="fas fa-home"></i><br>Əsas</div>
         <div class="nav-item" onclick="showPage('catalogPage', this)"><i class="fas fa-th-large"></i><br>Kataloq</div>
@@ -290,6 +311,39 @@ function copyCardNumber(e) {
     }
     
     document.body.removeChild(textArea);
+}
+
+// Firebase-ə məhsul yükləmək
+function saveProductToFirebase() {
+    const name = document.getElementById('adminProdName').value;
+    const cat = document.getElementById('adminProdCat').value;
+    const notes = document.getElementById('adminProdNotes').value;
+    const stay = document.getElementById('adminProdStay').value;
+
+    if(!name) { alert("Ad yazın!"); return; }
+
+    db.collection("products").add({
+        name: name,
+        cat: cat,
+        notes: notes,
+        stay: stay,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    })
+    .then(() => {
+        alert("Məhsul uğurla əlavə edildi!");
+        // Formu təmizlə
+        document.getElementById('adminProdName').value = "";
+        document.getElementById('adminProdNotes').value = "";
+        document.getElementById('adminProdStay').value = "";
+    })
+    .catch((error) => alert("Xəta: " + error));
+}
+
+// Məhsulu silmək funksiyası
+function deleteProduct(id) {
+    if(confirm("Bu məhsulu silməyə əminsiniz?")) {
+        db.collection("products").doc(id).delete();
+    }
 }
         
         const slider = document.getElementById('slider');
