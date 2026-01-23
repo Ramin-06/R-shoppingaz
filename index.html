@@ -295,6 +295,8 @@
 
     // 2. Dəyişənlər (Köhnə const products siyahısını sildik!)
     let products = []; 
+    let editMode = false; // Redaktə rejimi üçün
+    let editId = null;    // Redaktə edilən məhsulun ID-si
     let cart = [], favs = [], currentProd = null, currentQty = 1;
     let selectedSize = 30;
     let currentPrice = 10;
@@ -424,10 +426,7 @@ async function saveProductToFirebase() {
     const notes = document.getElementById('adminProdNotes').value.trim();
     const stay = document.getElementById('adminProdStay').value.trim();
 
-    if (!name) { 
-        alert("Məhsul adını yazın!"); 
-        return; 
-    }
+    if (!name) { alert("Məhsul adını yazın!"); return; }
 
     const productData = {
         name: name,
@@ -439,26 +438,21 @@ async function saveProductToFirebase() {
 
     try {
         if (editMode && editId) {
-            // Əgər editMode aktivdirsə, mövcud sənədi yeniləyirik
+            // REDAKTƏ EDİRİK
             await db.collection("products").doc(editId).update(productData);
             alert("Məhsul uğurla yeniləndi!");
         } else {
-            // Əgər editMode aktiv deyilsə, yeni sənəd yaradırıq
+            // YENİ ƏLAVƏ EDİRİK
             await db.collection("products").add({
                 ...productData,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
             alert("Yeni məhsul uğurla əlavə edildi!");
         }
-        
-        // Formu təmizləyirik və normal hala qayıdırıq
         resetAdminForm();
-        // Siyahını yenidən göstəririk
         renderAdminList();
-        
     } catch (error) {
-        console.error("Xəta baş verdi:", error);
-        alert("Sistem xətası: " + error.message);
+        alert("Xəta: " + error.message);
     }
 }
 
@@ -486,6 +480,67 @@ function deleteProduct(id) {
             renderAdminList();
         });
     }
+}
+        // 1. REDAKTƏ DÜYMƏSİNƏ BASANDA İŞƏ DÜŞƏN FUNKSİYA
+function editProduct(id) {
+    const p = products.find(prod => prod.id === id);
+    if (!p) return;
+
+    // Xanaları doldururuq
+    document.getElementById('adminProdName').value = p.name;
+    document.getElementById('adminProdCat').value = p.cat;
+    document.getElementById('adminProdNotes').value = p.notes;
+    document.getElementById('adminProdStay').value = p.stay;
+
+    editMode = true;
+    editId = id;
+
+    // Formun vizualını dəyişirik
+    document.getElementById('formTitle').innerText = "Məhsulu Redaktə Et";
+    const saveBtn = document.getElementById('adminSaveBtn');
+    saveBtn.innerText = "YENİLƏ";
+    saveBtn.style.background = "#f1c40f"; // Sarı rəng
+    document.getElementById('cancelEditBtn').style.display = "block";
+
+    // Bizi avtomatik 'Məhsul Əlavə Et' bölməsinə atır
+    switchAdminTab('add');
+}
+
+// 2. FORMU ƏVVƏLKİ HALINA QAYTARMAQ
+function resetAdminForm() {
+    editMode = false;
+    editId = null;
+    document.getElementById('adminProdName').value = "";
+    document.getElementById('adminProdNotes').value = "";
+    document.getElementById('adminProdStay').value = "";
+    document.getElementById('formTitle').innerText = "Yeni Məhsul";
+    const saveBtn = document.getElementById('adminSaveBtn');
+    saveBtn.innerText = "ƏLAVƏ ET";
+    saveBtn.style.background = "#27ae60";
+    document.getElementById('cancelEditBtn').style.display = "none";
+}
+
+// 3. ADMİN SİYAHISINI YENİLƏMƏK (BURADA SARI DÜYMƏ ƏLAVƏ OLUNDU)
+function renderAdminList() {
+    const container = document.getElementById('adminProductList');
+    if(!container) return;
+
+    container.innerHTML = products.map(p => `
+        <div style="background:white; padding:15px; border-radius:15px; display:flex; justify-content:space-between; align-items:center; border: 1px solid #f0f0f0; margin-bottom:10px;">
+            <div>
+                <b style="color:var(--dark-blue)">${p.name}</b><br>
+                <small style="color:#999">${p.cat.toUpperCase()}</small>
+            </div>
+            <div style="display:flex; gap:8px;">
+                <button onclick="editProduct('${p.id}')" style="background:#f1c40f; color:white; border:none; width:35px; height:35px; border-radius:10px; cursor:pointer;">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button onclick="deleteProduct('${p.id}')" style="background:#ff4757; color:white; border:none; width:35px; height:35px; border-radius:10px; cursor:pointer;">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
 }
         
         const slider = document.getElementById('slider');
