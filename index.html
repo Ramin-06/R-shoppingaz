@@ -359,35 +359,47 @@ function closeAdminLogin() {
 
 // FİRESTORE-DAN ADMİNİ YOXLAMAQ
 async function checkAdminLogin() {
-    const inputID = document.getElementById('adminID').value.trim(); // Boşluqları silir
+    // Giriş sahələrindən boşluqları silərək məlumatları götürürük
+    const inputID = document.getElementById('adminID').value.trim();
     const inputPass = document.getElementById('adminPass').value.trim();
 
-    if(!inputID || !inputPass) { alert("Xanaları doldurun!"); return; }
+    if(!inputID || !inputPass) { 
+        alert("Xanaları doldurun!"); 
+        return; 
+    }
 
     try {
-        // Konsola yazırıq ki, nəyi axtardığımızı görək (Yoxlamaq üçün F12-yə bas)
-        console.log("Axtarılan ID:", inputID);
-
+        // 'admins' kolleksiyasındakı bütün sənədləri gətiririk
         const snapshot = await db.collection("admins").get();
         let isMatch = false;
 
+        if (snapshot.empty) {
+            console.error("DİQQƏT: 'admins' kolleksiyası boşdur və ya tapılmadı!");
+            alert("Sistemdə heç bir admin tapılmadı!");
+            return;
+        }
+
         snapshot.forEach(doc => {
             const data = doc.data();
-            console.log("Bazadakı məlumat:", data); // Bazadan gələni görmək üçün
-            if (data.adminID === inputID && data.password === inputPass) {
+            console.log("Yoxlanılan sənəd:", data); // Konsolda bazadan gələni görəcəksən
+
+            // Məlumatları tam olaraq yoxlayırıq
+            if (String(data.adminID) === inputID && String(data.password) === inputPass) {
                 isMatch = true;
             }
         });
 
         if (isMatch) {
+            console.log("Giriş uğurludur!");
             closeAdminLogin();
             showPage('adminPage', document.createElement('div'));
+            // Admin panelinə keçəndə 'Əlavə et' bölməsini aktiv et
             switchAdminTab('add');
         } else {
             alert("Admin ID və ya Şifrə yanlışdır!");
         }
     } catch (e) {
-        console.error("Xəta baş verdi:", e);
+        console.error("Firebase xətası:", e);
         alert("Bağlantı xətası: " + e.message);
     }
 }
