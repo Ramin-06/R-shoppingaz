@@ -273,7 +273,7 @@
         <div class="nav-item" onclick="showPage('catalogPage', this)"><i class="fas fa-th-large"></i><br>Kataloq</div>
         <div class="nav-item" onclick="showPage('favPage', this)"><i class="fas fa-heart"></i><br>Favori</div>
         <div class="nav-item" onclick="showPage('cartPage', this)"><i class="fas fa-shopping-cart"></i><div id="cartBadge" class="badge">0</div><br>Səbət</div>
-        <div class="nav-item" onclick="openAdminLogin()"><i class="fas fa-user-lock"></i><br>Kabinet</div>
+        <div class="nav-item" id="kabinetBtn" onclick="handleKabinetClick()"><i class="fas fa-user-lock"></i><br>Kabinet</div>
     </nav>
 
    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -542,6 +542,25 @@ function renderAdminList() {
         </div>
     `).join('');
 }
+
+let isAdminLoggedIn = false; // Adminin giriş vəziyyətini saxlamaq üçün
+
+function handleKabinetClick() {
+    if (isAdminLoggedIn) {
+        showPage('adminPage', document.getElementById('kabinetBtn'));
+    } else {
+        openAdminLogin();
+    }
+}
+
+// checkAdminLogin funksiyasının daxilində isMatch = true olan hissəyə bunu əlavə et:
+if (isMatch) {
+    isAdminLoggedIn = true; // Giriş uğurlu olduqda bunu true et
+    console.log("Giriş uğurludur!");
+    closeAdminLogin();
+    showPage('adminPage', document.getElementById('kabinetBtn'));
+    switchAdminTab('add');
+}
         
         const slider = document.getElementById('slider');
         let isDown = false; let startX; let scrollLeft;
@@ -710,12 +729,25 @@ function renderAdminList() {
         }
 
         function showPage(pId, el) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(pId).classList.add('active');
-            el.classList.add('active');
-            if(pId === 'favPage') renderFavs();
-            if(pId === 'cartPage') renderCart();
+            // Bütün səhifələri gizlət
+    document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+    
+    // İstənilən səhifəni aç
+    const targetPage = document.getElementById(pageId);
+    if (targetPage) {
+        // Admin login modalı flex olduğu üçün onu xüsusi yoxlayırıq
+        targetPage.style.display = (pageId === 'adminLoginModal') ? 'flex' : 'block';
+    }
+
+    // Menyu düymələrinin rəngini dəyiş
+    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+    if (element) element.classList.add('active');
+    
+    // Səhifə dəyişəndə modalı bağla (opsional)
+    if(pageId !== 'adminPage') {
+        // Admin panelindən çıxanda isAdminLoggedIn-i false etmirik ki, 
+        // yenidən "Kabinet"ə basanda şifrə istəməsin.
+    }
         }
 
         function createCard(p) {
