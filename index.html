@@ -547,8 +547,7 @@ function copyCardNumber() {
         return; 
     }
 
-    // İstifadəçiyə son xəbərdarlıq
-    const confirmOrder = confirm("Ödəniş etmisinizsə, 'OK' sıxaraq WhatsApp-a keçin və qəbzi bizə göndərin. Qəbz göndərilməsə sifariş təsdiqlənməyəcək.");
+    const confirmOrder = confirm("Ödəniş qəbzini WhatsApp-a göndərməyə hazırsınız? Qəbz olmadan sifarişiniz işlənməyəcək.");
 
     if(confirmOrder) {
         let msg = "✨ *YENİ SİFARİŞ* ✨\n\n";
@@ -558,7 +557,7 @@ function copyCardNumber() {
         msg += `\n--------------------------\n`;
         msg += `📍 *Ünvan:* ${addr}\n`;
         msg += `💰 *Cəmi:* ${cart.reduce((s,i)=>s+(i.price*i.qty),0)} AZN\n\n`;
-        msg += `✅ *İndi ödəniş qəbzini (şəklini) bura əlavə edirəm...*`;
+        msg += `✅ *Ödəniş qəbzini aşağıda əlavə edirəm:*`;
 
         window.open(`https://wa.me/994515817772?text=${encodeURIComponent(msg)}`);
         
