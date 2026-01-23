@@ -215,59 +215,56 @@
         </div>
     </div>
 
-<div id="adminLoginModal" class="page" style="background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; position: fixed; top:0; left:0; width:100%; height:100%; z-index: 3000;">
-    <div style="background: white; padding: 30px; border-radius: 25px; width: 85%; max-width: 350px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
-        <div style="width: 70px; height: 70px; background: var(--main-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 30px;">
-            <i class="fas fa-user-shield"></i>
+<div id="adminLoginModal" class="page" style="background: white; display: none; flex-direction: column; align-items: center; justify-content: center; position: fixed; top:0; left:0; width:100%; height:100%; z-index: 4000; padding: 25px; box-sizing: border-box;">
+    <div style="width: 100%; max-width: 400px; text-align: center;">
+        <div style="width: 80px; height: 80px; background: #f8f9fa; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; border: 1px solid #eee;">
+            <i class="fas fa-user-shield" style="font-size: 35px; color: var(--main-blue);"></i>
         </div>
-        <h3 style="margin-bottom: 20px; color: var(--dark-blue);">Admin Girişi</h3>
-        <input type="text" id="adminID" placeholder="Admin ID" style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #eee; border-radius: 12px; box-sizing: border-box;">
-        <input type="password" id="adminPass" placeholder="Şifrə" style="width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #eee; border-radius: 12px; box-sizing: border-box;">
-        <button class="btn-add" onclick="checkAdminLogin()">DAXİL OL</button>
-        <p onclick="closeAdminLogin()" style="margin-top: 15px; color: #888; cursor: pointer; font-size: 14px;">Ləğv et</p>
+        <h2 style="color: var(--dark-blue); margin-bottom: 30px; font-weight: 700;">Admin Girişi</h2>
+        
+        <input type="text" id="adminID" placeholder="Admin ID" style="width: 100%; padding: 16px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 15px; box-sizing: border-box; font-size: 16px;">
+        <input type="password" id="adminPass" placeholder="Şifrə" style="width: 100%; padding: 16px; margin-bottom: 25px; border: 1px solid #ddd; border-radius: 15px; box-sizing: border-box; font-size: 16px;">
+
+        <button class="btn-add" style="width: 100%; padding: 16px; font-size: 16px; font-weight: bold;" onclick="checkAdminLogin()">DAXİL OL</button>
+        
+        <p onclick="closeAdminLogin()" style="margin-top: 25px; color: #888; cursor: pointer; font-size: 14px;">
+            <i class="fas fa-arrow-left"></i> Geri qayıt
+        </p>
     </div>
 </div>
 
 <div id="adminPage" class="page">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
-        <h2 style="color: var(--dark-blue); margin: 0;">Admin Panel</h2>
-        <button onclick="showPage('homePage', this)" style="border: none; background: #f1f1f1; padding: 8px 15px; border-radius: 10px; cursor: pointer;">
-            <i class="fas fa-sign-out-alt"></i> Çıxış
-        </button>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="margin:0; color:var(--dark-blue)">Admin Panel</h2>
+        <button onclick="showPage('homePage', this)" style="border:none; background:#eee; padding:10px 15px; border-radius:12px; cursor:pointer;"><i class="fas fa-times"></i></button>
     </div>
 
-    <div style="display: flex; gap: 10px; margin-bottom: 20px; background: #eee; padding: 5px; border-radius: 15px;">
-        <button id="tabAdd" class="filter-btn active" style="flex: 1; border: none;" onclick="switchAdminTab('add')">Məhsul Əlavə Et</button>
-        <button id="tabList" class="filter-btn" style="flex: 1; border: none;" onclick="switchAdminTab('list')">Siyahı</button>
+    <div style="display: flex; gap: 10px; margin-bottom: 20px; background: #f0f0f0; padding: 5px; border-radius: 15px;">
+        <button id="tabAdd" class="filter-btn active" style="flex: 1; border:none;" onclick="switchAdminTab('add')">Məhsul Əlavə Et</button>
+        <button id="tabList" class="filter-btn" style="flex: 1; border:none;" onclick="switchAdminTab('list')">Siyahı</button>
     </div>
 
     <div id="sectAdd" class="admin-section">
-        <div style="background: white; padding: 20px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-            <label style="font-size: 13px; color: #777;">Məhsulun Adı</label>
-            <input type="text" id="adminProdName" placeholder="Məs: Chanel Chance" style="width: 100%; padding: 12px; margin: 5px 0 15px; border: 1px solid #eee; border-radius: 12px; box-sizing: border-box;">
+        <div style="background: white; padding: 20px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+            <h4 id="formTitle" style="margin-top:0; color:var(--main-blue)">Yeni Məhsul</h4>
+            <input type="text" id="adminProdName" placeholder="Məhsulun adı" style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #eee; border-radius: 10px; box-sizing: border-box;">
             
-            <label style="font-size: 13px; color: #777;">Kateqoriya</label>
-            <select id="adminProdCat" style="width: 100%; padding: 12px; margin: 5px 0 15px; border: 1px solid #eee; border-radius: 12px; box-sizing: border-box;">
+            <select id="adminProdCat" style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #eee; border-radius: 10px; box-sizing: border-box;">
                 <option value="qadin">Qadın</option>
                 <option value="kisi">Kişi</option>
                 <option value="unisex">Unisex</option>
             </select>
 
-            <label style="font-size: 13px; color: #777;">Qoxu Notları</label>
-            <input type="text" id="adminProdNotes" placeholder="Məs: Jasmin, Vanil" style="width: 100%; padding: 12px; margin: 5px 0 15px; border: 1px solid #eee; border-radius: 12px; box-sizing: border-box;">
-
-            <label style="font-size: 13px; color: #777;">Qalıcılıq</label>
-            <input type="text" id="adminProdStay" placeholder="Məs: 24-48 saat" style="width: 100%; padding: 12px; margin: 5px 0 15px; border: 1px solid #eee; border-radius: 12px; box-sizing: border-box;">
+            <input type="text" id="adminProdNotes" placeholder="Qoxu notları" style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #eee; border-radius: 10px; box-sizing: border-box;">
+            <input type="text" id="adminProdStay" placeholder="Qalıcılıq" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #eee; border-radius: 10px; box-sizing: border-box;">
             
-            <button class="btn-add" style="background: #27ae60; margin-top: 10px;" onclick="saveProductToFirebase()">
-                <i class="fas fa-check-circle"></i> SİSTEMƏ ƏLAVƏ ET
-            </button>
+            <button id="adminSaveBtn" class="btn-add" style="background: #27ae60;" onclick="saveProductToFirebase()">ƏLAVƏ ET</button>
+            <button id="cancelEditBtn" style="display:none; width:100%; margin-top:10px; border:none; background:none; color:#888; cursor:pointer;" onclick="resetAdminForm()">Ləğv et</button>
         </div>
     </div>
 
     <div id="sectList" class="admin-section" style="display: none;">
-        <div id="adminProductList" style="display: flex; flex-direction: column; gap: 10px;">
-            </div>
+        <div id="adminProductList"></div>
     </div>
 </div>
     
@@ -421,25 +418,48 @@ function switchAdminTab(tab) {
 }
 
 // YENİ MƏHSULUN YADDA SAXLANILMASI
-function saveProductToFirebase() {
-    const name = document.getElementById('adminProdName').value;
+async function saveProductToFirebase() {
+    const name = document.getElementById('adminProdName').value.trim();
     const cat = document.getElementById('adminProdCat').value;
-    const notes = document.getElementById('adminProdNotes').value;
-    const stay = document.getElementById('adminProdStay').value;
+    const notes = document.getElementById('adminProdNotes').value.trim();
+    const stay = document.getElementById('adminProdStay').value.trim();
 
-    if(!name) { alert("Məhsul adını yazın!"); return; }
+    if (!name) { 
+        alert("Məhsul adını yazın!"); 
+        return; 
+    }
 
-    db.collection("products").add({
+    const productData = {
         name: name,
         cat: cat,
         notes: notes,
         stay: stay,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    }).then(() => {
-        alert("Uğurla əlavə edildi!");
-        document.getElementById('adminProdName').value = "";
-        document.getElementById('adminProdNotes').value = "";
-    });
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    try {
+        if (editMode && editId) {
+            // Əgər editMode aktivdirsə, mövcud sənədi yeniləyirik
+            await db.collection("products").doc(editId).update(productData);
+            alert("Məhsul uğurla yeniləndi!");
+        } else {
+            // Əgər editMode aktiv deyilsə, yeni sənəd yaradırıq
+            await db.collection("products").add({
+                ...productData,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            alert("Yeni məhsul uğurla əlavə edildi!");
+        }
+        
+        // Formu təmizləyirik və normal hala qayıdırıq
+        resetAdminForm();
+        // Siyahını yenidən göstəririk
+        renderAdminList();
+        
+    } catch (error) {
+        console.error("Xəta baş verdi:", error);
+        alert("Sistem xətası: " + error.message);
+    }
 }
 
 // ADMİN SİYAHISINI GÖSTƏRMƏK
