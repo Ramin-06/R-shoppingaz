@@ -484,17 +484,60 @@
                     total += item.price * item.qty;
                     list.innerHTML += `<div class="cart-item"><div style="flex:1"><b>${item.name} (${item.size}ml)</b><br><small>${item.price} AZN x ${item.qty}</small></div><div style="font-weight:bold; margin-right:15px;">${item.price * item.qty} AZN</div><i class="fas fa-trash" style="color:#ff4757" onclick="remCart(${i})"></i></div>`;
                 });
-                footer.innerHTML = `<div style="background:#fff; padding:15px; border-radius:15px; margin-top:10px;"><label style="font-weight:bold; color:var(--dark-blue); font-size:14px;">Çatdırılma Ünvanı:</label><textarea id="orderAddress" placeholder="Ünvan..." style="width:100%; border:1px solid #eee; border-radius:10px; padding:10px; margin-top:8px; font-family:inherit; resize:none; box-sizing:border-box;"></textarea></div><div style="display:flex; justify-content:space-between; font-weight:bold; font-size:18px; margin-top:15px;"><span>Cəmi:</span> <span>${total} AZN</span></div><button onclick="sendOrder()" class="whatsapp-btn"><i class="fab fa-whatsapp"></i> Sifarişi tamamla</button>`;
+                footer.innerHTML = `<div style="background:#fff; padding:15px; border-radius:15px; margin-top:10px; border:1px solid #eee;">
+        <label style="font-weight:bold; color:var(--dark-blue); font-size:14px;">Çatdırılma Ünvanı:</label>
+        <textarea id="orderAddress" placeholder="Küçə, ev, mənzil və ya metro..." style="width:100%; border:1px solid #eee; border-radius:10px; padding:10px; margin-top:8px; font-family:inherit; resize:none; box-sizing:border-box;"></textarea>
+        
+        <div style="margin-top:15px; padding:12px; background:#fff8e1; border-radius:12px; border:1px solid #ffe082;">
+            <p style="margin:0; font-size:13px; color:#f57c00; font-weight:bold;">
+                <i class="fas fa-exclamation-triangle"></i> DİQQƏT:
+            </p>
+            <p style="margin:5px 0; font-size:13px; color:#333; line-height:1.4;">
+                Sifarişin qəbul edilməsi üçün ödəniş edib, <b>qəbzi (çeki) WhatsApp-a göndərməyiniz mütləqdir.</b> Əks halda sifariş ləğv ediləcək.
+            </p>
+            <div style="margin-top:10px; padding:8px; background:#fff; border-radius:8px; border:1px solid #eee; font-size:14px;">
+                <b>Kart:</b> 4127 0000 0000 0000<br>
+                <b>Sahib:</b> R-Shopping AZ
+            </div>
+        </div>
+    </div>
+    
+    <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:18px; margin-top:15px; padding:0 10px;">
+        <span>Cəmi:</span> <span>${total} AZN</span>
+    </div>
+    
+    <button onclick="sendOrder()" class="whatsapp-btn" style="width:100%;">
+        <i class="fab fa-whatsapp"></i> SİFARİŞİ TAMAMLA
+    </button>
+`;
             }
         }
 
         function sendOrder() {
             const addr = document.getElementById('orderAddress').value.trim();
-            if(!addr) { alert("Ünvanı qeyd edin!"); return; }
-            let msg = "Yeni Sifariş:\n\n";
-            cart.forEach(i => msg += `🛍️ ${i.name} (${i.size}ml) x ${i.qty}\n`);
-            msg += `\n📍 Ünvan: ${addr}\n💵 Cəmi: ${cart.reduce((s,i)=>s+(i.price*i.qty),0)} AZN`;
-            window.open(`https://wa.me/994515817772?text=${encodeURIComponent(msg)}`);
+    if(!addr) { 
+        alert("Zəhmət olmasa çatdırılma ünvanını qeyd edin!"); 
+        return; 
+    }
+
+    // İstifadəçiyə son xəbərdarlıq
+    const confirmOrder = confirm("Ödəniş etmisinizsə, 'OK' sıxaraq WhatsApp-a keçin və qəbzi bizə göndərin. Qəbz göndərilməsə sifariş təsdiqlənməyəcək.");
+
+    if(confirmOrder) {
+        let msg = "✨ *YENİ SİFARİŞ* ✨\n\n";
+        cart.forEach(i => {
+            msg += `🛍️ *${i.name}*\n   ${i.size}ml | ${i.qty} ədəd | ${i.price * i.qty} AZN\n`;
+        });
+        msg += `\n--------------------------\n`;
+        msg += `📍 *Ünvan:* ${addr}\n`;
+        msg += `💰 *Cəmi:* ${cart.reduce((s,i)=>s+(i.price*i.qty),0)} AZN\n\n`;
+        msg += `✅ *İndi ödəniş qəbzini (şəklini) bura əlavə edirəm...*`;
+
+        window.open(`https://wa.me/994515817772?text=${encodeURIComponent(msg)}`);
+        
+        // Səbəti təmizləyirik (İstəyə bağlı)
+        // cart = []; updateBadge(); renderCart();
+        }
         }
 
         function remCart(i) { cart.splice(i, 1); updateBadge(); renderCart(); }
