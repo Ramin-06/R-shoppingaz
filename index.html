@@ -417,6 +417,8 @@ function copyCardNumber(e) {
             currentProd = products.find(p => p.id === id);
     if (!currentProd) return;
 
+    const defaultImg = "https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/kart.jpg";
+
     currentQty = 1;
     selectedSize = 30;
     currentPrice = 10;
@@ -424,19 +426,22 @@ function copyCardNumber(e) {
     document.getElementById('qtyVal').innerText = currentQty;
     document.getElementById('detTitle').innerText = currentProd.name;
     document.getElementById('detPrice').innerText = "10 AZN";
-    document.getElementById('detImg').innerText = currentProd.name[0];
+    
+    // Şəkli modalın daxilinə yerləşdiririk
+    document.getElementById('detImg').innerHTML = `
+        <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; overflow:hidden; border-radius:20px;">
+            <img src="${defaultImg}" style="width:100%; height:100%; object-fit:cover;">
+        </div>`;
+    
     document.getElementById('detNotes').innerText = currentProd.notes;
     document.getElementById('detStay').innerText = currentProd.stay;
 
-    // KATEQORİYA BURADA YENİLƏNİR:
     let displayCat = currentProd.cat;
     if(displayCat === 'qadin') displayCat = 'Qadın';
     else if(displayCat === 'kisi') displayCat = 'Kişi';
     else if(displayCat === 'unisex') displayCat = 'Unisex';
     
-    document.getElementById('detCat').innerText = displayCat; // Firestore-dan gələn 'cat' bura yazılır
-
-    // ... qalan kodlar (size-btn və fav-btn hissələri)
+    document.getElementById('detCat').innerText = displayCat;
     document.getElementById('productDetail').classList.add('active');
         }
 
@@ -462,11 +467,15 @@ function copyCardNumber(e) {
 
         function createCard(p) {
             const isFav = favs.some(f => f.id === p.id);
-    // Diqqət: openDetail('${p.id}') və toggleFav(event, '${p.id}') - dırnaq əlavə edildi
+    // GitHub-dakı kart.jpg şəklinin birbaşa linki
+    const defaultImg = "https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/kart.jpg";
+
     return `<div class="product-card">
         <i class="fas fa-heart" style="position:absolute; top:12px; right:12px; color:${isFav?'#ff4757':'#ddd'}; cursor:pointer;" onclick="toggleFav(event, '${p.id}')"></i>
         <div onclick="openDetail('${p.id}')">
-            <div class="prod-img">${p.name[0]}</div>
+            <div style="width:100%; height:110px; background:#fff; border-radius:12px; margin-bottom:10px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                <img src="${defaultImg}" alt="${p.name}" style="width:100%; height:100%; object-fit:cover;">
+            </div>
             <h4>${p.name}</h4>
             <span class="price-text">10 - 13 AZN</span>
         </div>
