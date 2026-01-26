@@ -671,7 +671,7 @@ function renderAdminList() {
             currentProd = products.find(p => p.id === id);
     if (!currentProd) return;
 
-    const defaultImg = "https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/card_pic.jpg";
+    const defaultImg = "https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/card_pic.png";
 
     currentQty = 1;
     selectedSize = 30;
@@ -721,7 +721,7 @@ function renderAdminList() {
 
         function createCard(p) {
            const isFav = favs.some(f => f.id === p.id);
-    const defaultImg = "https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/kart.jpg";
+    const defaultImg = "https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/card_pic.png";
 
     return `<div class="product-card">
         <i class="fas fa-heart" style="position:absolute; top:12px; right:12px; color:${isFav?'#ff4757':'#ddd'}; cursor:pointer; z-index:10;" onclick="toggleFav(event, '${p.id}')"></i>
