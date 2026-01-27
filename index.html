@@ -227,6 +227,18 @@
                 <div class="spec-item"><i class="fas fa-hourglass-half"></i> <b>Qalıcılıq:</b> <span id="detStay">-</span></div>
                 <div class="spec-item"><i class="fas fa-check-circle"></i> <b>Kateqoriya:</b> <span id="detCat">-</span></div>
             </div>
+            <div id="reviewsSection" style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+    <h3 style="color:var(--dark-blue); font-size: 18px; margin-bottom: 15px;">İstifadəçi Rəyləri</h3>
+    
+    <div style="background: #f9f9f9; padding: 15px; border-radius: 15px; margin-bottom: 20px;">
+        <input type="text" id="reviewerName" placeholder="Adınız" style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 10px; outline: none; box-sizing: border-box;">
+        <textarea id="reviewText" placeholder="Rəyiniz..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; outline: none; height: 70px; box-sizing: border-box; font-family: inherit; resize: none;"></textarea>
+        <button onclick="submitReview()" style="margin-top: 10px; background: var(--main-blue); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; width: 100%; font-weight: bold;">RƏY GÖNDƏR</button>
+    </div>
+
+    <div id="reviewsList" style="display: flex; flex-direction: column; gap: 12px; padding-bottom: 20px;">
+        </div>
+</div>
         </div>
     </div>
 
@@ -697,6 +709,9 @@ function renderAdminList() {
     
     document.getElementById('detCat').innerText = displayCat;
     document.getElementById('productDetail').classList.add('active');
+
+           // MƏHZ BU SƏTRİ ƏLAVƏ EDİRİK reyleri getirsin
+            fetchReviews(id);
         }
 
         function closeDetail() { document.getElementById('productDetail').classList.remove('active'); }
