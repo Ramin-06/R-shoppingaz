@@ -118,65 +118,46 @@
         /* Ana Naviqasiya Paneli */
 .bottom-nav {
     position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 65px; /* Standart mobil hündürlük */
-    background: #ffffff;
+    bottom: 0; /* Ekranın ən aşağısına yapışdırır */
+    left: 0;   /* Boşluğu ləğv edir */
+    width: 100%; /* Tam en edir */
+    height: 65px; 
+    background: white;
     display: flex;
     justify-content: space-around;
     align-items: center;
-    border-top: 1px solid #eeeeee;
+    border-top: 1px solid #eee; /* Üst hissəyə nazik xətt */
     z-index: 5000;
-    /* iPhone və yeni nəsil telefonların alt xətti üçün boşluq */
-    padding-bottom: env(safe-area-inset-bottom);
-    box-shadow: 0 -2px 15px rgba(0,0,0,0.08);
+    padding-bottom: env(safe-area-inset-bottom); /* Müasir telefonlar üçün alt boşluq */
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.05); /* Yuxarıya doğru yüngül kölgə */
 }
 
-/* Naviqasiya Düymələri */
-.nav-item {
-    text-align: center;
-    color: #999999;
-    font-size: 11px;
-    cursor: pointer;
+.nav-item { 
+    text-align: center; 
+    color: #999; 
+    font-size: 11px; 
+    cursor: pointer; 
     position: relative;
-    flex: 1; /* Düymələri bərabər məsafədə bölür */
-    transition: 0.3s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    flex: 1;
 }
 
-/* İkonların ölçüsü */
-.nav-item i {
-    font-size: 20px;
-    margin-bottom: 3px;
-}
+.nav-item.active { color: var(--main-blue); font-weight: bold; }
 
-/* Aktiv olan menyu rəngi */
-.nav-item.active {
-    color: var(--main-blue);
-    font-weight: bold;
-}
-
-/* Səbət üzərindəki bildiriş (Badge) */
-.badge {
-    position: absolute;
-    top: -2px; /* İkonun yuxarısında düzgün dayanması üçün */
-    right: 22%; /* Ortalanmış ikonun sağına yapışdırır */
-    background: var(--bright-orange);
-    color: white;
-    font-size: 10px;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    display: none; /* JS ilə idarə olunur */
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    border: 2px solid #ffffff;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+.badge { 
+    position: absolute; 
+    top: -5px; 
+    right: 20%; 
+    background: var(--bright-orange); 
+    color: white; 
+    font-size: 10px; 
+    width: 18px; 
+    height: 18px; 
+    border-radius: 50%; 
+    display: none; 
+    align-items: center; 
+    justify-content: center; 
+    font-weight: bold; 
+    border: 2px solid #fff; 
 }
     </style>
 </head>
