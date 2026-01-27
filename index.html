@@ -139,25 +139,30 @@
     cursor: pointer; 
     position: relative;
     flex: 1;
+    display: flex;         /* Əlavə edildi */
+    flex-direction: column;/* Əlavə edildi */
+    align-items: center;   /* Əlavə edildi */
 }
 
 .nav-item.active { color: var(--main-blue); font-weight: bold; }
 
 .badge { 
     position: absolute; 
-    top: -5px; 
-    right: 20%; 
+    top: 2px;             /* İkonun bir az yuxarısında */
+    right: 50%;           /* İkonun tam mərkəzindən başlayır */
+    transform: translateX(10px); /* İkonun tam sağ küncünə itələyir */
     background: var(--bright-orange); 
     color: white; 
     font-size: 10px; 
-    width: 18px; 
-    height: 18px; 
+    width: 17px; 
+    height: 17px; 
     border-radius: 50%; 
     display: none; 
     align-items: center; 
     justify-content: center; 
     font-weight: bold; 
     border: 2px solid #fff; 
+    z-index: 10;
 }
 
         /* BURA ƏLAVƏ ET (Bütün stillərin ən sonuna) */
