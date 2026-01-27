@@ -115,21 +115,69 @@
         .cart-item { display: flex; align-items: center; background: white; padding: 15px; border-radius: 15px; margin-bottom: 12px; }
         .whatsapp-btn { background: var(--bright-orange); color: white; border: none; padding: 12px; border-radius: 12px; width: 80%; margin: 15px auto; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; font-size: 15px; cursor: pointer; }
 
-        .bottom-nav { position: fixed;
-    bottom: 65px; /* Navbar-ı ekranın ən altından 20px yuxarı qaldırır */
-    left: 5%; /* Yanlardan boşluq qoymaq üçün */
-    width: 90%; /* Tam en yox, daha müasir "floating" görünüş üçün */
-    background: white;
+        /* Ana Naviqasiya Paneli */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 65px; /* Standart mobil hündürlük */
+    background: #ffffff;
     display: flex;
     justify-content: space-around;
-    padding: 12px 0; /* Yuxarı və aşağı boşluğu bərabər və kiçik edirik */
-    border-radius: 20px; /* Küncləri yuvarlaqlaşdırırıq */
-    box-shadow: 0 5px 20px rgba(0,0,0,0.1); /* Daha yaxşı görünməsi üçün kölgə */
-    border: 1px solid #eee;
-    z-index: 100; }
-        .nav-item { text-align: center; color: #999; font-size: 11px; cursor: pointer; position: relative; }
-        .nav-item.active { color: var(--main-blue); }
-        .badge { position: absolute; top: -5px; right: 0; background: var(--bright-orange); color: white; font-size: 10px; width: 18px; height: 18px; border-radius: 50%; display: none; align-items: center; justify-content: center; font-weight: bold; border: 2px solid #fff; }
+    align-items: center;
+    border-top: 1px solid #eeeeee;
+    z-index: 5000;
+    /* iPhone və yeni nəsil telefonların alt xətti üçün boşluq */
+    padding-bottom: env(safe-area-inset-bottom);
+    box-shadow: 0 -2px 15px rgba(0,0,0,0.08);
+}
+
+/* Naviqasiya Düymələri */
+.nav-item {
+    text-align: center;
+    color: #999999;
+    font-size: 11px;
+    cursor: pointer;
+    position: relative;
+    flex: 1; /* Düymələri bərabər məsafədə bölür */
+    transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* İkonların ölçüsü */
+.nav-item i {
+    font-size: 20px;
+    margin-bottom: 3px;
+}
+
+/* Aktiv olan menyu rəngi */
+.nav-item.active {
+    color: var(--main-blue);
+    font-weight: bold;
+}
+
+/* Səbət üzərindəki bildiriş (Badge) */
+.badge {
+    position: absolute;
+    top: -2px; /* İkonun yuxarısında düzgün dayanması üçün */
+    right: 22%; /* Ortalanmış ikonun sağına yapışdırır */
+    background: var(--bright-orange);
+    color: white;
+    font-size: 10px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: none; /* JS ilə idarə olunur */
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
     </style>
 </head>
 <body>
