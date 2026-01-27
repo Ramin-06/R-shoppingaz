@@ -159,6 +159,21 @@
     font-weight: bold; 
     border: 2px solid #fff; 
 }
+
+        /* BURA ƏLAVƏ ET (Bütün stillərin ən sonuna) */
+#adminPage.active {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    background-color: white !important;
+    position: fixed; /* Məcburi önə çıxması üçün fixed daha yaxşıdır */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 9999;
+    overflow-y: auto; /* İçində hərəkət edə bilmək üçün */
+}
     </style>
 </head>
 <body>
@@ -537,22 +552,21 @@ async function checkAdminLogin() {
 
        if (isMatch) {
     console.log("Giriş uğurludur!");
-    closeAdminLogin();
+    closeAdminLogin(); // Login modalını bağla [cite: 106]
     
-    // 1. Bütün səhifələri gizlət
+    // Bütün digər səhifələri gizlət
     document.querySelectorAll('.page').forEach(p => {
         p.classList.remove('active');
-        p.style.display = 'none'; 
+        p.style.display = 'none';
     });
 
-    // 2. Admin panelini tap və MƏCBURİ GÖSTƏR
+    // Admin panelini tap və mütləq göstər
     const adminPage = document.getElementById('adminPage');
     if (adminPage) {
+        adminPage.style.setProperty('display', 'block', 'important'); // Ağ səhifəni aradan qaldıran əsas kod
         adminPage.classList.add('active');
-        adminPage.style.setProperty('display', 'block', 'important'); // Budur həll!
-        
-        switchAdminTab('add'); // Tabı aç
-        window.scrollTo(0, 0); // Səhifəni ən yuxarı çək
+        switchAdminTab('add'); // "Əlavə et" tabını aç [cite: 114]
+        window.scrollTo(0, 0); // Səhifəni yuxarı çək
     }
 } else {
             alert("Admin ID və ya Şifrə yanlışdır!");
