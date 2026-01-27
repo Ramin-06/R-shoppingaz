@@ -455,14 +455,17 @@ function fetchReviews(productId) {
             total++;
             ratingCounts[r.rating]++;
             reviewsHTML += `
-                <div style="border-bottom:1px solid #eee; padding:10px 0;">
-                    <b style="font-size:14px;">${r.userName}</b>
-                    <div style="color:#ff8c00; font-size:10px;">${'★'.repeat(r.rating)}</div>
-                    <p style="margin:5px 0; font-size:13px; color:#555;">${r.comment}</p>
+                <div style="border-bottom:1px solid #eee; padding:15px 0; display: block; clear: both;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                        <b style="font-size:14px; color: #003366;">${r.userName}</b>
+                        <div style="color:#ff8c00; font-size:10px;">${'★'.repeat(r.rating)}</div>
+                    </div>
+                    <p style="margin:5px 0 0 0; font-size:14px; color:#333; line-height: 1.5; display: block; word-wrap: break-word; white-space: normal;">
+                        ${r.comment}
+                    </p>
                 </div>`;
         });
 
-        // Faiz statistikası
         if (total > 0) {
             let statsHTML = `<b style="font-size:14px;">Ümumi: ${total} rəy</b><br>`;
             for (let i = 5; i >= 1; i--) {
@@ -477,7 +480,11 @@ function fetchReviews(productId) {
                     </div>`;
             }
             stats.innerHTML = statsHTML;
-            list.innerHTML = reviewsHTML;
+
+            // ƏN VACİB HİSSƏ BURADIR:
+            // Rəylərin sonuna 120px-lik boşluq (spacer) əlavə edirik ki, Bottom Nav mətni örtməsin
+            list.innerHTML = reviewsHTML + '<div style="height: 120px; width: 100%; pointer-events: none;"></div>';
+            
         } else {
             stats.innerHTML = "Hələ rəy yoxdur.";
             list.innerHTML = "";
