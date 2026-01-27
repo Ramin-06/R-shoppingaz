@@ -375,31 +375,28 @@
     }
 // --- RƏY SİSTEMİ FUNKSİYALARI ---
 
-// 1. Ulduz seçimi funksiyası
+// 1. Ulduzları seçmək üçün
 function setRating(rating) {
     selectedRating = rating;
     const stars = document.querySelectorAll('.star-rating i');
     stars.forEach(s => {
-        if(parseInt(s.getAttribute('data-rating')) <= rating) {
-            s.style.color = '#ff8c00'; // Aktiv ulduz (narıncı)
-        } else {
-            s.style.color = '#ccc'; // Deaktiv ulduz (boz)
-        }
+        s.style.color = s.getAttribute('data-rating') <= rating ? '#ff8c00' : '#ccc';
     });
 }
 
-// 2. Rəyi Firestore-a göndərmək
+// 2. Rəyi Firestore-a yazmaq üçün
 async function submitReview() {
-    const name = document.getElementById('reviewerName').value.trim(); // Adı götürürük
+    const name = document.getElementById('reviewerName').value.trim();
     const text = document.getElementById('reviewText').value.trim();
-    
-    if (!name) { alert("Zəhmət olmasa adınızı qeyd edin!"); return; } // Ad boşdursa buraxma
-    if (selectedRating === 0) { alert("Ulduz seçin!"); return; }
-    if (!text) { alert("Rəy yazın!"); return; }
+
+    if (!name || !text || selectedRating === 0) {
+        alert("Zəhmət olmasa bütün sahələri doldurun və ulduz seçin!");
+        return;
+    }
 
     const reviewData = {
         productId: currentProd.id,
-        userName: name,     // Bazaya 'userName' olaraq gedir
+        userName: name,
         rating: selectedRating,
         comment: text,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
@@ -407,52 +404,56 @@ async function submitReview() {
 
     try {
         await db.collection("reviews").add(reviewData);
-        // Formu təmizləyirik
-        document.getElementById('reviewerName').value = ""; 
+        document.getElementById('reviewerName').value = "";
         document.getElementById('reviewText').value = "";
         setRating(0);
-        alert("Rəyiniz uğurla göndərildi!");
-    } catch (error) {
-        alert("Xəta: " + error.message);
-    }
+        alert("Rəyiniz göndərildi!");
+    } catch (e) { alert("Xəta: " + e.message); }
 }
 
-// 3. Rəyləri Firestore-dan real-vaxt (onSnapshot) rejimində çəkmək
+// 3. Rəyləri Firestore-dan çəkmək və faizləri hesablamaq
 function fetchReviews(productId) {
-    // Siyahını təmizləyirik
-    document.getElementById('reviewsList').innerHTML = "Yüklənir...";
-
     db.collection("reviews")
-      .where("productId", "==", productId) // Yalnız bu məhsula aid olanlar
+      .where("productId", "==", productId)
       .orderBy("timestamp", "desc")
       .onSnapshot((snapshot) => {
-          let reviewsHTML = "";
-          let total = 0;
-          let counts = {1:0, 2:0, 3:0, 4:0, 5:0};
+        const list = document.getElementById('reviewsList');
+        const stats = document.getElementById('ratingStats');
+        let reviewsHTML = "", ratingCounts = {1:0, 2:0, 3:0, 4:0, 5:0}, total = 0;
 
-          snapshot.forEach(doc => {
-              const r = doc.data();
-              total++;
-              counts[r.rating]++;
-              reviewsHTML += `
+        snapshot.forEach(doc => {
+            const r = doc.data();
+            total++;
+            ratingCounts[r.rating]++;
+            reviewsHTML += `
                 <div style="border-bottom:1px solid #eee; padding:10px 0;">
-                    <div style="color:#ff8c00; font-size:12px;">${'★'.repeat(r.rating)}</div>
-                    <p style="margin:5px 0; font-size:14px;">${r.comment}</p>
+                    <b style="font-size:14px;">${r.userName}</b>
+                    <div style="color:#ff8c00; font-size:10px;">${'★'.repeat(r.rating)}</div>
+                    <p style="margin:5px 0; font-size:13px; color:#555;">${r.comment}</p>
                 </div>`;
-          });
+        });
 
-          // Əgər rəy yoxdursa
-          if(total === 0) {
-              document.getElementById('reviewsList').innerHTML = "Hələ rəy yoxdur.";
-              document.getElementById('ratingStats').innerHTML = "";
-          } else {
-              document.getElementById('reviewsList').innerHTML = reviewsHTML;
-              // Faizləri burada hesabla (Bayaq verdiyim faiz kodu bura girməlidir)
-          }
-      }, (error) => {
-          console.error("Xəta baş verdi: ", error);
-          alert("DİQQƏT: Rəyləri görmək üçün brauzer konsolundakı (F12) linkə klikləyib İndeks yaratmalısınız!");
-      });
+        // Faiz statistikası
+        if (total > 0) {
+            let statsHTML = `<b style="font-size:14px;">Ümumi: ${total} rəy</b><br>`;
+            for (let i = 5; i >= 1; i--) {
+                const percent = Math.round((ratingCounts[i] / total) * 100);
+                statsHTML += `
+                    <div style="display:flex; align-items:center; gap:8px; font-size:11px; margin-top:4px;">
+                        <span style="width:20px;">${i}★</span>
+                        <div style="flex:1; background:#ddd; height:6px; border-radius:3px; overflow:hidden;">
+                            <div style="width:${percent}%; background:#ff8c00; height:100%;"></div>
+                        </div>
+                        <span style="width:25px;">${percent}%</span>
+                    </div>`;
+            }
+            stats.innerHTML = statsHTML;
+            list.innerHTML = reviewsHTML;
+        } else {
+            stats.innerHTML = "Hələ rəy yoxdur.";
+            list.innerHTML = "";
+        }
+    });
 }
 
 
