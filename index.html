@@ -51,37 +51,26 @@
         .slide-card img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
 
         /* MASAÜSTÜ ÜÇÜN DÜZƏLİŞ (Bura əlavə olundu) */
-        @media (min-width: 768px) {
-            .slider-area {
-                justify-content: center; /* Şəkilləri ortaya çəkir */
-            }
-            .slide-card { 
-                min-width: 400px; /* Masaüstündə çox enli olmasın */
-                max-width: 500px; 
-                height: 220px;    /* Masaüstü üçün ideal hündürlük */
-            }
-            /* Məhsul kartlarını masaüstündə 4-lü sütun edirik */
-            .product-grid {
-                grid-template-columns: repeat(4, 1fr) !important;
-                gap: 20px !important;
-                max-width: 1200px !important;
-                margin: 0 auto !important;
-            }
-            
-            .product-card {
-                padding: 20px;
-            }
-           /* ümumi grid mobil üçün */
-            .product-grid {
-                display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 12px;
-            }
-            
-            .product-card {
-                padding: 20px; /* Masaüstündə kartların daxili boşluğunu artırdıq */
-            }
-        }
+        /* Masaüstü üçün təmizlənmiş kod */
+@media (min-width: 768px) {
+    .slider-area { justify-content: center; }
+    .slide-card { min-width: 400px; max-width: 500px; height: 220px; }
+    
+    .product-grid {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 20px !important;
+        max-width: 1200px !important;
+        margin: 0 auto !important;
+    }
+
+    #adminPage {
+        width: 100% !important;
+        display: none; /* İlkin olaraq gizli, JS ilə açılacaq */
+        padding: 40px !important;
+        background: white !important;
+    }
+}
 
         /* Ölçü Seçimi Düymələri */
         .size-container { display: flex; gap: 10px; margin: 15px 0; }
@@ -333,7 +322,7 @@
                     <option value="unisex">Unisex 🚻</option>
                 </select>
 
-                <label style="font-siz963.*-edce: 12px; color: #888; margin-left: 5px;">Qoxu Notları</label>
+                <label style="font-size: 12px; color: #888; margin-left: 5px;">Qoxu Notları</label>
                 <input type="text" id="adminProdNotes" placeholder="Məs: Jasmin, Zəfəran, Odunsu" style="width: 100%; padding: 14px; margin-bottom: 15px; border: 1px solid #eee; border-radius: 12px; box-sizing: border-box; outline: none; background: #fcfcfc;">
 
                 <label style="font-size: 12px; color: #888; margin-left: 5px;">Qalıcılıq Müddəti</label>
@@ -535,14 +524,7 @@ async function checkAdminLogin() {
             }
         });
 
-        if (isMatch) {
-    console.log("Giriş uğurludur!");
-    closeAdminLogin();
-    // Bütün səhifələri gizlət, admini aç
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById('adminPage').classList.add('active');
-    switchAdminTab('add');
-} else {
+        if (isMatch) else {
             alert("Admin ID və ya Şifrə yanlışdır!");
         }
     } catch (e) {
