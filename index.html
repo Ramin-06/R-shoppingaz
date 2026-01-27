@@ -411,15 +411,16 @@ async function submitReview() {
 
 // 3. Rəyləri Firestore-dan real-vaxt (onSnapshot) rejimində çəkmək
 function fetchReviews(productId) {
+    // Əvvəlcə köhnə rəyləri təmizləyirik ki, başqa məhsulun rəyi görünməsin
+    const listContainer = document.getElementById('reviewsList');
+    const statsContainer = document.getElementById('ratingStats');
+    if(listContainer) listContainer.innerHTML = "Yüklənir...";
+
+    // YALNIZ bu məhsulun ID-sinə bərabər olan rəyləri gətir
     db.collection("reviews")
-      .where("productId", "==", productId)
+      .where("productId", "==", productId) // BU SƏTİR VACİBDİR
       .orderBy("timestamp", "desc")
       .onSnapshot((snapshot) => {
-        const listContainer = document.getElementById('reviewsList');
-        const statsContainer = document.getElementById('ratingStats');
-        
-        if(!listContainer || !statsContainer) return;
-
         let reviews = [];
         let ratingCounts = {1:0, 2:0, 3:0, 4:0, 5:0};
 
@@ -431,40 +432,12 @@ function fetchReviews(productId) {
 
         const total = reviews.length;
 
-        // Faizləri hesabla və göstər
-        if (total > 0) {
-            let statsHTML = `<b style="font-size:16px;">Ümumi reytinq: ${total} rəy</b><div style="margin-top:10px;">`;
-            for (let i = 5; i >= 1; i--) {
-                const percent = Math.round((ratingCounts[i] / total) * 100);
-                statsHTML += `
-                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:5px; font-size:12px;">
-                        <span style="width:40px;">${i} <i class="fas fa-star" style="color:#ff8c00"></i></span>
-                        <div style="flex:1; background:#e0e0e0; height:8px; border-radius:10px; overflow:hidden;">
-                            <div style="width:${percent}%; background:#ff8c00; height:100%; border-radius:10px;"></div>
-                        </div>
-                        <span style="width:35px; text-align:right;">${percent}%</span>
-                    </div>`;
-            }
-            statsHTML += `</div>`;
-            statsContainer.innerHTML = statsHTML;
-        } else {
-            statsContainer.innerHTML = "<p style='color:#888; font-size:14px;'>Hələ rəy yazılmayıb. İlk rəyi siz yazın!</p>";
-        }
-
-        // Rəy siyahısını render et
-        if(total > 0) {
-            listContainer.innerHTML = reviews.map(r => `
-                <div style="border-bottom: 1px solid #f0f0f0; padding: 12px 0;">
-                    <div style="color: #ff8c00; font-size: 11px; margin-bottom: 4px;">
-                        ${'<i class="fas fa-star"></i>'.repeat(r.rating)}${'<i class="far fa-star" style="color:#ccc"></i>'.repeat(5-r.rating)}
-                    </div>
-                    <p style="margin: 0; font-size: 14px; color: #333; line-height:1.4;">${r.comment}</p>
-                    <small style="color:#bbb; font-size:10px;">${r.timestamp ? new Date(r.timestamp.toDate()).toLocaleDateString() : 'İndi'}</small>
-                </div>
-            `).join('');
-        } else {
-            listContainer.innerHTML = "";
-        }
+        // Faizləri və siyahını göstərmə kodları...
+        renderReviewStats(total, ratingCounts); // Statistikanı çəkən köməkçi funksiya
+        renderReviewList(reviews); // Siyahını çəkən köməkçi funksiya
+    }, (error) => {
+        console.error("Filtrləmə xətası:", error);
+        // Əgər burada xəta alırsansa, deməli İndeks (Index) yaratmalısan (Bayaq dediyim link)
     });
 }
 
