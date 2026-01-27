@@ -386,12 +386,17 @@ function setRating(rating) {
 async function submitReview() {
     const text = document.getElementById('reviewText').value.trim();
     
-    if (!currentProd) { alert("Məhsul tapılmadı!"); return; }
-    if (selectedRating === 0) { alert("Zəhmət olmasa ulduz seçin!"); return; }
-    if (!text) { alert("Rəy mətni daxil edin!"); return; }
+    // Yoxlayırıq ki, məhsul seçilibmi
+    if (!currentProd || !currentProd.id) { 
+        alert("Xəta: Məhsul ID-si tapılmadı!"); 
+        return; 
+    }
+    
+    if (selectedRating === 0) { alert("Ulduz seçin!"); return; }
+    if (!text) { alert("Rəy yazın!"); return; }
 
     const reviewData = {
-        productId: currentProd.id,
+        productId: currentProd.id, // Vacib: Məhsulun ID-sini bura yazırıq
         rating: selectedRating,
         comment: text,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
@@ -399,46 +404,50 @@ async function submitReview() {
 
     try {
         await db.collection("reviews").add(reviewData);
-        // Formu təmizləyirik
         document.getElementById('reviewText').value = "";
         setRating(0);
-        alert("Rəyiniz uğurla göndərildi!");
-    } catch (error) {
-        console.error("Rəy göndərilərkən xəta:", error);
-        alert("Xəta baş verdi, yenidən yoxlayın.");
+        alert("Rəyiniz göndərildi!");
+    } catch (e) {
+        alert("Xəta: " + e.message);
     }
 }
 
 // 3. Rəyləri Firestore-dan real-vaxt (onSnapshot) rejimində çəkmək
 function fetchReviews(productId) {
-    // Əvvəlcə köhnə rəyləri təmizləyirik ki, başqa məhsulun rəyi görünməsin
-    const listContainer = document.getElementById('reviewsList');
-    const statsContainer = document.getElementById('ratingStats');
-    if(listContainer) listContainer.innerHTML = "Yüklənir...";
+    // Siyahını təmizləyirik
+    document.getElementById('reviewsList').innerHTML = "Yüklənir...";
 
-    // YALNIZ bu məhsulun ID-sinə bərabər olan rəyləri gətir
     db.collection("reviews")
-      .where("productId", "==", productId) // BU SƏTİR VACİBDİR
+      .where("productId", "==", productId) // Yalnız bu məhsula aid olanlar
       .orderBy("timestamp", "desc")
       .onSnapshot((snapshot) => {
-        let reviews = [];
-        let ratingCounts = {1:0, 2:0, 3:0, 4:0, 5:0};
+          let reviewsHTML = "";
+          let total = 0;
+          let counts = {1:0, 2:0, 3:0, 4:0, 5:0};
 
-        snapshot.forEach(doc => {
-            const data = doc.data();
-            reviews.push(data);
-            if(data.rating) ratingCounts[data.rating]++;
-        });
+          snapshot.forEach(doc => {
+              const r = doc.data();
+              total++;
+              counts[r.rating]++;
+              reviewsHTML += `
+                <div style="border-bottom:1px solid #eee; padding:10px 0;">
+                    <div style="color:#ff8c00; font-size:12px;">${'★'.repeat(r.rating)}</div>
+                    <p style="margin:5px 0; font-size:14px;">${r.comment}</p>
+                </div>`;
+          });
 
-        const total = reviews.length;
-
-        // Faizləri və siyahını göstərmə kodları...
-        renderReviewStats(total, ratingCounts); // Statistikanı çəkən köməkçi funksiya
-        renderReviewList(reviews); // Siyahını çəkən köməkçi funksiya
-    }, (error) => {
-        console.error("Filtrləmə xətası:", error);
-        // Əgər burada xəta alırsansa, deməli İndeks (Index) yaratmalısan (Bayaq dediyim link)
-    });
+          // Əgər rəy yoxdursa
+          if(total === 0) {
+              document.getElementById('reviewsList').innerHTML = "Hələ rəy yoxdur.";
+              document.getElementById('ratingStats').innerHTML = "";
+          } else {
+              document.getElementById('reviewsList').innerHTML = reviewsHTML;
+              // Faizləri burada hesabla (Bayaq verdiyim faiz kodu bura girməlidir)
+          }
+      }, (error) => {
+          console.error("Xəta baş verdi: ", error);
+          alert("DİQQƏT: Rəyləri görmək üçün brauzer konsolundakı (F12) linkə klikləyib İndeks yaratmalısınız!");
+      });
 }
 
 
