@@ -227,18 +227,31 @@
                 <div class="spec-item"><i class="fas fa-hourglass-half"></i> <b>Qalıcılıq:</b> <span id="detStay">-</span></div>
                 <div class="spec-item"><i class="fas fa-check-circle"></i> <b>Kateqoriya:</b> <span id="detCat">-</span></div>
             </div>
-            <div id="reviewsSection" style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
-    <h3 style="color:var(--dark-blue); font-size: 18px; margin-bottom: 15px;">İstifadəçi Rəyləri</h3>
+            <div id="reviewsSection" style="margin-top: 30px; border-top: 2px solid #eee; padding-top: 20px;">
+    <h3 style="color: var(--dark-blue);">İstifadəçi Rəyləri</h3>
     
-    <div style="background: #f9f9f9; padding: 15px; border-radius: 15px; margin-bottom: 20px;">
-        <input type="text" id="reviewerName" placeholder="Adınız" style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 10px; outline: none; box-sizing: border-box;">
-        <textarea id="reviewText" placeholder="Rəyiniz..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; outline: none; height: 70px; box-sizing: border-box; font-family: inherit; resize: none;"></textarea>
-        <button onclick="submitReview()" style="margin-top: 10px; background: var(--main-blue); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; width: 100%; font-weight: bold;">RƏY GÖNDƏR</button>
+    <div id="ratingStats" style="margin-bottom: 20px; background: #f9f9f9; padding: 15px; border-radius: 15px;">
+        </div>
+
+    <div style="background: #fff; padding: 15px; border: 1px solid #eee; border-radius: 15px; margin-bottom: 20px;">
+        <p style="margin: 0 0 10px 0; font-weight: bold;">Rəyiniz:</p>
+        <div class="star-rating" style="font-size: 20px; color: #ccc; margin-bottom: 10px;">
+            <i class="fas fa-star" data-rating="1" onclick="setRating(1)"></i>
+            <i class="fas fa-star" data-rating="2" onclick="setRating(2)"></i>
+            <i class="fas fa-star" data-rating="3" onclick="setRating(3)"></i>
+            <i class="fas fa-star" data-rating="4" onclick="setRating(4)"></i>
+            <i class="fas fa-star" data-rating="5" onclick="setRating(5)"></i>
+        </div>
+        <textarea id="reviewText" placeholder="Fikirlərinizi bölüşün..." style="width: 100%; border: 1px solid #ddd; border-radius: 10px; padding: 10px; height: 80px; outline: none; box-sizing: border-box;"></textarea>
+        <button class="btn-add" style="margin-top: 10px; padding: 10px;" onclick="submitReview()">Rəy Göndər</button>
     </div>
 
-    <div id="reviewsList" style="display: flex; flex-direction: column; gap: 12px; padding-bottom: 20px;">
-        </div>
+    <div id="reviewsList">
+        <p style="color: #999; text-align: center;">Yüklənir...</p>
+    </div>
 </div>
+
+            
         </div>
     </div>
 
@@ -328,6 +341,7 @@
     const db = firebase.firestore();
 
     // 2. Dəyişənlər (Köhnə const products siyahısını sildik!)
+    let selectedRating = 0; // Seçilən ulduz sayını yadda saxlamaq üçün
     let products = []; 
     let editMode = false; // Redaktə rejimi üçün
     let editId = null;    // Redaktə edilən məhsulun ID-si
@@ -353,7 +367,106 @@
         renderAll(); // Məlumatlar gələn kimi ekranı yeniləyirik
     });
     }
+// --- RƏY SİSTEMİ FUNKSİYALARI ---
 
+// 1. Ulduz seçimi funksiyası
+function setRating(rating) {
+    selectedRating = rating;
+    const stars = document.querySelectorAll('.star-rating i');
+    stars.forEach(s => {
+        if(parseInt(s.getAttribute('data-rating')) <= rating) {
+            s.style.color = '#ff8c00'; // Aktiv ulduz (narıncı)
+        } else {
+            s.style.color = '#ccc'; // Deaktiv ulduz (boz)
+        }
+    });
+}
+
+// 2. Rəyi Firestore-a göndərmək
+async function submitReview() {
+    const text = document.getElementById('reviewText').value.trim();
+    
+    if (!currentProd) { alert("Məhsul tapılmadı!"); return; }
+    if (selectedRating === 0) { alert("Zəhmət olmasa ulduz seçin!"); return; }
+    if (!text) { alert("Rəy mətni daxil edin!"); return; }
+
+    const reviewData = {
+        productId: currentProd.id,
+        rating: selectedRating,
+        comment: text,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    try {
+        await db.collection("reviews").add(reviewData);
+        // Formu təmizləyirik
+        document.getElementById('reviewText').value = "";
+        setRating(0);
+        alert("Rəyiniz uğurla göndərildi!");
+    } catch (error) {
+        console.error("Rəy göndərilərkən xəta:", error);
+        alert("Xəta baş verdi, yenidən yoxlayın.");
+    }
+}
+
+// 3. Rəyləri Firestore-dan real-vaxt (onSnapshot) rejimində çəkmək
+function fetchReviews(productId) {
+    db.collection("reviews")
+      .where("productId", "==", productId)
+      .orderBy("timestamp", "desc")
+      .onSnapshot((snapshot) => {
+        const listContainer = document.getElementById('reviewsList');
+        const statsContainer = document.getElementById('ratingStats');
+        
+        if(!listContainer || !statsContainer) return;
+
+        let reviews = [];
+        let ratingCounts = {1:0, 2:0, 3:0, 4:0, 5:0};
+
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            reviews.push(data);
+            if(data.rating) ratingCounts[data.rating]++;
+        });
+
+        const total = reviews.length;
+
+        // Faizləri hesabla və göstər
+        if (total > 0) {
+            let statsHTML = `<b style="font-size:16px;">Ümumi reytinq: ${total} rəy</b><div style="margin-top:10px;">`;
+            for (let i = 5; i >= 1; i--) {
+                const percent = Math.round((ratingCounts[i] / total) * 100);
+                statsHTML += `
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:5px; font-size:12px;">
+                        <span style="width:40px;">${i} <i class="fas fa-star" style="color:#ff8c00"></i></span>
+                        <div style="flex:1; background:#e0e0e0; height:8px; border-radius:10px; overflow:hidden;">
+                            <div style="width:${percent}%; background:#ff8c00; height:100%; border-radius:10px;"></div>
+                        </div>
+                        <span style="width:35px; text-align:right;">${percent}%</span>
+                    </div>`;
+            }
+            statsHTML += `</div>`;
+            statsContainer.innerHTML = statsHTML;
+        } else {
+            statsContainer.innerHTML = "<p style='color:#888; font-size:14px;'>Hələ rəy yazılmayıb. İlk rəyi siz yazın!</p>";
+        }
+
+        // Rəy siyahısını render et
+        if(total > 0) {
+            listContainer.innerHTML = reviews.map(r => `
+                <div style="border-bottom: 1px solid #f0f0f0; padding: 12px 0;">
+                    <div style="color: #ff8c00; font-size: 11px; margin-bottom: 4px;">
+                        ${'<i class="fas fa-star"></i>'.repeat(r.rating)}${'<i class="far fa-star" style="color:#ccc"></i>'.repeat(5-r.rating)}
+                    </div>
+                    <p style="margin: 0; font-size: 14px; color: #333; line-height:1.4;">${r.comment}</p>
+                    <small style="color:#bbb; font-size:10px;">${r.timestamp ? new Date(r.timestamp.toDate()).toLocaleDateString() : 'İndi'}</small>
+                </div>
+            `).join('');
+        } else {
+            listContainer.innerHTML = "";
+        }
+    });
+}
 
 
 
@@ -710,8 +823,8 @@ function renderAdminList() {
     document.getElementById('detCat').innerText = displayCat;
     document.getElementById('productDetail').classList.add('active');
 
-           // MƏHZ BU SƏTRİ ƏLAVƏ EDİRİK reyleri getirsin
-            fetchReviews(id);
+    // Rəyləri həmin an çəkib gətirir:
+    fetchReviews(id);
         }
 
         function closeDetail() { document.getElementById('productDetail').classList.remove('active'); }
