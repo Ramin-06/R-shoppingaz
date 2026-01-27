@@ -21,7 +21,7 @@
     padding: 10px 15px 120px 15px; /* Ardıcıllıq: Yuxarı(20), Sağ(15), Aşağı(120), Sol(15) */
     animation: fadeIn 0.3s;
     margin-top: 45px; /* Header-in (loqo və axtarış olan hissə) altında qalması üçün */ }
-        .page.active { display: block; }
+        .page.active { display: block !important; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* Axtarış Paneli */
@@ -535,13 +535,26 @@ async function checkAdminLogin() {
             }
         });
 
-        if (isMatch) {
-            console.log("Giriş uğurludur!");
-            closeAdminLogin();
-            showPage('adminPage', document.createElement('div'));
-            // Admin panelinə keçəndə 'Əlavə et' bölməsini aktiv et
-            switchAdminTab('add');
-        } else {
+       if (isMatch) {
+    console.log("Giriş uğurludur!");
+    closeAdminLogin();
+    
+    // 1. Bütün səhifələri gizlət
+    document.querySelectorAll('.page').forEach(p => {
+        p.classList.remove('active');
+        p.style.display = 'none'; 
+    });
+
+    // 2. Admin panelini tap və MƏCBURİ GÖSTƏR
+    const adminPage = document.getElementById('adminPage');
+    if (adminPage) {
+        adminPage.classList.add('active');
+        adminPage.style.setProperty('display', 'block', 'important'); // Budur həll!
+        
+        switchAdminTab('add'); // Tabı aç
+        window.scrollTo(0, 0); // Səhifəni ən yuxarı çək
+    }
+} else {
             alert("Admin ID və ya Şifrə yanlışdır!");
         }
     } catch (e) {
