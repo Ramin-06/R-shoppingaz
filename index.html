@@ -905,11 +905,11 @@ function renderAdminList() {
     currentProd = products.find(p => p.id === id);
     if (!currentProd) return;
 
-    // --- ƏLAVƏ EDİLDİ: Detal açılarkən alt menyunu gizlət ---
-    document.querySelector('.bottom-nav').style.display = 'none';
+    // Detal açılanda menyunu gizlət
+    const nav = document.querySelector('.bottom-nav');
+    if (nav) nav.style.display = 'none';
 
     const defaultImg = "https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/card_pic.png";
-
     currentQty = 1;
     selectedSize = 30;
     currentPrice = 10;
@@ -937,12 +937,34 @@ function renderAdminList() {
     fetchReviews(id);
 }
 
-// BU FUNKSİYANI DA MÜTLƏQ YENİLƏ (Geri qayıdanda menyunun gəlməsi üçün)
+// BU FUNKSİYANI YENİLƏ - Menyunun geri gəlməsi üçün əsas yer buradır
 function closeDetail() { 
     document.getElementById('productDetail').classList.remove('active');
     
-    // --- ƏLAVƏ EDİLDİ: Detal bağlananda alt menyunu geri gətir ---
-    document.querySelector('.bottom-nav').style.display = 'flex';
+    // Menyunun yenidən görünməsini təmin et
+    const nav = document.querySelector('.bottom-nav');
+    if (nav) nav.style.display = 'flex';
+}
+
+// HƏR EHTİMALA QARŞI showPage funksiyasına da bunu əlavə et
+function showPage(pId, el) {
+    document.querySelectorAll('.page').forEach(p => {
+        p.classList.remove('active');
+        p.style.display = 'none';
+    });
+    
+    document.getElementById(pId).classList.add('active');
+    document.getElementById(pId).style.display = 'block';
+
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+
+    // Əgər nəsə xəta olubsa və menyu gizli qalıbsa, səhifə dəyişəndə onu mütləq geri gətir
+    const nav = document.querySelector('.bottom-nav');
+    if (nav) nav.style.display = 'flex';
+
+    if(pId === 'favPage') renderFavs();
+    if(pId === 'cartPage') renderCart();
 }
 
         function closeDetail() { document.getElementById('productDetail').classList.remove('active'); }
