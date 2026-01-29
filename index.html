@@ -329,23 +329,23 @@
 </div>
        
 
-    <div id="adminLoginModal" class="page" style="background: white; display: none; flex-direction: column; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 4000; padding: 25px; box-sizing: border-box;">
-        <div style="width: 100%; max-width: 400px; text-align: center;">
-            <div style="width: 80px; height: 80px; background: #f8f9fa; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; border: 1px solid #eee;">
-                <i class="fas fa-user-shield" style="font-size: 35px; color: var(--main-blue);"></i>
-            </div>
-            <h2 style="color: var(--dark-blue); margin-bottom: 30px; font-weight: 700;">Admin Girişi</h2>
-
-            <input type="text" id="adminID" placeholder="Admin ID" style="width: 100%; padding: 16px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 15px; box-sizing: border-box; font-size: 16px; outline: none;">
-            <input type="password" id="adminPass" placeholder="Şifrə" style="width: 100%; padding: 16px; margin-bottom: 25px; border: 1px solid #ddd; border-radius: 15px; box-sizing: border-box; font-size: 16px; outline: none;">
-
-            <button class="btn-add" style="width: 100%; padding: 16px; font-size: 16px; font-weight: bold;" onclick="checkAdminLogin()">DAXİL OL</button>
-
-            <p onclick="closeAdminLogin()" style="margin-top: 25px; color: #888; cursor: pointer; font-size: 14px;">
-                <i class="fas fa-arrow-left"></i> Geri qayıt
-            </p>
+    <div id="adminLoginModal" class="page" style="background: white !important; display: none; flex-direction: column; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; padding: 25px; box-sizing: border-box; margin: 0;">
+    <div style="width: 100%; max-width: 400px; text-align: center;">
+        <div style="width: 80px; height: 80px; background: #f8f9fa; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; border: 1px solid #eee;">
+            <i class="fas fa-user-shield" style="font-size: 35px; color: var(--main-blue);"></i>
         </div>
+        <h2 style="color: var(--dark-blue); margin-bottom: 30px; font-weight: 700;">Admin Girişi</h2>
+
+        <input type="text" id="adminID" placeholder="Admin ID" style="width: 100%; padding: 16px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 15px; box-sizing: border-box; font-size: 16px; outline: none; background: white;">
+        <input type="password" id="adminPass" placeholder="Şifrə" style="width: 100%; padding: 16px; margin-bottom: 25px; border: 1px solid #ddd; border-radius: 15px; box-sizing: border-box; font-size: 16px; outline: none; background: white;">
+
+        <button class="btn-add" style="width: 100%; padding: 16px; font-size: 16px; font-weight: bold; cursor: pointer;" onclick="checkAdminLogin()">DAXİL OL</button>
+
+        <p onclick="closeAdminLogin()" style="margin-top: 25px; color: #888; cursor: pointer; font-size: 14px;">
+            <i class="fas fa-arrow-left"></i> Geri qayıt
+        </p>
     </div>
+</div>
 
     <div id="adminPage" class="page" style="padding-top: 30px; min-height: 100vh; box-sizing: border-box;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding: 0 5px;">
