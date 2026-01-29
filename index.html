@@ -18,7 +18,7 @@
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: var(--light-bg); padding-bottom: 80px; overflow-x: hidden; }
         
         .page { display: none;
-    padding: 10px 15px 120px 15px; /* Ardıcıllıq: Yuxarı(20), Sağ(15), Aşağı(120), Sol(15) */
+    padding: 15px 120px 15px; /* Ardıcıllıq: Yuxarı(20), Sağ(15), Aşağı(120), Sol(15) */
     animation: fadeIn 0.3s;
     margin-top: 45px; /* Header-in (loqo və axtarış olan hissə) altında qalması üçün */ }
         .page.active { display: block !important; }
@@ -103,13 +103,13 @@
         .price-text { color: var(--main-blue); font-weight: bold; margin-bottom: 10px; display: block; }
         .btn-add { background: var(--bright-orange); color: white; border: none; padding: 10px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; }
 
-        #productDetail, #infoModal { position: fixed; top: 40px; left: 100%; width: 100%; height: calc(100% - 40px); background: white; z-index: 9000; transition: 0.3s; overflow-y: auto; border-radius: 20px 20px 0 0; }
+        #productDetail, #infoModal { position: fixed; top: 10px; left: 100%; width: 100%; height: calc(100% - 40px); background: white; z-index: 9000; transition: 0.3s; overflow-y: auto; border-radius: 5px 20px 0 0; }
         #productDetail.active, #infoModal.active { left: 0; }
         .det-header { 
     position: sticky;      /* Bu əsas komandadır */
     top: 0;                /* Modalın ən yuxarısına yapışır */
     background: white;     /* Arxa fonun ağ olması şərtdir, yoxsa yazılar bir-birinə qarışar */
-    padding: 20px; 
+    padding: 15px; 
     display: flex; 
     justify-content: space-between; 
     align-items: center; 
@@ -210,10 +210,10 @@
     
     <div id="homePage" class="page active">
         <div style="position: sticky; top: 0; background: var(--light-bg); z-index: 1000; padding-top: 35px;">
-            <div style="text-align:center; padding: 5px 0;">
-                <img src="https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/logo_baslig.png"
-                     alt="Logo" style="height: 40px; width: auto; object-fit: contain;">
-            </div>
+            <div style="position: sticky; top: 0; background: var(--light-bg); z-index: 1000; padding-top: 10px;"> <div style="text-align:center; padding: 5px 0;">
+        <img src="https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/logo_baslig.png"
+             alt="Logo" style="height: 35px; width: auto; object-fit: contain;"> </div>
+    </div>
             <div class="search-container" style="margin: 0 15px 10px 15px;">
                 <i class="fas fa-search" style="color:#ccc"></i>
                 <input type="text" id="searchInput" placeholder="Axtar..." oninput="searchPerfume()">
