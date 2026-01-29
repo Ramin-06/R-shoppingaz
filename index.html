@@ -121,8 +121,42 @@
         .price-text { color: var(--main-blue); font-weight: bold; margin-bottom: 10px; display: block; }
         .btn-add { background: var(--bright-orange); color: white; border: none; padding: 10px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; }
 
-        #productDetail, #infoModal { position: fixed; top: 40px; left: 100%; width: 100%; height: calc(100% - 40px); background: white; z-index: 9000; transition: 0.3s; overflow-y: auto; border-radius: 20px 20px 0 0; }
-        #productDetail.active, #infoModal.active { left: 0; }
+        /* Məhsul detalları və Info Modal hər şeyin üstündə olmalıdır */
+#productDetail, #infoModal { 
+    position: fixed; 
+    top: 0; 
+    left: 100%; 
+    width: 100%; 
+    height: 100%; 
+    background: white; 
+    z-index: 20000; 
+    transition: 0.3s; 
+    overflow-y: auto; 
+    border-radius: 0; /* Tam ekran olduğu üçün radiusa ehtiyac yoxdur, istəsən qala bilər */
+}
+
+/* Bu sətir mütləq olmalıdır ki, səhifə sürüşüb gəlsin */
+#productDetail.active, #infoModal.active { 
+    left: 0 !important; 
+}
+
+/* Admin panelini digər səhifələr kimi normal səviyyəyə salaq */
+#adminPage.active {
+    display: block !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: white;
+    z-index: 8000; 
+    overflow-y: auto;
+}
+
+/* Naviqasiya barı adminin üstündə, amma detalların altında olsun */
+.bottom-nav {
+    z-index: 9000; 
+}
         .det-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
         .det-img-big { width: 100%; height: 200px; background: #f4f4f4; border-radius: 25px; display: flex; align-items: center; justify-content: center; font-size: 50px; color: var(--main-blue); margin-bottom: 20px; }
 
@@ -868,8 +902,11 @@ function renderAdminList() {
         }
 
         function openDetail(id) {
-            currentProd = products.find(p => p.id === id);
+    currentProd = products.find(p => p.id === id);
     if (!currentProd) return;
+
+    // --- ƏLAVƏ EDİLDİ: Detal açılarkən alt menyunu gizlət ---
+    document.querySelector('.bottom-nav').style.display = 'none';
 
     const defaultImg = "https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/card_pic.png";
 
@@ -881,7 +918,6 @@ function renderAdminList() {
     document.getElementById('detTitle').innerText = currentProd.name;
     document.getElementById('detPrice').innerText = "10 AZN";
     
-    // Böyük şəkli tam göstərmək üçün 'contain' istifadə edirik
     document.getElementById('detImg').innerHTML = `
         <div style="width:100%; height:250px; display:flex; align-items:center; justify-content:center; background:#fff; border-radius:20px; overflow:hidden; border:1px solid #eee; padding:10px; box-sizing:border-box;">
             <img src="${defaultImg}" style="max-width:100%; max-height:100%; object-fit:contain;">
@@ -898,9 +934,16 @@ function renderAdminList() {
     document.getElementById('detCat').innerText = displayCat;
     document.getElementById('productDetail').classList.add('active');
 
-    // Rəyləri həmin an çəkib gətirir:
     fetchReviews(id);
-        }
+}
+
+// BU FUNKSİYANI DA MÜTLƏQ YENİLƏ (Geri qayıdanda menyunun gəlməsi üçün)
+function closeDetail() { 
+    document.getElementById('productDetail').classList.remove('active');
+    
+    // --- ƏLAVƏ EDİLDİ: Detal bağlananda alt menyunu geri gətir ---
+    document.querySelector('.bottom-nav').style.display = 'flex';
+}
 
         function closeDetail() { document.getElementById('productDetail').classList.remove('active'); }
         function searchPerfume() {
@@ -914,13 +957,31 @@ function renderAdminList() {
         }
 
         function showPage(pId, el) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(pId).classList.add('active');
-            el.classList.add('active');
-            if(pId === 'favPage') renderFavs();
-            if(pId === 'cartPage') renderCart();
-        }
+    // Bütün səhifələri gizlət
+    document.querySelectorAll('.page').forEach(p => {
+        p.classList.remove('active');
+        p.style.display = 'none';
+    });
+
+    // Admin panelini də gizlət (əgər açıqdırsa)
+    const adminPage = document.getElementById('adminPage');
+    if(adminPage) {
+        adminPage.classList.remove('active');
+        adminPage.style.display = 'none';
+    }
+
+    // Seçilən səhifəni göstər
+    const activePage = document.getElementById(pId);
+    activePage.classList.add('active');
+    activePage.style.display = 'block';
+
+    // Naviqasiya aktivliyini yenilə
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+
+    if(pId === 'favPage') renderFavs();
+    if(pId === 'cartPage') renderCart();
+}
 
         function createCard(p) {
            const isFav = favs.some(f => f.id === p.id);
