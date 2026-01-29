@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>R-Shoppingaz</title>
-    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/baslik.png">
-<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/baslik.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -15,225 +13,153 @@
             --light-bg: #f8f9fa;
         }
 
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: var(--light-bg); padding-bottom: 80px; overflow-x: hidden; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: var(--light-bg); overflow-x: hidden; }
         
-        .page { display: none;
-    padding: 10px 15px 120px 15px; /* Ardıcıllıq: Yuxarı(20), Sağ(15), Aşağı(120), Sol(15) */
-    animation: fadeIn 0.3s;
-    margin-top: 45px; /* Header-in (loqo və axtarış olan hissə) altında qalması üçün */ }
+        /* Səhifə sistemləri */
+        .page { display: none; padding: 15px; animation: fadeIn 0.3s; min-height: 100vh; box-sizing: border-box; }
         .page.active { display: block !important; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Axtarış Paneli */
-        .search-container { background: #fff; padding: 12px; border-radius: 15px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        /* Header & Search */
+        .header-fixed { position: sticky; top: 0; background: var(--light-bg); z-index: 1000; padding: 10px 15px; }
+        .search-container { background: #fff; padding: 12px; border-radius: 15px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .search-container input { border: none; outline: none; width: 100%; margin-left: 10px; font-size: 15px; }
-        
-      /* Slider - Masaüstü üçün drag dəstəyi */
-        .slider-area { 
-            display: flex; overflow-x: auto; gap: 10px; scrollbar-width: none; 
-            margin-bottom: 20px; cursor: grab; user-select: none;
-        }
-        .slider-area:active { cursor: grabbing; }
+
+        /* Slider */
+        .slider-area { display: flex; overflow-x: auto; gap: 10px; scrollbar-width: none; margin-bottom: 20px; cursor: grab; padding: 5px 0; }
         .slider-area::-webkit-scrollbar { display: none; }
-        
-        /* Mobil üçün standart ölçü */
-        .slide-card { 
-            min-width: 85%; 
-            height: 160px; 
-            background: #eee; 
-            border-radius: 20px; 
-            overflow: hidden; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            flex-shrink: 0; 
-        }
-        .slide-card img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+        .slide-card { min-width: 85%; height: 160px; background: #eee; border-radius: 20px; overflow: hidden; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .slide-card img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* MASAÜSTÜ ÜÇÜN DÜZƏLİŞ (Bura əlavə olundu) */
-        @media (min-width: 768px) {
-            .slider-area {
-                justify-content: center; /* Şəkilləri ortaya çəkir */
-            }
-            .slide-card { 
-                min-width: 400px; /* Masaüstündə çox enli olmasın */
-                max-width: 500px; 
-                height: 220px;    /* Masaüstü üçün ideal hündürlük */
-            }
-            /* Məhsul kartlarını masaüstündə 4-lü sütun edirik */
-            .product-grid {
-                grid-template-columns: repeat(4, 1fr) !important;
-                gap: 20px !important;
-                max-width: 1200px !important;
-                margin: 0 auto !important;
-            }
-            
-            .product-card {
-                padding: 20px;
-            }
-           /* ümumi grid mobil üçün */
-            .product-grid {
-                display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 12px;
-            }
-            
-            .product-card {
-                padding: 20px; /* Masaüstündə kartların daxili boşluğunu artırdıq */
-            }
-        }
-
-        /* Ölçü Seçimi Düymələri */
-        .size-container { display: flex; gap: 10px; margin: 15px 0; }
-        .size-btn { 
-            flex: 1; padding: 10px; border: 2px solid #eee; border-radius: 12px; 
-            background: #fff; cursor: pointer; font-weight: bold; text-align: center; 
-            transition: 0.3s; color: var(--dark-blue);
-        }
-        .size-btn.active { border-color: var(--main-blue); background: #eef6ff; color: var(--main-blue); }
-
-        .filter-scroll { display: flex; overflow-x: auto; gap: 10px; margin-bottom: 20px; scrollbar-width: none; }
-        .filter-btn { padding: 10px 20px; background: #fff; border: 1px solid #eee; border-radius: 25px; white-space: nowrap; cursor: pointer; color: var(--main-blue); font-weight: 600; font-size: 14px; }
-        .filter-btn.active { background: var(--main-blue); color: #fff; }
-
+        /* Grid */
         .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        @media (min-width: 768px) { .product-grid { grid-template-columns: repeat(4, 1fr); } }
+
+        /* Card */
         .product-card { background: white; border-radius: 18px; padding: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); text-align: center; position: relative; }
-        .prod-img { height: 110px; background: #f9f9f9; border-radius: 12px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--main-blue); font-size: 20px; }
-        .product-card h4 { margin: 5px 0; font-size: 14px; color: var(--dark-blue); }
+        .product-card h4 { margin: 8px 0; font-size: 14px; color: var(--dark-blue); height: 35px; overflow: hidden; }
         .price-text { color: var(--main-blue); font-weight: bold; margin-bottom: 10px; display: block; }
-        .btn-add { background: var(--bright-orange); color: white; border: none; padding: 10px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; }
+        .btn-add { background: var(--bright-orange); color: white; border: none; padding: 10px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-add:active { transform: scale(0.95); }
 
-        #productDetail, #infoModal { position: fixed; top: 40px; left: 100%; width: 100%; height: calc(100% - 40px); background: white; z-index: 9000; transition: 0.3s; overflow-y: auto; border-radius: 20px 20px 0 0; }
-        #productDetail.active, #infoModal.active { left: 0; }
-        .det-header { 
-    position: sticky;      /* Bu əsas komandadır */
-    top: 0;                /* Modalın ən yuxarısına yapışır */
-    background: white;     /* Arxa fonun ağ olması şərtdir, yoxsa yazılar bir-birinə qarışar */
-    padding: 20px; 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    border-bottom: 1px solid #eee; 
-    z-index: 1001;         /* Məhsul şəkillərinin və rəylərin üstündə qalması üçün */
-}
-        .det-img-big { width: 100%; height: 200px; background: #f4f4f4; border-radius: 25px; display: flex; align-items: center; justify-content: center; font-size: 50px; color: var(--main-blue); margin-bottom: 20px; }
+        /* Modallar (Tam Ekran) */
+        #productDetail, #infoModal, #adminPage, #adminLoginModal { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: white; z-index: 10000; display: none; overflow-y: auto; 
+        }
+        .modal-active { display: block !important; }
 
-        .spec-container { display: flex; flex-direction: column; gap: 10px; margin-top: 25px; padding-top: 20px; border-top: 1px dashed #eee; }
-        .spec-item { display: flex; align-items: center; gap: 10px; color: #555; font-size: 14px; }
-        .spec-item i { color: var(--bright-orange); width: 20px; }
+        .det-header { position: sticky; top: 0; background: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; z-index: 101; }
 
-        .cart-item { display: flex; align-items: center; background: white; padding: 15px; border-radius: 15px; margin-bottom: 12px; }
-        .whatsapp-btn { background: var(--bright-orange); color: white; border: none; padding: 12px; border-radius: 12px; width: 80%; margin: 15px auto; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; font-size: 15px; cursor: pointer; }
+        /* Bottom Nav */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: white; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #eee; z-index: 5000; padding-bottom: env(safe-area-inset-bottom); }
+        .nav-item { text-align: center; color: #999; font-size: 11px; cursor: pointer; flex: 1; transition: 0.3s; }
+        .nav-item.active { color: var(--main-blue); font-weight: bold; }
+        .badge { position: absolute; top: 5px; right: 25%; background: var(--bright-orange); color: white; font-size: 10px; width: 16px; height: 16px; border-radius: 50%; display: none; align-items: center; justify-content: center; border: 2px solid #fff; }
 
-        /* Ana Naviqasiya Paneli */
-.bottom-nav {
-    position: fixed;
-    bottom: 0; /* Ekranın ən aşağısına yapışdırır */
-    left: 0;   /* Boşluğu ləğv edir */
-    width: 100%; /* Tam en edir */
-    height: 65px; 
-    background: white;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    border-top: 1px solid #eee; /* Üst hissəyə nazik xətt */
-    z-index: 5000;
-    padding-bottom: env(safe-area-inset-bottom); /* Müasir telefonlar üçün alt boşluq */
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.05); /* Yuxarıya doğru yüngül kölgə */
-}
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
+        th, td { padding: 10px; border: 1px solid #eee; }
+        th { background: var(--main-blue); color: white; }
 
-.nav-item { 
-    text-align: center; 
-    color: #999; 
-    font-size: 11px; 
-    cursor: pointer; 
-    position: relative;
-    flex: 1;
-    display: flex;         /* Əlavə edildi */
-    flex-direction: column;/* Əlavə edildi */
-    align-items: center;   /* Əlavə edildi */
-}
+        /* Star Rating */
+        .star-rating i { font-size: 24px; color: #ccc; cursor: pointer; margin-right: 5px; }
 
-.nav-item.active { color: var(--main-blue); font-weight: bold; }
-
-.badge { 
-    position: absolute; 
-    top: 2px;             /* İkonun bir az yuxarısında */
-    right: 50%;           /* İkonun tam mərkəzindən başlayır */
-    transform: translateX(10px); /* İkonun tam sağ küncünə itələyir */
-    background: var(--bright-orange); 
-    color: white; 
-    font-size: 10px; 
-    width: 17px; 
-    height: 17px; 
-    border-radius: 50%; 
-    display: none; 
-    align-items: center; 
-    justify-content: center; 
-    font-weight: bold; 
-    border: 2px solid #fff; 
-    z-index: 10;
-}
-
-        /* BURA ƏLAVƏ ET (Bütün stillərin ən sonuna) */
-#adminPage.active {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    background-color: white !important;
-    position: fixed; /* Məcburi önə çıxması üçün fixed daha yaxşıdır */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    z-index: 9999;
-    overflow-y: auto; /* İçində hərəkət edə bilmək üçün */
-}
+        .admin-section { padding: 10px 0; }
+        .filter-scroll { display: flex; overflow-x: auto; gap: 10px; margin-bottom: 15px; padding-bottom: 5px; }
+        .filter-btn { padding: 8px 18px; border-radius: 20px; border: 1px solid #ddd; background: #fff; white-space: nowrap; cursor: pointer; }
+        .filter-btn.active { background: var(--main-blue); color: #fff; border-color: var(--main-blue); }
     </style>
 </head>
 <body>
 
     <div id="infoModal">
         <div class="det-header">
-            <i class="fas fa-arrow-left" onclick="closeInfoModal()" style="font-size:22px; cursor:pointer;"></i>
-            <b>Kampaniya</b>
-            <i class="fas fa-info-circle" style="font-size:20px; color:var(--main-blue);"></i>
+            <i class="fas fa-arrow-left" onclick="closeModal('infoModal')" style="font-size:22px;"></i>
+            <b id="infoModalTitle">Məlumat</b>
+            <div style="width:22px;"></div>
         </div>
-        <div style="padding:20px;">
-            <div style="width:100%; height:200px; background:var(--main-blue); border-radius:20px; margin-bottom:20px; display:flex; align-items:center; justify-content:center; color:white; font-size:40px;"><i class="fas fa-gift"></i></div>
-            <h2 style="color:var(--dark-blue);">Xüsusi Təklif!</h2>
-            <p style="color:#666; line-height:1.6;">Bütün yeni istifadəçilərə ilk sifarişdə 10% endirim!</p>
-            <button class="btn-add" style="margin-top:20px;" onclick="closeInfoModal()">ANLADIM</button>
+        <div id="infoModalBody" style="padding:20px;"></div>
+    </div>
+
+    <div id="productDetail">
+        <div class="det-header">
+            <i class="fas fa-arrow-left" onclick="closeModal('productDetail')" style="font-size:22px;"></i>
+            <b id="detHeaderName">Xüsusiyyətlər</b>
+            <i class="fas fa-heart" id="detFavBtn" onclick="toggleFavFromDetail()" style="font-size:22px;"></i>
+        </div>
+        <div style="padding:20px; padding-bottom: 100px;">
+            <div id="detImg" style="text-align:center; margin-bottom:20px;"></div>
+            <h2 id="detTitle" style="color:var(--dark-blue); margin:0;"></h2>
+            <span id="detPrice" style="color:var(--main-blue); font-size:24px; font-weight:bold;"></span>
+            
+            <p style="font-weight:bold; margin-top:20px;">Ölçü seçin:</p>
+            <div style="display:flex; gap:10px;">
+                <button class="filter-btn active size-btn" onclick="updatePrice(this, 30, 10)">30 ml</button>
+                <button class="filter-btn size-btn" onclick="updatePrice(this, 50, 13)">50 ml</button>
+            </div>
+
+            <p style="font-weight:bold; margin-top:20px;">Sayı:</p>
+            <div style="display:flex; align-items:center; gap:20px; background:#f1f1f1; width:fit-content; padding:8px 20px; border-radius:25px;">
+                <button onclick="changeQty(-1)" style="border:none; background:none; font-size:20px;">-</button>
+                <span id="qtyVal" style="font-weight:bold;">1</span>
+                <button onclick="changeQty(1)" style="border:none; background:none; font-size:20px;">+</button>
+            </div>
+
+            <button class="btn-add" style="margin-top:25px; padding:15px;" onclick="addToCart()">SƏBƏTƏ ƏLAVƏ ET</button>
+
+            <div style="margin-top:30px; border-top:1px solid #eee; padding-top:20px;">
+                <div style="margin-bottom:10px;"><i class="fas fa-wind" style="color:var(--bright-orange); width:25px;"></i> <b>Qoxu:</b> <span id="detNotes"></span></div>
+                <div style="margin-bottom:10px;"><i class="fas fa-hourglass-half" style="color:var(--bright-orange); width:25px;"></i> <b>Qalıcılıq:</b> <span id="detStay"></span></div>
+                <div style="margin-bottom:10px;"><i class="fas fa-check-circle" style="color:var(--bright-orange); width:25px;"></i> <b>Kateqoriya:</b> <span id="detCat"></span></div>
+            </div>
+
+            <div id="reviewsSection" style="margin-top:40px;">
+                <h3>İstifadəçi Rəyləri</h3>
+                <div id="ratingStats" style="background:#f9f9f9; padding:15px; border-radius:15px; margin-bottom:20px;"></div>
+                
+                <div style="background:#fff; border:1px solid #eee; padding:15px; border-radius:15px;">
+                    <input type="text" id="reviewerName" placeholder="Adınız" style="width:100%; padding:10px; margin-bottom:10px; border-radius:10px; border:1px solid #ddd; box-sizing:border-box;">
+                    <div class="star-rating" style="margin-bottom:10px;">
+                        <i class="fas fa-star" data-rating="1" onclick="setRating(1)"></i>
+                        <i class="fas fa-star" data-rating="2" onclick="setRating(2)"></i>
+                        <i class="fas fa-star" data-rating="3" onclick="setRating(3)"></i>
+                        <i class="fas fa-star" data-rating="4" onclick="setRating(4)"></i>
+                        <i class="fas fa-star" data-rating="5" onclick="setRating(5)"></i>
+                    </div>
+                    <textarea id="reviewText" placeholder="Fikirləriniz..." style="width:100%; height:80px; padding:10px; border-radius:10px; border:1px solid #ddd; box-sizing:border-box;"></textarea>
+                    <button class="btn-add" style="margin-top:10px;" onclick="submitReview()">RƏY BİLDİR</button>
+                </div>
+                <div id="reviewsList" style="margin-top:20px;"></div>
+            </div>
         </div>
     </div>
 
-    
     <div id="homePage" class="page active">
-        <div style="position: sticky; top: 0; background: var(--light-bg); z-index: 1000; padding-top: 35px;">
-            <div style="text-align:center; padding: 5px 0;">
-                <img src="https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/logo_baslig.png"
-                     alt="Logo" style="height: 40px; width: auto; object-fit: contain;">
+        <div class="header-fixed">
+            <div style="text-align:center; margin-bottom:10px;">
+                <img src="https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/logo_baslig.png" style="height:35px;">
             </div>
-            <div class="search-container" style="margin: 0 15px 10px 15px;">
+            <div class="search-container">
                 <i class="fas fa-search" style="color:#ccc"></i>
-                <input type="text" id="searchInput" placeholder="Axtar..." oninput="searchPerfume()">
+                <input type="text" id="searchInput" placeholder="Ətir axtar..." oninput="searchPerfume()">
             </div>
         </div>
-        <div id="mainContent">
-            <div class="slider-area" id="slider">
-                <div class="slide-card" onclick="openCampaignModal()">
-                    <img src="https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/kampaniya_sertleri.jpg" alt="Kampaniya">
-                </div>
-                <div class="slide-card" onclick="openDeliveryModal()">
-                    <img src="https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/xidmetler_ve_catdirilma.jpg" alt="Çatdırılma">
-                </div>
+        <div class="slider-area" id="slider">
+            <div class="slide-card" onclick="openCampaignModal()">
+                <img src="https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/kampaniya_sertleri.jpg">
             </div>
-            <h4 id="gridTitle" style="color:var(--dark-blue)">Məhsullar</h4>
-            <div id="homeGrid" class="product-grid"></div>
+            <div class="slide-card" onclick="openDeliveryModal()">
+                <img src="https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/xidmetler_ve_catdirilma.jpg">
+            </div>
         </div>
+        <h4 id="gridTitle" style="color:var(--dark-blue); margin:10px 0;">Məhsullar</h4>
+        <div id="homeGrid" class="product-grid"></div>
+        <div style="height:80px;"></div>
     </div>
 
     <div id="catalogPage" class="page">
+        <h4 style="color:var(--dark-blue);">Kataloq</h4>
         <div class="filter-scroll">
             <button class="filter-btn active" onclick="applyFilter('all', this)">Hamısı</button>
             <button class="filter-btn" onclick="applyFilter('qadin', this)">Qadın</button>
@@ -241,158 +167,80 @@
             <button class="filter-btn" onclick="applyFilter('unisex', this)">Unisex</button>
         </div>
         <div id="catalogGrid" class="product-grid"></div>
+        <div style="height:80px;"></div>
     </div>
 
     <div id="favPage" class="page">
-        <h4 style="color:var(--dark-blue)">Favorilərim</h4>
+        <h4 style="color:var(--dark-blue);">Favorilərim</h4>
         <div id="favGrid" class="product-grid"></div>
-        <div id="favEmpty" style="text-align:center; padding-top:50px; color:#ccc; display:none;"><i class="far fa-heart" style="font-size:60px;"></i><p>Siyahı boşdur</p></div>
+        <div id="favEmpty" style="text-align:center; padding:50px; color:#ccc; display:none;">
+            <i class="far fa-heart" style="font-size:50px;"></i>
+            <p>Heç nə tapılmadı</p>
+        </div>
+        <div style="height:80px;"></div>
     </div>
 
     <div id="cartPage" class="page">
-        <h4 style="color:var(--dark-blue)">Səbətim</h4>
+        <h4 style="color:var(--dark-blue);">Səbətim</h4>
         <div id="cartList"></div>
-        <div id="cartFooter"></div>
+        <div id="cartFooter" style="padding-bottom:100px;"></div>
     </div>
 
-    <div id="productDetail">
+    <div id="adminLoginModal">
+        <div style="padding:40px 20px; text-align:center;">
+            <i class="fas fa-user-shield" style="font-size:50px; color:var(--main-blue); margin-bottom:20px;"></i>
+            <h2>Admin Girişi</h2>
+            <input type="text" id="adminID" placeholder="Admin ID" style="width:100%; padding:15px; margin-bottom:10px; border-radius:12px; border:1px solid #ddd; box-sizing:border-box;">
+            <input type="password" id="adminPass" placeholder="Şifrə" style="width:100%; padding:15px; margin-bottom:20px; border-radius:12px; border:1px solid #ddd; box-sizing:border-box;">
+            <button class="btn-add" onclick="checkAdminLogin()">DAXİL OL</button>
+            <p onclick="closeModal('adminLoginModal')" style="margin-top:20px; color:#888;">Geri qayıt</p>
+        </div>
+    </div>
+
+    <div id="adminPage">
         <div class="det-header">
-            <i class="fas fa-arrow-left" onclick="closeDetail()" style="font-size:22px; cursor:pointer;"></i>
-            <b id="detHeaderName">Xüsusiyyətlər</b>
-            <i class="fas fa-heart" id="detFavBtn" onclick="toggleFavFromDetail()" style="font-size:22px; cursor:pointer;"></i>
+            <b>Admin Panel</b>
+            <i class="fas fa-times" onclick="closeModal('adminPage')" style="font-size:22px;"></i>
         </div>
         <div style="padding:20px;">
-            <div id="detImg" class="det-img-big">P</div>
-            <h2 id="detTitle" style="color:var(--dark-blue); margin:0;">Ad</h2>
-            <span id="detPrice" style="color:var(--main-blue); font-size:24px; font-weight:bold;">10 AZN</span>
-            
-            <p style="font-weight:bold; margin-top:20px; color:var(--dark-blue)">Ölçü seçin:</p>
-            <div class="size-container">
-                <div class="size-btn active" onclick="updatePrice(this, 30, 10)">30 ml</div>
-                <div class="size-btn" onclick="updatePrice(this, 50, 13)">50 ml</div>
+            <div style="display:flex; gap:10px; margin-bottom:20px; background:#eee; padding:5px; border-radius:15px;">
+                <button id="tabAdd" class="filter-btn active" style="flex:1" onclick="switchAdminTab('add')">Əlavə et</button>
+                <button id="tabList" class="filter-btn" style="flex:1" onclick="switchAdminTab('list')">Siyahı</button>
             </div>
 
-            <p style="font-weight:bold; margin-top:10px; color:var(--dark-blue)">Sayı seçin:</p>
-            <div style="display:flex; align-items:center; gap:20px; background:#f1f1f1; width:fit-content; padding:5px 15px; border-radius:25px;">
-                <button onclick="changeQty(-1)" style="border:none; background:none; font-size:24px;">-</button>
-                <span id="qtyVal" style="font-size:18px; font-weight:bold;">1</span>
-                <button onclick="changeQty(1)" style="border:none; background:none; font-size:24px;">+</button>
-            </div>
-
-            <button class="btn-add" style="margin-top:25px; padding:18px; font-size:16px;" onclick="addToCart()">SƏBƏTƏ ƏLAVƏ ET</button>
-
-            <div class="spec-container">
-                <div class="spec-item"><i class="fas fa-wind"></i> <b>Qoxu:</b> <span id="detNotes">-</span></div>
-                <div class="spec-item"><i class="fas fa-hourglass-half"></i> <b>Qalıcılıq:</b> <span id="detStay">-</span></div>
-                <div class="spec-item"><i class="fas fa-check-circle"></i> <b>Kateqoriya:</b> <span id="detCat">-</span></div>
-            </div>
-           
-            <div id="reviewsSection" style="margin-top: 30px; border-top: 2px solid #eee; padding-top: 20px;">
-    <h3 style="color: var(--dark-blue); font-size: 18px; margin-bottom: 15px;">İstifadəçi Rəyləri</h3>
-    
-    <div id="ratingStats" style="margin-bottom: 20px; background: #f9f9f9; padding: 15px; border-radius: 15px;">
-        </div>
-
-    <div style="background: #fff; padding: 15px; border: 1px solid #eee; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03);">
-        
-        <input type="text" id="reviewerName" placeholder="Adınız və Soyadınız" 
-            style="width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 12px; outline: none; box-sizing: border-box; font-size: 14px;">
-
-        <p style="margin: 0 0 8px 0; font-weight: bold; font-size: 13px; color: #555;">Qiymətləndirin:</p>
-        
-        <div class="star-rating" style="font-size: 22px; color: #ccc; margin-bottom: 15px; cursor: pointer;">
-            <i class="fas fa-star" data-rating="1" onclick="setRating(1)"></i>
-            <i class="fas fa-star" data-rating="2" onclick="setRating(2)"></i>
-            <i class="fas fa-star" data-rating="3" onclick="setRating(3)"></i>
-            <i class="fas fa-star" data-rating="4" onclick="setRating(4)"></i>
-            <i class="fas fa-star" data-rating="5" onclick="setRating(5)"></i>
-        </div>
-
-        <textarea id="reviewText" placeholder="Məhsul haqqında fikirləriniz..." 
-            style="width: 100%; border: 1px solid #ddd; border-radius: 12px; padding: 12px; height: 80px; outline: none; box-sizing: border-box; font-family: inherit; font-size: 14px; resize: none;"></textarea>
-        
-        <button class="btn-add" style="margin-top: 12px; width: 100%; padding: 14px; font-weight: bold; border-radius: 12px;" onclick="submitReview()">RƏY GÖNDƏR</button>
-    </div>
-
-    <div id="reviewsList">
-        <p style="color: #999; text-align: center; font-size: 13px;">Yüklənir...</p>
-    </div>
-</div>
-       
-
-    <div id="adminLoginModal" class="page" style="background: white; display: none; flex-direction: column; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 4000; padding: 25px; box-sizing: border-box;">
-        <div style="width: 100%; max-width: 400px; text-align: center;">
-            <div style="width: 80px; height: 80px; background: #f8f9fa; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; border: 1px solid #eee;">
-                <i class="fas fa-user-shield" style="font-size: 35px; color: var(--main-blue);"></i>
-            </div>
-            <h2 style="color: var(--dark-blue); margin-bottom: 30px; font-weight: 700;">Admin Girişi</h2>
-
-            <input type="text" id="adminID" placeholder="Admin ID" style="width: 100%; padding: 16px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 15px; box-sizing: border-box; font-size: 16px; outline: none;">
-            <input type="password" id="adminPass" placeholder="Şifrə" style="width: 100%; padding: 16px; margin-bottom: 25px; border: 1px solid #ddd; border-radius: 15px; box-sizing: border-box; font-size: 16px; outline: none;">
-
-            <button class="btn-add" style="width: 100%; padding: 16px; font-size: 16px; font-weight: bold;" onclick="checkAdminLogin()">DAXİL OL</button>
-
-            <p onclick="closeAdminLogin()" style="margin-top: 25px; color: #888; cursor: pointer; font-size: 14px;">
-                <i class="fas fa-arrow-left"></i> Geri qayıt
-            </p>
-        </div>
-    </div>
-
-    <div id="adminPage" class="page" style="padding-top: 30px; min-height: 100vh; box-sizing: border-box;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding: 0 5px;">
-            <h2 style="margin:0; color:var(--dark-blue); font-size: 24px;">Admin Panel</h2>
-            <button onclick="showPage('homePage', document.querySelector('.nav-item'))" style="border:none; background:#fff; width: 40px; height: 40px; border-radius:12px; cursor:pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.1);"><i class="fas fa-times"></i></button>
-        </div>
-
-        <div style="display: flex; gap: 10px; margin-bottom: 25px; background: #eee; padding: 6px; border-radius: 18px;">
-            <button id="tabAdd" class="filter-btn active" style="flex: 1; border:none; padding: 12px; border-radius: 14px; font-weight: bold; transition: 0.3s;" onclick="switchAdminTab('add')">Məhsul Əlavə Et</button>
-            <button id="tabList" class="filter-btn" style="flex: 1; border:none; padding: 12px; border-radius: 14px; font-weight: bold; transition: 0.3s;" onclick="switchAdminTab('list')">Məhsul Siyahısı</button>
-        </div>
-
-        <div id="sectAdd" class="admin-section">
-            <div style="background: white; padding: 25px; border-radius: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); border: 1px solid #f0f0f0;">
-                <h4 id="formTitle" style="margin-top:0; color:var(--main-blue); margin-bottom: 20px; font-size: 18px;">Yeni Məhsul Məlumatları</h4>
-
-                <label style="font-size: 12px; color: #888; margin-left: 5px;">Məhsulun Adı</label>
-                <input type="text" id="adminProdName" placeholder="Məs: Baccarat Rouge 540" style="width: 100%; padding: 14px; margin-bottom: 15px; border: 1px solid #eee; border-radius: 12px; box-sizing: border-box; outline: none; background: #fcfcfc;">
-
-                <label style="font-size: 12px; color: #888; margin-left: 5px;">Kateqoriya</label>
-                <select id="adminProdCat" style="width: 100%; padding: 14px; margin-bottom: 15px; border: 1px solid #eee; border-radius: 12px; box-sizing: border-box; outline: none; background: #fcfcfc;">
-                    <option value="qadin">Qadın 🚺</option>
-                    <option value="kisi">Kişi 🚹</option>
-                    <option value="unisex">Unisex 🚻</option>
+            <div id="sectAdd">
+                <h4 id="formTitle">Yeni Məhsul</h4>
+                <input type="text" id="adminProdName" placeholder="Məhsul adı" style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid #ddd; box-sizing:border-box;">
+                <select id="adminProdCat" style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid #ddd;">
+                    <option value="qadin">Qadın</option>
+                    <option value="kisi">Kişi</option>
+                    <option value="unisex">Unisex</option>
                 </select>
-
-                <label style="font-siz963.*-edce: 12px; color: #888; margin-left: 5px;">Qoxu Notları</label>
-                <input type="text" id="adminProdNotes" placeholder="Məs: Jasmin, Zəfəran, Odunsu" style="width: 100%; padding: 14px; margin-bottom: 15px; border: 1px solid #eee; border-radius: 12px; box-sizing: border-box; outline: none; background: #fcfcfc;">
-
-                <label style="font-size: 12px; color: #888; margin-left: 5px;">Qalıcılıq Müddəti</label>
-                <input type="text" id="adminProdStay" placeholder="Məs: 24-48 saat" style="width: 100%; padding: 14px; margin-bottom: 20px; border: 1px solid #eee; border-radius: 12px; box-sizing: border-box; outline: none; background: #fcfcfc;">
-
-                <button id="adminSaveBtn" class="btn-add" style="background: #27ae60; padding: 16px; font-size: 16px; border-radius: 15px;width: 100%\x2" onclick="saveProductToFirebase()">MƏHSULU YADDA SAXLA</button>
-                <button id="cancelEditBtn" style="display:none; width:100%; margin-top:15px; border:none; background:none; color:#e74c3c; cursor:pointer; font-weight: bold;" onclick="resetAdminForm()">Ləğv Et</button>
+                <input type="text" id="adminProdNotes" placeholder="Qoxu notları" style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid #ddd; box-sizing:border-box;">
+                <input type="text" id="adminProdStay" placeholder="Qalıcılıq" style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid #ddd; box-sizing:border-box;">
+                <button id="adminSaveBtn" class="btn-add" onclick="saveProductToFirebase()" style="background:#27ae60">YADDA SAXLA</button>
+                <button id="cancelEditBtn" onclick="resetAdminForm()" style="display:none; width:100%; border:none; background:none; margin-top:10px; color:red;">Ləğv et</button>
             </div>
-        </div>
 
-        <div id="sectList" class="admin-section" style="display: none;">
-            <div id="adminProductList" style="display: flex; flex-direction: column; gap: 12px; padding-bottom: 50px;">
+            <div id="sectList" style="display:none;">
+                <div id="adminProductList"></div>
             </div>
         </div>
     </div>
-    
-    <nav class="bottom-nav">
+
+    <nav class="bottom-nav" id="mainNav">
         <div class="nav-item active" onclick="showPage('homePage', this)"><i class="fas fa-home"></i><br>Əsas</div>
         <div class="nav-item" onclick="showPage('catalogPage', this)"><i class="fas fa-th-large"></i><br>Kataloq</div>
         <div class="nav-item" onclick="showPage('favPage', this)"><i class="fas fa-heart"></i><br>Favori</div>
         <div class="nav-item" onclick="showPage('cartPage', this)"><i class="fas fa-shopping-cart"></i><div id="cartBadge" class="badge">0</div><br>Səbət</div>
-        <div class="nav-item" onclick="openAdminLogin()"><i class="fas fa-user-lock"></i><br>Kabinet</div>
+        <div class="nav-item" onclick="openAdminModal()"><i class="fas fa-user-lock"></i><br>Kabinet</div>
     </nav>
 
-   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
     <script>
-        
-        // 2. Firebase Konfiqurasiyası
+        // FIREBASE CONFIG (Senin melumatlarin)
         const firebaseConfig = {
           apiKey: "AIzaSyA5eb16DAKSVLkEzYsUrgxL9vfrJP7w-es",
           authDomain: "etir-magazasi-d7679.firebaseapp.com",
@@ -401,684 +249,320 @@
           messagingSenderId: "1045258773680",
           appId: "1:1045258773680:web:ab2edd54ba3f0ef0530775"
         };
-
         firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+        const db = firebase.firestore();
 
-    // 2. Dəyişənlər (Köhnə const products siyahısını sildik!)
-    let selectedRating = 0; // Seçilən ulduz sayını yadda saxlamaq üçün
-    let products = []; 
-    let editMode = false; // Redaktə rejimi üçün
-    let editId = null;    // Redaktə edilən məhsulun ID-si
-    let cart = [], favs = [], currentProd = null, currentQty = 1;
-    let selectedSize = 30;
-    let currentPrice = 10;
+        // DEYISENLER
+        let products = [], cart = [], favs = [], currentProd = null;
+        let selectedRating = 0, currentQty = 1, selectedSize = 30, currentPrice = 10;
+        let editMode = false, editId = null;
 
-    // 3. Firestore-dan məlumatları çəkən funksiya
-    function fetchProducts() {
-        db.collection("products").onSnapshot((querySnapshot) => {
-        products = []; 
-        querySnapshot.forEach((doc) => {
-            let data = doc.data();
-            products.push({
-                id: doc.id, // Firestore-dakı sənəd ID-sini mütləq bura mənimsədirik
-                name: data.name || "Adsız",
-                cat: data.cat || "unisex",
-                notes: data.notes || "-",
-                stay: data.stay || "-",
-                // Əgər bazada qiymət varsa bura əlavə edə bilərsiniz
-            });
-        });
-        renderAll(); // Məlumatlar gələn kimi ekranı yeniləyirik
-    });
-    }
-// --- RƏY SİSTEMİ FUNKSİYALARI ---
-
-// 1. Ulduzları seçmək üçün
-function setRating(rating) {
-    selectedRating = rating;
-    const stars = document.querySelectorAll('.star-rating i');
-    stars.forEach(s => {
-        s.style.color = s.getAttribute('data-rating') <= rating ? '#ff8c00' : '#ccc';
-    });
-}
-
-// 2. Rəyi Firestore-a yazmaq üçün
-async function submitReview() {
-    const name = document.getElementById('reviewerName').value.trim();
-    const text = document.getElementById('reviewText').value.trim();
-
-    if (!name || !text || selectedRating === 0) {
-        alert("Zəhmət olmasa bütün sahələri doldurun və ulduz seçin!");
-        return;
-    }
-
-    const reviewData = {
-        productId: currentProd.id,
-        userName: name,
-        rating: selectedRating,
-        comment: text,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    };
-
-    try {
-        await db.collection("reviews").add(reviewData);
-        document.getElementById('reviewerName').value = "";
-        document.getElementById('reviewText').value = "";
-        setRating(0);
-        alert("Rəyiniz göndərildi!");
-    } catch (e) { alert("Xəta: " + e.message); }
-}
-
-// 3. Rəyləri Firestore-dan çəkmək və faizləri hesablamaq
-function fetchReviews(productId) {
-    db.collection("reviews")
-      .where("productId", "==", productId)
-      .orderBy("timestamp", "desc")
-      .onSnapshot((snapshot) => {
-        const list = document.getElementById('reviewsList');
-        const stats = document.getElementById('ratingStats');
-        let reviewsHTML = "", ratingCounts = {1:0, 2:0, 3:0, 4:0, 5:0}, total = 0;
-
-        snapshot.forEach(doc => {
-            const r = doc.data();
-            total++;
-            ratingCounts[r.rating]++;
-            reviewsHTML += `
-                <div style="border-bottom:1px solid #eee; padding:15px 0; display: block; clear: both;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                        <b style="font-size:14px; color: #003366;">${r.userName}</b>
-                        <div style="color:#ff8c00; font-size:10px;">${'★'.repeat(r.rating)}</div>
-                    </div>
-                    <p style="margin:5px 0 0 0; font-size:14px; color:#333; line-height: 1.5; display: block; word-wrap: break-word; white-space: normal;">
-                        ${r.comment}
-                    </p>
-                </div>`;
-        });
-
-        if (total > 0) {
-            let statsHTML = `<b style="font-size:14px;">Ümumi: ${total} rəy</b><br>`;
-            for (let i = 5; i >= 1; i--) {
-                const percent = Math.round((ratingCounts[i] / total) * 100);
-                statsHTML += `
-                    <div style="display:flex; align-items:center; gap:8px; font-size:11px; margin-top:4px;">
-                        <span style="width:20px;">${i}★</span>
-                        <div style="flex:1; background:#ddd; height:6px; border-radius:3px; overflow:hidden;">
-                            <div style="width:${percent}%; background:#ff8c00; height:100%;"></div>
-                        </div>
-                        <span style="width:25px;">${percent}%</span>
-                    </div>`;
-            }
-            stats.innerHTML = statsHTML;
-
-            // ƏN VACİB HİSSƏ BURADIR:
-            // Rəylərin sonuna 120px-lik boşluq (spacer) əlavə edirik ki, Bottom Nav mətni örtməsin
-            list.innerHTML = reviewsHTML + '<div style="height: 120px; width: 100%; pointer-events: none;"></div>';
-            
-        } else {
-            stats.innerHTML = "Hələ rəy yoxdur.";
-            list.innerHTML = '<div style="height: 120px; width: 100%;"></div>';
-        }
-    });
-}
-
-
-
-
-// MODALİ AÇIB-BAĞLAMAQ
-function openAdminLogin() {
-    document.getElementById('adminLoginModal').style.display = 'flex';
-}
-function closeAdminLogin() {
-    document.getElementById('adminLoginModal').style.display = 'none';
-}
-
-// FİRESTORE-DAN ADMİNİ YOXLAMAQ
-async function checkAdminLogin() {
-    // Giriş sahələrindən boşluqları silərək məlumatları götürürük
-    const inputID = document.getElementById('adminID').value.trim();
-    const inputPass = document.getElementById('adminPass').value.trim();
-
-    if(!inputID || !inputPass) { 
-        alert("Xanaları doldurun!"); 
-        return; 
-    }
-
-    try {
-        // 'admins' kolleksiyasındakı bütün sənədləri gətiririk
-        const snapshot = await db.collection("admins").get();
-        let isMatch = false;
-
-        if (snapshot.empty) {
-            console.error("DİQQƏT: 'admins' kolleksiyası boşdur və ya tapılmadı!");
-            alert("Sistemdə heç bir admin tapılmadı!");
-            return;
-        }
-
-        snapshot.forEach(doc => {
-            const data = doc.data();
-            console.log("Yoxlanılan sənəd:", data); // Konsolda bazadan gələni görəcəksən
-
-            // Məlumatları tam olaraq yoxlayırıq
-            if (String(data.adminID) === inputID && String(data.password) === inputPass) {
-                isMatch = true;
-            }
-        });
-
-       if (isMatch) {
-    console.log("Giriş uğurludur!");
-    closeAdminLogin(); // Login modalını bağla [cite: 106]
-    
-    // Bütün digər səhifələri gizlət
-    document.querySelectorAll('.page').forEach(p => {
-        p.classList.remove('active');
-        p.style.display = 'none';
-    });
-
-    // Admin panelini tap və mütləq göstər
-    const adminPage = document.getElementById('adminPage');
-    if (adminPage) {
-        adminPage.style.setProperty('display', 'block', 'important'); // Ağ səhifəni aradan qaldıran əsas kod
-        adminPage.classList.add('active');
-        switchAdminTab('add'); // "Əlavə et" tabını aç [cite: 114]
-        window.scrollTo(0, 0); // Səhifəni yuxarı çək
-    }
-} else {
-            alert("Admin ID və ya Şifrə yanlışdır!");
-        }
-    } catch (e) {
-        console.error("Firebase xətası:", e);
-        alert("Bağlantı xətası: " + e.message);
-    }
-}
-
-// ADMİN TABLARI ARASINDA KEÇİD
-function switchAdminTab(tab) {
-    if(tab === 'add') {
-        document.getElementById('sectAdd').style.display = 'block';
-        document.getElementById('sectList').style.display = 'none';
-        document.getElementById('tabAdd').classList.add('active');
-        document.getElementById('tabList').classList.remove('active');
-    } else {
-        document.getElementById('sectAdd').style.display = 'none';
-        document.getElementById('sectList').style.display = 'block';
-        document.getElementById('tabAdd').classList.remove('active');
-        document.getElementById('tabList').classList.add('active');
-        renderAdminList();
-    }
-}
-
-// YENİ MƏHSULUN YADDA SAXLANILMASI
-async function saveProductToFirebase() {
-    const name = document.getElementById('adminProdName').value.trim();
-    const cat = document.getElementById('adminProdCat').value;
-    const notes = document.getElementById('adminProdNotes').value.trim();
-    const stay = document.getElementById('adminProdStay').value.trim();
-
-    if (!name) { alert("Məhsul adını yazın!"); return; }
-
-    const productData = {
-        name: name,
-        cat: cat,
-        notes: notes,
-        stay: stay,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    };
-
-    try {
-        if (editMode && editId) {
-            // REDAKTƏ EDİRİK
-            await db.collection("products").doc(editId).update(productData);
-            alert("Məhsul uğurla yeniləndi!");
-        } else {
-            // YENİ ƏLAVƏ EDİRİK
-            await db.collection("products").add({
-                ...productData,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            alert("Yeni məhsul uğurla əlavə edildi!");
-        }
-        resetAdminForm();
-        renderAdminList();
-    } catch (error) {
-        alert("Xəta: " + error.message);
-    }
-}
-
-// ADMİN SİYAHISINI GÖSTƏRMƏK
-function renderAdminList() {
-    const container = document.getElementById('adminProductList');
-    container.innerHTML = products.map(p => `
-        <div style="background:white; padding:15px; border-radius:15px; display:flex; justify-content:space-between; align-items:center; border: 1px solid #f0f0f0;">
-            <div>
-                <b style="color:var(--dark-blue)">${p.name}</b><br>
-                <small style="color:#999">${p.cat.toUpperCase()}</small>
-            </div>
-            <button onclick="deleteProduct('${p.id}')" style="background:#ff4757; color:white; border:none; padding:8px 12px; border-radius:10px; cursor:pointer;">
-                <i class="fas fa-trash"></i>
-            </button>
-        </div>
-    `).join('');
-}
-
-
-
-// MƏHSULU SİLMƏK
-async function deleteProduct(id) {
-    if(confirm("Bu məhsulu silməyə əminsiniz?")) {
-
-        db.collection("products").doc(id).delete().then(() => {
-            alert("Məhsul silindi!");
-            renderAdminList();
-        });
-    }
-}
-        // 1. REDAKTƏ DÜYMƏSİNƏ BASANDA İŞƏ DÜŞƏN FUNKSİYA
-function editProduct(id) {
-    const p = products.find(prod => prod.id === id);
-    if (!p) return;
-
-    // Xanaları doldururuq
-    document.getElementById('adminProdName').value = p.name;
-    document.getElementById('adminProdCat').value = p.cat;
-    document.getElementById('adminProdNotes').value = p.notes;
-    document.getElementById('adminProdStay').value = p.stay;
-
-    editMode = true;
-    editId = id;
-
-    // Formun vizualını dəyişirik
-    document.getElementById('formTitle').innerText = "Məhsulu Redaktə Et";
-    const saveBtn = document.getElementById('adminSaveBtn');
-    saveBtn.innerText = "YENİLƏ";
-    saveBtn.style.background = "#f1c40f"; // Sarı rəng
-    document.getElementById('cancelEditBtn').style.display = "block";
-
-    // Bizi avtomatik 'Məhsul Əlavə Et' bölməsinə atır
-    switchAdminTab('add');
-}
-
-// 2. FORMU ƏVVƏLKİ HALINA QAYTARMAQ
-function resetAdminForm() {
-    editMode = false;
-    editId = null;
-    document.getElementById('adminProdName').value = "";
-    document.getElementById('adminProdNotes').value = "";
-    document.getElementById('adminProdStay').value = "";
-    document.getElementById('formTitle').innerText = "Yeni Məhsul";
-    const saveBtn = document.getElementById('adminSaveBtn');
-    saveBtn.innerText = "ƏLAVƏ ET";
-    saveBtn.style.background = "#27ae60";
-    document.getElementById('cancelEditBtn').style.display = "none";
-}
-
-// 3. ADMİN SİYAHISINI YENİLƏMƏK (BURADA SARI DÜYMƏ ƏLAVƏ OLUNDU)
-function renderAdminList() {
-    const container = document.getElementById('adminProductList');
-    if(!container) return;
-
-    container.innerHTML = products.map(p => `
-        <div style="background:white; padding:15px; border-radius:15px; display:flex; justify-content:space-between; align-items:center; border: 1px solid #f0f0f0; margin-bottom:10px;">
-            <div>
-                <b style="color:var(--dark-blue)">${p.name}</b><br>
-                <small style="color:#999">${p.cat.toUpperCase()}</small>
-            </div>
-            <div style="display:flex; gap:8px;">
-                <button onclick="editProduct('${p.id}')" style="background:#f1c40f; color:white; border:none; width:35px; height:35px; border-radius:10px; cursor:pointer;">
-                    <i class="fas fa-edit"></i>
-                </button>
-                <button onclick="deleteProduct('${p.id}')" style="background:#ff4757; color:white; border:none; width:35px; height:35px; border-radius:10px; cursor:pointer;">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        </div>
-    `).join('');
-}
-        
-        const slider = document.getElementById('slider');
-        let isDown = false; let startX; let scrollLeft;
-        slider.addEventListener('mousedown', (e) => { isDown = true; startX = e.pageX - slider.offsetLeft; scrollLeft = slider.scrollLeft; });
-        slider.addEventListener('mouseleave', () => { isDown = false; });
-        slider.addEventListener('mouseup', () => { isDown = false; });
-        slider.addEventListener('mousemove', (e) => { if (!isDown) return; e.preventDefault(); const x = e.pageX - slider.offsetLeft; slider.scrollLeft = scrollLeft - (x - startX) * 2; });
-
-        function openInfoModal() { document.getElementById('infoModal').classList.add('active'); }
-        function closeInfoModal() { document.getElementById('infoModal').classList.remove('active'); }
-
-
-        // KAMPANİYA ÜÇÜN CƏDVƏLLİ MODAL
-        function openCampaignModal() {
-            const modal = document.getElementById('infoModal');
-            modal.querySelector('b').innerText = "Kampaniya Şərtləri";
-            
-            const campaignHTML = `
-                <div style="padding:10px;">
-                    <h3 style="color:var(--dark-blue); margin-bottom:10px;">Dəyərli istifadəçilər</h3>
-                    <p style="font-size:14px; color:#555; line-height:1.5;">
-                        Kampaniya çərçivəsində etmiş olduğunuz alışlar zamanı aşağıdakı cədvəldə yazılan tariflər tətbiq olunacaq. 
-                        Xüsusi qablaşdırma və zövqünüzə uyğun olan 300-ə yaxın ətir çeşidi ilə kampaniyadan faydalana bilərsiniz.
-                    </p>
-                    
-                    <table style="width:100%; border-collapse: collapse; margin-top:15px; text-align:center; font-size:14px; border: 1px solid #eee;">
-                        <thead>
-                            <tr style="background:var(--main-blue); color:white;">
-                                <th style="padding:8px; border:1px solid #ddd;">Miqdar</th>
-                                <th style="padding:8px; border:1px solid #ddd;">50 ml Ətirlər</th>
-                                <th style="padding:8px; border:1px solid #ddd;">30 ml Ətirlər</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td style="padding:8px; border:1px solid #ddd; font-weight:bold;">5 ədəd</td>
-                                <td style="padding:8px; border:1px solid #ddd;">₼ 45</td>
-                                <td style="padding:8px; border:1px solid #ddd;">₼ 32</td>
-                            </tr>
-                            <tr style="background:#f9f9f9;">
-                                <td style="padding:8px; border:1px solid #ddd; font-weight:bold;">10 ədəd</td>
-                                <td style="padding:8px; border:1px solid #ddd;">₼ 75</td>
-                                <td style="padding:8px; border:1px solid #ddd;">₼ 64</td>
-                            </tr>
-                            <tr>
-                                <td style="padding:8px; border:1px solid #ddd; font-weight:bold;">15 ədəd</td>
-                                <td style="padding:8px; border:1px solid #ddd;">₼ 110</td>
-                                <td style="padding:8px; border:1px solid #ddd;">₼ 96</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <p style="font-size:13px; color:#666; margin-top:15px; border-top: 1px solid #eee; pt:10px;">
-                        Əlavə məlumatlar <b>Xidmətlər və çatdırılma</b>-da verilmişdir. 
-                       
-                    </p>
-                    <button class="btn-add" style="margin-top:15px;" onclick="closeInfoModal()">ANLADIM</button>
-                </div>
-            `;
-            
-            modal.querySelector('div[style="padding:20px;"]').innerHTML = campaignHTML;
-            modal.classList.add('active');
-        }
-
-        // XİDMƏTLƏR, ÇATDIRILMA VƏ BONUS SİSTEMİ MODALI
-        function openDeliveryModal() {
-            const modal = document.getElementById('infoModal');
-            modal.querySelector('b').innerText = "Xidmətlər və Çatdırılma";
-            
-            const deliveryHTML = `
-                <div style="padding:10px; font-size:14px; color:#444; line-height:1.6;">
-                    <h3 style="color:var(--dark-blue); margin-bottom:10px;">Hörmətli alıcılar!</h3>
-                    <p>
-                        Ətirlərin tək-tək sifarişi zamanı <b>30 ml</b> ətirlər üçün biri <b>10 AZN</b>, <b>50 ml</b> ətirlər üçün isə biri <b>13 AZN</b> olacaq. 
-                        Belə olan halda <b>çatdırılma xərci ödəmirsiniz.</b>
-                    </p>
-                    <p style="background:#fff3e0; padding:10px; border-radius:10px; border-left:4px solid var(--bright-orange);">
-                        Əgər topdansatış olaraq sifariş etsəniz, çatdırılma xərci alıcıya aid olur. Sifariş sayından asılı olaraq müxtəlif hədiyyələr və güzəştlər edilir.
-                    </p>
-
-                    <h3 style="color:var(--main-blue); margin-top:20px;"><i class="fas fa-coins"></i> Bonus Sistemi (Rcoin)</h3>
-                    <p>
-                        Bonus sistemi vasitəsilə siz həm satış edərək, həm də bonus toplayaraq qazanc əldə edə bilərsiniz. 
-                        Hər bir ətir <b>2 Rcoin</b> olaraq qiymətləndirilir. Verdiyiniz sifarişlərin sayından asılı olmayaraq, topladığınız bonuslar bazamızda saxlanılır. Məlumat təhlükəsizliyinə tam zəmanət verilir.
-                    </p>
-
-                    <table style="width:100%; border-collapse: collapse; margin-top:10px; text-align:center; background:white;">
-                        <thead>
-                            <tr style="background:#eee; color:var(--dark-blue);">
-                                <th style="padding:8px; border:1px solid #ddd;">Rcoin Miqdarı</th>
-                                <th style="padding:8px; border:1px solid #ddd;">Qazanc (AZN)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td style="padding:8px; border:1px solid #ddd;">100 Rcoin</td><td style="padding:8px; border:1px solid #ddd; font-weight:bold;">30 AZN</td></tr>
-                            <tr><td style="padding:8px; border:1px solid #ddd;">200 Rcoin</td><td style="padding:8px; border:1px solid #ddd; font-weight:bold;">80 AZN</td></tr>
-                            <tr><td style="padding:8px; border:1px solid #ddd;">400 Rcoin</td><td style="padding:8px; border:1px solid #ddd; font-weight:bold;">150 AZN</td></tr>
-                            <tr><td style="padding:8px; border:1px solid #ddd;">600 Rcoin</td><td style="padding:8px; border:1px solid #ddd; font-weight:bold;">200 AZN</td></tr>
-                        </tbody>
-                    </table>
-
-                    <p style="font-size:12px; color:#777; margin-top:15px; font-style:italic;">
-                        <b>Diqqət:</b> Rcoin R-Shoppingaz onlayn platformasının rəsmi tokeni olaraq qəbul edilmişdir.
-                    </p>
-                    
-                    <button class="btn-add" style="margin-top:15px;" onclick="closeInfoModal()">ANLADIM</button>
-                </div>
-            `;
-            
-            // Bu hissə modalın içini təmizləyib yeni mətni yazır
-            const modalBody = modal.querySelector('div[style="padding:20px;"]');
-            if(modalBody) {
-                modalBody.innerHTML = deliveryHTML;
-            }
-            modal.classList.add('active');
-        }
-        function updatePrice(btn, size, price) {
-            selectedSize = size;
-            currentPrice = price;
-            document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById('detPrice').innerText = price + " AZN";
-        }
-
-        function openDetail(id) {
-            currentProd = products.find(p => p.id === id);
-    if (!currentProd) return;
-
-    const defaultImg = "https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/card_pic.png";
-
-    currentQty = 1;
-    selectedSize = 30;
-    currentPrice = 10;
-    
-    document.getElementById('qtyVal').innerText = currentQty;
-    document.getElementById('detTitle').innerText = currentProd.name;
-    document.getElementById('detPrice').innerText = "10 AZN";
-    
-    // Böyük şəkli tam göstərmək üçün 'contain' istifadə edirik
-    document.getElementById('detImg').innerHTML = `
-        <div style="width:100%; height:250px; display:flex; align-items:center; justify-content:center; background:#fff; border-radius:20px; overflow:hidden; border:1px solid #eee; padding:10px; box-sizing:border-box;">
-            <img src="${defaultImg}" style="max-width:100%; max-height:100%; object-fit:contain;">
-        </div>`;
-    
-    document.getElementById('detNotes').innerText = currentProd.notes;
-    document.getElementById('detStay').innerText = currentProd.stay;
-
-    let displayCat = currentProd.cat;
-    if(displayCat === 'qadin') displayCat = 'Qadın';
-    else if(displayCat === 'kisi') displayCat = 'Kişi';
-    else if(displayCat === 'unisex') displayCat = 'Unisex';
-    
-    document.getElementById('detCat').innerText = displayCat;
-    document.getElementById('productDetail').classList.add('active');
-
-    // Rəyləri həmin an çəkib gətirir:
-    fetchReviews(id);
-        }
-
-        function closeDetail() { document.getElementById('productDetail').classList.remove('active'); }
-        function searchPerfume() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const grid = document.getElementById('homeGrid');
-            const title = document.getElementById('gridTitle');
-            if (query === "") { title.innerText = "Məhsullar"; renderAll(); return; }
-            const filtered = products.filter(p => p.name.toLowerCase().includes(query));
-            title.innerText = filtered.length > 0 ? "Axtarış nəticəsi" : "Məhsul tapılmadı";
-            grid.innerHTML = filtered.map(p => createCard(p)).join('');
-        }
-
+        // SEHIFE IDARESI
         function showPage(pId, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById(pId).classList.add('active');
-            el.classList.add('active');
+            if(el) el.classList.add('active');
+            
             if(pId === 'favPage') renderFavs();
             if(pId === 'cartPage') renderCart();
+            window.scrollTo(0,0);
+        }
+
+        function openModal(mId) {
+            document.getElementById(mId).style.display = 'block';
+            document.getElementById('mainNav').style.display = 'none'; // Naviqasiyani gizle
+        }
+
+        function closeModal(mId) {
+            document.getElementById(mId).style.display = 'none';
+            document.getElementById('mainNav').style.display = 'flex'; // Naviqasiyani qaytar
+        }
+
+        // FIREBASE DATA
+        function fetchProducts() {
+            db.collection("products").onSnapshot(snap => {
+                products = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderAll();
+                if(document.getElementById('sectList').style.display === 'block') renderAdminList();
+            });
+        }
+
+        function renderAll() {
+            const html = products.map(p => createCard(p)).join('');
+            document.getElementById('homeGrid').innerHTML = html;
+            document.getElementById('catalogGrid').innerHTML = html;
         }
 
         function createCard(p) {
-           const isFav = favs.some(f => f.id === p.id);
-    const defaultImg = "https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/card_pic.png";
+            const isFav = favs.some(f => f.id === p.id);
+            const img = "https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/card_pic.png";
+            return `
+                <div class="product-card">
+                    <i class="fas fa-heart" style="position:absolute; top:12px; right:12px; color:${isFav?'#ff4757':'#ddd'}; z-index:10;" onclick="toggleFav(event, '${p.id}')"></i>
+                    <div onclick="openProductDetail('${p.id}')">
+                        <img src="${img}" style="width:100%; height:120px; object-fit:contain;">
+                        <h4>${p.name}</h4>
+                        <span class="price-text">10 - 13 AZN</span>
+                    </div>
+                    <button class="btn-add" onclick="openProductDetail('${p.id}')">SEÇİM ET</button>
+                </div>`;
+        }
 
-    return `<div class="product-card">
-        <i class="fas fa-heart" style="position:absolute; top:12px; right:12px; color:${isFav?'#ff4757':'#ddd'}; cursor:pointer; z-index:10;" onclick="toggleFav(event, '${p.id}')"></i>
-        <div onclick="openDetail('${p.id}')">
-            <div style="width:100%; height:140px; background:#fff; border-radius:12px; margin-bottom:10px; display:flex; align-items:center; justify-content:center; padding:5px; box-sizing:border-box; border: 1px solid #f0f0f0;">
-                <img src="${defaultImg}" alt="${p.name}" style="max-width:100%; max-height:100%; object-fit:contain;">
-            </div>
-            <h4>${p.name}</h4>
-            <span class="price-text">10 - 13 AZN</span>
-        </div>
-        <button class="btn-add" onclick="openDetail('${p.id}')">Seçim et</button>
-    </div>`;
+        // DETAL SEHIFESI
+        function openProductDetail(id) {
+            currentProd = products.find(p => p.id === id);
+            if(!currentProd) return;
+
+            currentQty = 1; selectedSize = 30; currentPrice = 10;
+            document.getElementById('qtyVal').innerText = currentQty;
+            document.getElementById('detTitle').innerText = currentProd.name;
+            document.getElementById('detPrice').innerText = "10 AZN";
+            document.getElementById('detNotes').innerText = currentProd.notes || "-";
+            document.getElementById('detStay').innerText = currentProd.stay || "-";
+            document.getElementById('detCat').innerText = currentProd.cat.toUpperCase();
+            document.getElementById('detImg').innerHTML = `<img src="https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/card_pic.png" style="max-height:200px;">`;
+            
+            const isFav = favs.some(f => f.id === id);
+            document.getElementById('detFavBtn').style.color = isFav ? '#ff4757' : '#ccc';
+
+            openModal('productDetail');
+            fetchReviews(id);
+        }
+
+        // REY SISTEMI
+        function setRating(r) {
+            selectedRating = r;
+            const stars = document.querySelectorAll('.star-rating i');
+            stars.forEach((s, idx) => s.style.color = idx < r ? '#ff8c00' : '#ccc');
+        }
+
+        async function submitReview() {
+            const name = document.getElementById('reviewerName').value.trim();
+            const text = document.getElementById('reviewText').value.trim();
+            if(!name || !text || selectedRating === 0) return alert("Bütün sahələri doldurun!");
+
+            await db.collection("reviews").add({
+                productId: currentProd.id,
+                userName: name,
+                rating: selectedRating,
+                comment: text,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            
+            document.getElementById('reviewerName').value = "";
+            document.getElementById('reviewText').value = "";
+            setRating(0);
+            alert("Rəyiniz əlavə edildi!");
+        }
+
+        function fetchReviews(pId) {
+            db.collection("reviews").where("productId", "==", pId).orderBy("timestamp", "desc").onSnapshot(snap => {
+                const list = document.getElementById('reviewsList');
+                let html = "";
+                snap.forEach(doc => {
+                    const r = doc.data();
+                    html += `<div style="border-bottom:1px solid #eee; padding:10px 0;">
+                        <b>${r.userName}</b> <span style="color:#ff8c00; font-size:12px;">${'★'.repeat(r.rating)}</span>
+                        <p style="margin:5px 0; font-size:14px; color:#555;">${r.comment}</p>
+                    </div>`;
+                });
+                list.innerHTML = html || "<p style='color:#999'>Hələ rəy yoxdur.</p>";
+            });
+        }
+
+        // SEBET
+        function addToCart() {
+            const item = { ...currentProd, qty: currentQty, size: selectedSize, price: currentPrice };
+            const exist = cart.find(c => c.id === item.id && c.size === item.size);
+            if(exist) exist.qty += currentQty; else cart.push(item);
+            updateBadge();
+            closeModal('productDetail');
+        }
+
+        function updateBadge() {
+            const count = cart.reduce((s, i) => s + i.qty, 0);
+            const b = document.getElementById('cartBadge');
+            b.innerText = count;
+            b.style.display = count > 0 ? 'flex' : 'none';
+        }
+
+        function renderCart() {
+            const list = document.getElementById('cartList');
+            const footer = document.getElementById('cartFooter');
+            if(cart.length === 0) {
+                list.innerHTML = "<p style='text-align:center; padding:50px; color:#999;'>Səbətiniz boşdur.</p>";
+                footer.innerHTML = "";
+                return;
+            }
+            let total = 0;
+            list.innerHTML = cart.map((item, i) => {
+                total += item.price * item.qty;
+                return `<div style="background:#fff; padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+                    <div><b>${item.name}</b> (${item.size}ml)<br><small>${item.qty} ədəd x ${item.price} AZN</small></div>
+                    <div style="font-weight:bold;">${item.price * item.qty} AZN <i class="fas fa-trash" style="color:red; margin-left:10px;" onclick="remCart(${i})"></i></div>
+                </div>`;
+            }).join('');
+            footer.innerHTML = `<div style="padding:15px; font-size:18px; font-weight:bold; display:flex; justify-content:space-between;"><span>Cəmi:</span><span>${total} AZN</span></div>
+                <button class="btn-add" style="background:var(--main-blue); padding:15px;" onclick="checkout()">SİFARİŞİ TAMAMLA</button>`;
+        }
+
+        function remCart(i) { cart.splice(i, 1); updateBadge(); renderCart(); }
+
+        // WHATSAPP SIFARIS
+        function checkout() {
+            const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+            const html = `
+                <div id="checkoutBox" style="background:#fff; padding:20px; border-radius:20px; margin-top:20px; border:1px solid #ddd;">
+                    <h3>Sifarişi Tamamla</h3>
+                    <p style="font-size:13px;">Ödənişi karta edin və ünvanınızı yazın:</p>
+                    <div style="background:#f0f0f0; padding:10px; border-radius:10px; margin-bottom:15px;">
+                        <small>Kart: <b>4169 7388 2013 3274</b></small>
+                    </div>
+                    <input type="text" id="userAddress" placeholder="Çatdırılma ünvanı..." style="width:100%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #ddd; box-sizing:border-box;">
+                    <button class="btn-add" style="background:#25D366;" onclick="sendToWA(${total})">WHATSAPP İLƏ GÖNDƏR</button>
+                </div>`;
+            document.getElementById('cartFooter').innerHTML += html;
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+
+        function sendToWA(total) {
+            const addr = document.getElementById('userAddress').value;
+            if(!addr) return alert("Ünvan yazın!");
+            let msg = "*YENİ SİFARİŞ*\n\n";
+            cart.forEach(i => msg += `• ${i.name} (${i.size}ml) - ${i.qty} ədəd\n`);
+            msg += `\n*Ünvan:* ${addr}\n*Cəmi:* ${total} AZN`;
+            window.location.href = `https://wa.me/994515817772?text=${encodeURIComponent(msg)}`;
+        }
+
+        // ADMIN FUNKSIYALARI
+        function openAdminModal() { openModal('adminLoginModal'); }
+        async function checkAdminLogin() {
+            const id = document.getElementById('adminID').value;
+            const pass = document.getElementById('adminPass').value;
+            const snap = await db.collection("admins").get();
+            let found = false;
+            snap.forEach(doc => {
+                if(doc.data().adminID == id && doc.data().password == pass) found = true;
+            });
+            if(found) {
+                closeModal('adminLoginModal');
+                openModal('adminPage');
+            } else alert("Məlumatlar səhvdir!");
+        }
+
+        function switchAdminTab(t) {
+            document.getElementById('sectAdd').style.display = t === 'add' ? 'block' : 'none';
+            document.getElementById('sectList').style.display = t === 'list' ? 'block' : 'none';
+            document.getElementById('tabAdd').classList.toggle('active', t === 'add');
+            document.getElementById('tabList').classList.toggle('active', t === 'list');
+            if(t === 'list') renderAdminList();
+        }
+
+        async function saveProductToFirebase() {
+            const data = {
+                name: document.getElementById('adminProdName').value,
+                cat: document.getElementById('adminProdCat').value,
+                notes: document.getElementById('adminProdNotes').value,
+                stay: document.getElementById('adminProdStay').value
+            };
+            if(editMode) await db.collection("products").doc(editId).update(data);
+            else await db.collection("products").add(data);
+            resetAdminForm();
+            alert("Uğurla yadda saxlanıldı!");
+        }
+
+        function renderAdminList() {
+            document.getElementById('adminProductList').innerHTML = products.map(p => `
+                <div style="background:#fff; padding:10px; margin-bottom:8px; border-radius:10px; display:flex; justify-content:space-between;">
+                    <span>${p.name}</span>
+                    <div>
+                        <i class="fas fa-edit" style="color:orange; margin-right:15px;" onclick="editProduct('${p.id}')"></i>
+                        <i class="fas fa-trash" style="color:red;" onclick="deleteProduct('${p.id}')"></i>
+                    </div>
+                </div>`).join('');
+        }
+
+        function deleteProduct(id) { if(confirm("Silinsin?")) db.collection("products").doc(id).delete(); }
+
+        function editProduct(id) {
+            const p = products.find(i => i.id === id);
+            document.getElementById('adminProdName').value = p.name;
+            document.getElementById('adminProdNotes').value = p.notes;
+            document.getElementById('adminProdStay').value = p.stay;
+            editMode = true; editId = id;
+            document.getElementById('adminSaveBtn').innerText = "YENİLƏ";
+            document.getElementById('cancelEditBtn').style.display = "block";
+            switchAdminTab('add');
+        }
+
+        function resetAdminForm() {
+            editMode = false; editId = null;
+            document.getElementById('adminProdName').value = "";
+            document.getElementById('adminSaveBtn').innerText = "YADDA SAXLA";
+            document.getElementById('cancelEditBtn').style.display = "none";
+        }
+
+        // DIGER
+        function updatePrice(btn, s, p) {
+            selectedSize = s; currentPrice = p;
+            document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('detPrice').innerText = p + " AZN";
+        }
+
+        function changeQty(v) { currentQty = Math.max(1, currentQty + v); document.getElementById('qtyVal').innerText = currentQty; }
+
+        function toggleFav(e, id) {
+            e.stopPropagation();
+            const idx = favs.findIndex(f => f.id === id);
+            if(idx > -1) favs.splice(idx, 1);
+            else favs.push(products.find(p => p.id === id));
+            renderAll();
+        }
+
+        function toggleFavFromDetail() {
+            toggleFav({stopPropagation:()=>{}}, currentProd.id);
+            const isFav = favs.some(f => f.id === currentProd.id);
+            document.getElementById('detFavBtn').style.color = isFav ? '#ff4757' : '#ccc';
+        }
+
+        function renderFavs() {
+            const grid = document.getElementById('favGrid');
+            const empty = document.getElementById('favEmpty');
+            if(favs.length === 0) { grid.innerHTML = ""; empty.style.display = "block"; }
+            else { empty.style.display = "none"; grid.innerHTML = favs.map(p => createCard(p)).join(''); }
+        }
+
+        function searchPerfume() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = products.filter(p => p.name.toLowerCase().includes(q));
+            document.getElementById('homeGrid').innerHTML = filtered.map(p => createCard(p)).join('');
         }
 
         function applyFilter(cat, btn) {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            const filtered = (cat === 'all') ? products : products.filter(p => p.cat === cat);
+            const filtered = cat === 'all' ? products : products.filter(p => p.cat === cat);
             document.getElementById('catalogGrid').innerHTML = filtered.map(p => createCard(p)).join('');
         }
 
-        function toggleFav(e, id) {
-           e.stopPropagation();
-    const idx = favs.findIndex(f => f.id === id);
-    
-    if (idx > -1) {
-        // Əgər artıq favoridədirsə, çıxarırıq
-        favs.splice(idx, 1);
-    } else {
-        // Yoxdursa, əlavə edirik
-        const productToAdd = products.find(p => p.id === id);
-        if (productToAdd) favs.push(productToAdd);
-    }
-
-    // Ana səhifəni və kataloqu yeniləyir (ürəyin rəngi dəyişsin deyə)
-    renderAll();
-
-    // Əgər istifadəçi hal-hazırda Favori səhifəsindədirsə, siyahını dərhal yeniləyirik
-    if (document.getElementById('favPage').classList.contains('active')) {
-        renderFavs();
-    }
+        function openCampaignModal() {
+            document.getElementById('infoModalTitle').innerText = "Kampaniya Şərtləri";
+            document.getElementById('infoModalBody').innerHTML = `
+                <p>30 ml ətirlər: 10 AZN, 50 ml ətirlər: 13 AZN.</p>
+                <table><tr><th>Sayı</th><th>30ml</th><th>50ml</th></tr><tr><td>5 ədəd</td><td>32 AZN</td><td>45 AZN</td></tr></table>`;
+            openModal('infoModal');
         }
 
-        function renderFavs() {
-            const grid = document.getElementById('favGrid'), empty = document.getElementById('favEmpty');
-            if(favs.length === 0) { empty.style.display = 'block'; grid.innerHTML = ''; }
-            else { empty.style.display = 'none'; grid.innerHTML = favs.map(p => createCard(p)).join(''); }
+        function openDeliveryModal() {
+            document.getElementById('infoModalTitle').innerText = "Çatdırılma";
+            document.getElementById('infoModalBody').innerHTML = "<p>Şəhərdaxili çatdırılma pulsuzdur.</p>";
+            openModal('infoModal');
         }
 
-        function changeQty(val) { currentQty = Math.max(1, currentQty + val); document.getElementById('qtyVal').innerText = currentQty; }
-        function toggleFavFromDetail() { toggleFav({stopPropagation:()=>{}}, currentProd.id); const isFav = favs.some(f => f.id === currentProd.id); document.getElementById('detFavBtn').style.color = isFav ? '#ff4757' : '#ccc'; }
-
-        function addToCart() {
-            const item = { ...currentProd, qty: currentQty, size: selectedSize, price: currentPrice };
-            const existing = cart.find(c => c.id === item.id && c.size === item.size);
-            if(existing) existing.qty += currentQty; else cart.push(item);
-            updateBadge(); closeDetail();
-        }
-
-        function updateBadge() { const totalItems = cart.reduce((sum, item) => sum + item.qty, 0); const b = document.getElementById('cartBadge'); b.innerText = totalItems; b.style.display = totalItems > 0 ? 'flex' : 'none'; }
-
-        function renderCart() {
-    const list = document.getElementById('cartList'), footer = document.getElementById('cartFooter');
-    if(cart.length === 0) {
-        list.innerHTML = `<div style="text-align:center; padding:50px; color:#ccc;"><i class="fas fa-shopping-basket" style="font-size:60px;"></i><p>Səbət boşdur</p></div>`;
-        footer.innerHTML = '';
-    } else {
-        let total = 0; list.innerHTML = '';
-        cart.forEach((item, i) => {
-            total += item.price * item.qty;
-            list.innerHTML += `<div class="cart-item"><div style="flex:1"><b>${item.name} (${item.size}ml)</b><br><small>${item.price} AZN x ${item.qty}</small></div><div style="font-weight:bold; margin-right:15px;">${item.price * item.qty} AZN</div><i class="fas fa-trash" style="color:#ff4757" onclick="remCart(${i})"></i></div>`;
-        });
-        // Footer-də sadəcə "Cəmi" və "Sifarişi tamamla" düyməsi qalsın
-        footer.innerHTML = `
-            <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:18px; margin-top:15px; padding:10px;">
-                <span>Cəmi:</span> <span>${total} AZN</span>
-            </div>
-            <button onclick="checkout()" class="btn-add" style="width:100%; margin-top:10px; background:var(--main-blue);">
-                SİFARİŞİ TAMAMLA
-            </button>`;
-    }
-}
-
-
-
-        function remCart(i) { cart.splice(i, 1); updateBadge(); renderCart(); }
-        function renderAll() { document.getElementById('homeGrid').innerHTML = products.map(p => createCard(p)).join(''); document.getElementById('catalogGrid').innerHTML = products.map(p => createCard(p)).join(''); }
+        // START
         fetchProducts();
-
-       // --- SİFARİŞ VƏ WHATSAPP FUNKSİYALARI (BURADAN BAŞLAYIR) ---
-
-function checkout() {
-    if (cart.length === 0) {
-        alert("Səbət boşdur!");
-        return;
-    }
-
-    const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-
-    const checkoutHTML = `
-        <div id="checkoutModal" style="padding:20px; background:#fff; border-radius:20px; margin-top:20px; border:1px solid #eee; box-shadow: 0 -5px 15px rgba(0,0,0,0.05);">
-            <h3 style="color:var(--dark-blue); margin-top:0;">Sifarişi Tamamla</h3>
-            <p style="font-size:14px; color:#666;">Ödənişi aşağıdakı karta edin və "WhatsApp-a keç" düyməsini sıxaraq çeki göndərin.</p>
-
-            <div style="background:#f8f9fa; padding:15px; border-radius:12px; margin-bottom:15px; border:1px dashed var(--main-blue);">
-                <small style="color:#888;">Kart Sahibi: <b>R-Shoppingaz.</b></small><br>
-                <b id="cardNumber" style="font-size:18px; color:var(--dark-blue);">4169 7388 2013 3274</b>
-                <button onclick="copyCardDirect(event)" style="margin-left:10px; border:none; background:none; color:var(--main-blue); cursor:pointer;"><i class="fas fa-copy"></i></button>
-            </div>
-
-            <input type="text" id="userAddress" placeholder="Tam ünvanınızı yazın (məs: Yasamal, ev 5...)" style="width:100%; padding:15px; border-radius:12px; border:1px solid #ddd; margin-bottom:15px; box-sizing:border-box; font-size:15px;">
-
-            <button onclick="sendToWhatsApp('${total}')" class="btn-add" style="background:#25D366; width:100%; border:none; color:white; padding:18px; border-radius:15px; font-weight:bold; font-size:16px; display:flex; align-items:center; justify-content:center; gap:10px;">
-                <i class="fab fa-whatsapp" style="font-size:20px;"></i> WHATSAPP İLƏ SİFARİŞ ET
-            </button>
-        </div>
-    `;
-
-    // Əgər artıq açıq modal varsa, onu yeniləyirik
-    const cartList = document.getElementById('cartList');
-    const existingModal = document.getElementById('checkoutModal');
-    if(existingModal) existingModal.remove();
-
-    cartList.insertAdjacentHTML('beforeend', checkoutHTML);
-
-    // Səhifəni modalın olduğu yerə sürüşdürürük
-    setTimeout(() => {
-        document.getElementById('checkoutModal').scrollIntoView({ behavior: 'smooth' });
-    }, 100);
-}
-
-function sendToWhatsApp(total) {
-    const addr = document.getElementById('userAddress').value.trim();
-    if (!addr) {
-        alert("Zəhmət olmasa çatdırılma ünvanını qeyd edin!");
-        return;
-    }
-
-    let msg = "✨ *YENİ SİFARİŞ* ✨\n\n";
-    cart.forEach(i => {
-        msg += `🛍️ *${i.name}*\n   ${i.size}ml | ${i.qty} ədəd | ${i.price * i.qty} AZN\n`;
-    });
-    msg += `\n--------------------------\n`;
-    msg += `📍 *Ünvan:* ${addr}\n`;
-    msg += `💰 *Cəmi Məbləğ:* ${total} AZN\n\n`;
-    msg += `✅ *Ödəniş qəbzini (şəkli) indi aşağıdan göndərirəm.*`;
-
-    // Android WebView-da ən stabil keçid yolu
-    window.location.href = `https://wa.me/994515817772?text=${encodeURIComponent(msg)}`;
-}
-
-// WebView üçün daha sadə kopyalama funksiyası
-function copyCardDirect(e) {
-    const cardNum = document.getElementById('cardNumber').innerText.replace(/\s/g, '');
-    const textArea = document.createElement("textarea");
-    textArea.value = cardNum;
-    document.body.appendChild(textArea);
-    textArea.select();
-    document.execCommand('copy');
-    document.body.removeChild(textArea);
-
-    alert("Kart nömrəsi kopyalandı!");
-}
     </script>
 </body>
 </html>
