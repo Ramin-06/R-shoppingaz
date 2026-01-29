@@ -6,241 +6,179 @@
     <title>R-Shoppingaz</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root {
-            --dark-blue: #003366;
-            --main-blue: #00509d;
-            --bright-orange: #ff8c00;
-            --light-bg: #f8f9fa;
-        }
-
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: var(--light-bg); overflow-x: hidden; }
+        :root { --main-blue: #00509d; --dark-blue: #003366; --bright-orange: #ff8c00; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f8f9fa; color: #333; }
         
-        /* Səhifə sistemləri */
-        .page { display: none; padding: 15px; animation: fadeIn 0.3s; min-height: 100vh; box-sizing: border-box; }
+        /* Səhifə Struktur */
+        .page { display: none; padding: 15px; min-height: 100vh; box-sizing: border-box; }
         .page.active { display: block !important; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* Header & Search */
-        .header-fixed { position: sticky; top: 0; background: var(--light-bg); z-index: 1000; padding: 10px 15px; }
-        .search-container { background: #fff; padding: 12px; border-radius: 15px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .header-fixed { position: sticky; top: 0; background: #f8f9fa; z-index: 100; padding: 10px 0; }
+        .search-container { background: white; padding: 12px; border-radius: 15px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .search-container input { border: none; outline: none; width: 100%; margin-left: 10px; font-size: 15px; }
 
         /* Slider */
-        .slider-area { display: flex; overflow-x: auto; gap: 10px; scrollbar-width: none; margin-bottom: 20px; cursor: grab; padding: 5px 0; }
-        .slider-area::-webkit-scrollbar { display: none; }
-        .slide-card { min-width: 85%; height: 160px; background: #eee; border-radius: 20px; overflow: hidden; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .slider-area { display: flex; overflow-x: auto; gap: 10px; padding: 10px 0; scrollbar-width: none; }
+        .slide-card { min-width: 85%; height: 160px; background: #ddd; border-radius: 20px; overflow: hidden; flex-shrink: 0; }
         .slide-card img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* Grid */
-        .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        @media (min-width: 768px) { .product-grid { grid-template-columns: repeat(4, 1fr); } }
-
-        /* Card */
-        .product-card { background: white; border-radius: 18px; padding: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); text-align: center; position: relative; }
-        .product-card h4 { margin: 8px 0; font-size: 14px; color: var(--dark-blue); height: 35px; overflow: hidden; }
-        .price-text { color: var(--main-blue); font-weight: bold; margin-bottom: 10px; display: block; }
-        .btn-add { background: var(--bright-orange); color: white; border: none; padding: 10px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn-add:active { transform: scale(0.95); }
-
-        /* Modallar (Tam Ekran) */
-        #productDetail, #infoModal, #adminPage, #adminLoginModal { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: white; z-index: 10000; display: none; overflow-y: auto; 
-        }
-        .modal-active { display: block !important; }
-
-        .det-header { position: sticky; top: 0; background: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; z-index: 101; }
+        /* Product Grid */
+        .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
+        .product-card { background: white; border-radius: 18px; padding: 12px; position: relative; box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: center; }
+        .product-card h4 { font-size: 14px; margin: 8px 0; height: 35px; overflow: hidden; }
+        .price-text { color: var(--main-blue); font-weight: bold; display: block; margin-bottom: 8px; }
+        .btn-add { background: var(--bright-orange); color: white; border: none; padding: 10px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; }
 
         /* Bottom Nav */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: white; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #eee; z-index: 5000; padding-bottom: env(safe-area-inset-bottom); }
-        .nav-item { text-align: center; color: #999; font-size: 11px; cursor: pointer; flex: 1; transition: 0.3s; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: white; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #eee; z-index: 1000; }
+        .nav-item { text-align: center; color: #999; font-size: 11px; flex: 1; }
         .nav-item.active { color: var(--main-blue); font-weight: bold; }
-        .badge { position: absolute; top: 5px; right: 25%; background: var(--bright-orange); color: white; font-size: 10px; width: 16px; height: 16px; border-radius: 50%; display: none; align-items: center; justify-content: center; border: 2px solid #fff; }
+        .badge { position: absolute; top: 5px; right: 25%; background: red; color: white; font-size: 10px; width: 16px; height: 16px; border-radius: 50%; display: none; align-items: center; justify-content: center; }
 
-        /* Tables */
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
-        th, td { padding: 10px; border: 1px solid #eee; }
-        th { background: var(--main-blue); color: white; }
-
-        /* Star Rating */
-        .star-rating i { font-size: 24px; color: #ccc; cursor: pointer; margin-right: 5px; }
-
-        .admin-section { padding: 10px 0; }
-        .filter-scroll { display: flex; overflow-x: auto; gap: 10px; margin-bottom: 15px; padding-bottom: 5px; }
-        .filter-btn { padding: 8px 18px; border-radius: 20px; border: 1px solid #ddd; background: #fff; white-space: nowrap; cursor: pointer; }
-        .filter-btn.active { background: var(--main-blue); color: #fff; border-color: var(--main-blue); }
+        /* Modallar */
+        #productDetail, #adminLoginModal, #infoModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: none; overflow-y: auto; }
+        #adminLoginModal { background: rgba(0,0,0,0.8); align-items: center; justify-content: center; }
+        .det-header { padding: 15px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #eee; position: sticky; top: 0; background: white; z-index: 10; }
     </style>
 </head>
 <body>
 
-    <div id="infoModal">
-        <div class="det-header">
-            <i class="fas fa-arrow-left" onclick="closeModal('infoModal')" style="font-size:22px;"></i>
-            <b id="infoModalTitle">Məlumat</b>
-            <div style="width:22px;"></div>
+    <div id="adminLoginModal">
+        <div style="background:white; padding:30px; border-radius:20px; width:80%; max-width:400px; text-align:center;">
+            <h3>Admin Girişi</h3>
+            <input type="text" id="adminID" placeholder="Admin ID" style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid #ddd; box-sizing:border-box;">
+            <input type="password" id="adminPass" placeholder="Şifrə" style="width:100%; padding:12px; margin-bottom:20px; border-radius:10px; border:1px solid #ddd; box-sizing:border-box;">
+            <button class="btn-add" onclick="checkAdminLogin()">DAXİL OL</button>
+            <p onclick="closeAdminLogin()" style="margin-top:15px; color:#666; font-size:14px;">Bağla</p>
         </div>
-        <div id="infoModalBody" style="padding:20px;"></div>
+    </div>
+
+    <div id="infoModal">
+        <div class="det-header"><i class="fas fa-arrow-left" onclick="closeInfoModal()"></i> <b>Məlumat</b></div>
+        <div style="padding:20px;"></div>
     </div>
 
     <div id="productDetail">
         <div class="det-header">
-            <i class="fas fa-arrow-left" onclick="closeModal('productDetail')" style="font-size:22px;"></i>
-            <b id="detHeaderName">Xüsusiyyətlər</b>
-            <i class="fas fa-heart" id="detFavBtn" onclick="toggleFavFromDetail()" style="font-size:22px;"></i>
+            <i class="fas fa-arrow-left" onclick="closeDetail()"></i> 
+            <b id="detTitle">Məhsul</b>
+            <i class="fas fa-heart" id="detFavBtn" onclick="toggleFavFromDetail()" style="margin-left:auto; color:#ccc;"></i>
         </div>
-        <div style="padding:20px; padding-bottom: 100px;">
-            <div id="detImg" style="text-align:center; margin-bottom:20px;"></div>
-            <h2 id="detTitle" style="color:var(--dark-blue); margin:0;"></h2>
-            <span id="detPrice" style="color:var(--main-blue); font-size:24px; font-weight:bold;"></span>
+        <div style="padding:20px; padding-bottom: 120px;">
+            <div id="detImg"></div>
+            <h2 id="detHeaderName" style="margin:15px 0 5px 0;"></h2>
+            <span id="detPrice" style="font-size:22px; color:var(--main-blue); font-weight:bold;"></span>
             
-            <p style="font-weight:bold; margin-top:20px;">Ölçü seçin:</p>
-            <div style="display:flex; gap:10px;">
-                <button class="filter-btn active size-btn" onclick="updatePrice(this, 30, 10)">30 ml</button>
-                <button class="filter-btn size-btn" onclick="updatePrice(this, 50, 13)">50 ml</button>
-            </div>
-
-            <p style="font-weight:bold; margin-top:20px;">Sayı:</p>
-            <div style="display:flex; align-items:center; gap:20px; background:#f1f1f1; width:fit-content; padding:8px 20px; border-radius:25px;">
-                <button onclick="changeQty(-1)" style="border:none; background:none; font-size:20px;">-</button>
-                <span id="qtyVal" style="font-weight:bold;">1</span>
-                <button onclick="changeQty(1)" style="border:none; background:none; font-size:20px;">+</button>
-            </div>
-
-            <button class="btn-add" style="margin-top:25px; padding:15px;" onclick="addToCart()">SƏBƏTƏ ƏLAVƏ ET</button>
-
-            <div style="margin-top:30px; border-top:1px solid #eee; padding-top:20px;">
-                <div style="margin-bottom:10px;"><i class="fas fa-wind" style="color:var(--bright-orange); width:25px;"></i> <b>Qoxu:</b> <span id="detNotes"></span></div>
-                <div style="margin-bottom:10px;"><i class="fas fa-hourglass-half" style="color:var(--bright-orange); width:25px;"></i> <b>Qalıcılıq:</b> <span id="detStay"></span></div>
-                <div style="margin-bottom:10px;"><i class="fas fa-check-circle" style="color:var(--bright-orange); width:25px;"></i> <b>Kateqoriya:</b> <span id="detCat"></span></div>
-            </div>
-
-            <div id="reviewsSection" style="margin-top:40px;">
-                <h3>İstifadəçi Rəyləri</h3>
-                <div id="ratingStats" style="background:#f9f9f9; padding:15px; border-radius:15px; margin-bottom:20px;"></div>
-                
-                <div style="background:#fff; border:1px solid #eee; padding:15px; border-radius:15px;">
-                    <input type="text" id="reviewerName" placeholder="Adınız" style="width:100%; padding:10px; margin-bottom:10px; border-radius:10px; border:1px solid #ddd; box-sizing:border-box;">
-                    <div class="star-rating" style="margin-bottom:10px;">
-                        <i class="fas fa-star" data-rating="1" onclick="setRating(1)"></i>
-                        <i class="fas fa-star" data-rating="2" onclick="setRating(2)"></i>
-                        <i class="fas fa-star" data-rating="3" onclick="setRating(3)"></i>
-                        <i class="fas fa-star" data-rating="4" onclick="setRating(4)"></i>
-                        <i class="fas fa-star" data-rating="5" onclick="setRating(5)"></i>
-                    </div>
-                    <textarea id="reviewText" placeholder="Fikirləriniz..." style="width:100%; height:80px; padding:10px; border-radius:10px; border:1px solid #ddd; box-sizing:border-box;"></textarea>
-                    <button class="btn-add" style="margin-top:10px;" onclick="submitReview()">RƏY BİLDİR</button>
+            <div style="margin:20px 0;">
+                <p><b>Həcm seçin:</b></p>
+                <div style="display:flex; gap:10px;">
+                    <button class="size-btn active" style="padding:10px 20px; border-radius:10px; border:1px solid #ddd; background:white;" onclick="updatePrice(this, 30, 10)">30 ml</button>
+                    <button class="size-btn" style="padding:10px 20px; border-radius:10px; border:1px solid #ddd; background:white;" onclick="updatePrice(this, 50, 13)">50 ml</button>
                 </div>
-                <div id="reviewsList" style="margin-top:20px;"></div>
             </div>
+
+            <div style="display:flex; align-items:center; gap:20px; margin-bottom:25px;">
+                <button onclick="changeQty(-1)" style="width:40px; height:40px; border-radius:50%; border:1px solid #ddd;">-</button>
+                <b id="qtyVal">1</b>
+                <button onclick="changeQty(1)" style="width:40px; height:40px; border-radius:50%; border:1px solid #ddd;">+</button>
+            </div>
+
+            <button class="btn-add" onclick="addToCart()" style="padding:15px;">SƏBƏTƏ ƏLAVƏ ET</button>
+
+            <div style="margin-top:30px; line-height:1.6;">
+                <p><b>Qoxu:</b> <span id="detNotes"></span></p>
+                <p><b>Qalıcılıq:</b> <span id="detStay"></span></p>
+                <p><b>Cins:</b> <span id="detCat"></span></p>
+            </div>
+
+            <div id="ratingStats" style="margin-top:30px; border-top:1px solid #eee; padding-top:20px;"></div>
+            <div id="reviewsList"></div>
         </div>
     </div>
 
     <div id="homePage" class="page active">
         <div class="header-fixed">
-            <div style="text-align:center; margin-bottom:10px;">
-                <img src="https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/logo_baslig.png" style="height:35px;">
-            </div>
-            <div class="search-container">
+            <center><img src="https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/logo_baslig.png" style="height:35px;"></center>
+            <div class="search-container" style="margin-top:10px;">
                 <i class="fas fa-search" style="color:#ccc"></i>
                 <input type="text" id="searchInput" placeholder="Ətir axtar..." oninput="searchPerfume()">
             </div>
         </div>
         <div class="slider-area" id="slider">
-            <div class="slide-card" onclick="openCampaignModal()">
-                <img src="https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/kampaniya_sertleri.jpg">
-            </div>
-            <div class="slide-card" onclick="openDeliveryModal()">
-                <img src="https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/xidmetler_ve_catdirilma.jpg">
-            </div>
+            <div class="slide-card" onclick="openCampaignModal()"><img src="https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/kampaniya_sertleri.jpg"></div>
+            <div class="slide-card" onclick="openDeliveryModal()"><img src="https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/xidmetler_ve_catdirilma.jpg"></div>
         </div>
-        <h4 id="gridTitle" style="color:var(--dark-blue); margin:10px 0;">Məhsullar</h4>
+        <h3 id="gridTitle">Məhsullar</h3>
         <div id="homeGrid" class="product-grid"></div>
         <div style="height:80px;"></div>
     </div>
 
     <div id="catalogPage" class="page">
-        <h4 style="color:var(--dark-blue);">Kataloq</h4>
-        <div class="filter-scroll">
-            <button class="filter-btn active" onclick="applyFilter('all', this)">Hamısı</button>
-            <button class="filter-btn" onclick="applyFilter('qadin', this)">Qadın</button>
-            <button class="filter-btn" onclick="applyFilter('kisi', this)">Kişi</button>
-            <button class="filter-btn" onclick="applyFilter('unisex', this)">Unisex</button>
+        <h3>Kataloq</h3>
+        <div style="display:flex; gap:10px; overflow-x:auto; padding-bottom:10px;">
+            <button class="filter-btn active" onclick="applyFilter('all', this)" style="padding:8px 20px; border-radius:20px; border:1px solid #ddd; white-space:nowrap;">Hamısı</button>
+            <button class="filter-btn" onclick="applyFilter('qadin', this)" style="padding:8px 20px; border-radius:20px; border:1px solid #ddd; white-space:nowrap;">Qadın</button>
+            <button class="filter-btn" onclick="applyFilter('kisi', this)" style="padding:8px 20px; border-radius:20px; border:1px solid #ddd; white-space:nowrap;">Kişi</button>
         </div>
         <div id="catalogGrid" class="product-grid"></div>
         <div style="height:80px;"></div>
     </div>
 
     <div id="favPage" class="page">
-        <h4 style="color:var(--dark-blue);">Favorilərim</h4>
+        <h3>Favorilər</h3>
         <div id="favGrid" class="product-grid"></div>
-        <div id="favEmpty" style="text-align:center; padding:50px; color:#ccc; display:none;">
-            <i class="far fa-heart" style="font-size:50px;"></i>
-            <p>Heç nə tapılmadı</p>
-        </div>
-        <div style="height:80px;"></div>
+        <div id="favEmpty" style="display:none; text-align:center; margin-top:50px; color:#999;">Favorit siyahısı boşdur.</div>
     </div>
 
     <div id="cartPage" class="page">
-        <h4 style="color:var(--dark-blue);">Səbətim</h4>
+        <h3>Səbət</h3>
         <div id="cartList"></div>
-        <div id="cartFooter" style="padding-bottom:100px;"></div>
+        <div id="cartFooter" style="margin-top:20px; padding-bottom:100px;"></div>
     </div>
 
-    <div id="adminLoginModal">
-        <div style="padding:40px 20px; text-align:center;">
-            <i class="fas fa-user-shield" style="font-size:50px; color:var(--main-blue); margin-bottom:20px;"></i>
-            <h2>Admin Girişi</h2>
-            <input type="text" id="adminID" placeholder="Admin ID" style="width:100%; padding:15px; margin-bottom:10px; border-radius:12px; border:1px solid #ddd; box-sizing:border-box;">
-            <input type="password" id="adminPass" placeholder="Şifrə" style="width:100%; padding:15px; margin-bottom:20px; border-radius:12px; border:1px solid #ddd; box-sizing:border-box;">
-            <button class="btn-add" onclick="checkAdminLogin()">DAXİL OL</button>
-            <p onclick="closeModal('adminLoginModal')" style="margin-top:20px; color:#888;">Geri qayıt</p>
+    <div id="adminPage" class="page" style="z-index: 3000;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h3>Admin Panel</h3>
+            <button onclick="location.reload()" style="border:none; background:none; color:red;">Çıxış</button>
+        </div>
+        <div style="display:flex; gap:10px; margin-bottom:20px;">
+            <button id="tabAdd" class="btn-add" onclick="switchAdminTab('add')" style="flex:1">Əlavə et</button>
+            <button id="tabList" class="btn-add" onclick="switchAdminTab('list')" style="flex:1; background:#eee; color:#333;">Siyahı</button>
+        </div>
+
+        <div id="sectAdd">
+            <h4 id="formTitle">Yeni Məhsul</h4>
+            <input type="text" id="adminProdName" placeholder="Ad" style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid #ddd; box-sizing:border-box;">
+            <select id="adminProdCat" style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid #ddd;">
+                <option value="qadin">Qadın</option>
+                <option value="kisi">Kişi</option>
+                <option value="unisex">Unisex</option>
+            </select>
+            <input type="text" id="adminProdNotes" placeholder="Notalar" style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid #ddd; box-sizing:border-box;">
+            <input type="text" id="adminProdStay" placeholder="Qalıcılıq" style="width:100%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #ddd; box-sizing:border-box;">
+            <button id="adminSaveBtn" class="btn-add" onclick="saveProductToFirebase()" style="background:#27ae60">ƏLAVƏ ET</button>
+            <button id="cancelEditBtn" onclick="resetAdminForm()" style="display:none; width:100%; background:none; border:none; color:red; margin-top:10px;">Ləğv et</button>
+        </div>
+
+        <div id="sectList" style="display:none;">
+            <div id="adminProductList"></div>
         </div>
     </div>
 
-    <div id="adminPage">
-        <div class="det-header">
-            <b>Admin Panel</b>
-            <i class="fas fa-times" onclick="closeModal('adminPage')" style="font-size:22px;"></i>
-        </div>
-        <div style="padding:20px;">
-            <div style="display:flex; gap:10px; margin-bottom:20px; background:#eee; padding:5px; border-radius:15px;">
-                <button id="tabAdd" class="filter-btn active" style="flex:1" onclick="switchAdminTab('add')">Əlavə et</button>
-                <button id="tabList" class="filter-btn" style="flex:1" onclick="switchAdminTab('list')">Siyahı</button>
-            </div>
-
-            <div id="sectAdd">
-                <h4 id="formTitle">Yeni Məhsul</h4>
-                <input type="text" id="adminProdName" placeholder="Məhsul adı" style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid #ddd; box-sizing:border-box;">
-                <select id="adminProdCat" style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid #ddd;">
-                    <option value="qadin">Qadın</option>
-                    <option value="kisi">Kişi</option>
-                    <option value="unisex">Unisex</option>
-                </select>
-                <input type="text" id="adminProdNotes" placeholder="Qoxu notları" style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid #ddd; box-sizing:border-box;">
-                <input type="text" id="adminProdStay" placeholder="Qalıcılıq" style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid #ddd; box-sizing:border-box;">
-                <button id="adminSaveBtn" class="btn-add" onclick="saveProductToFirebase()" style="background:#27ae60">YADDA SAXLA</button>
-                <button id="cancelEditBtn" onclick="resetAdminForm()" style="display:none; width:100%; border:none; background:none; margin-top:10px; color:red;">Ləğv et</button>
-            </div>
-
-            <div id="sectList" style="display:none;">
-                <div id="adminProductList"></div>
-            </div>
-        </div>
-    </div>
-
-    <nav class="bottom-nav" id="mainNav">
+    <nav class="bottom-nav">
         <div class="nav-item active" onclick="showPage('homePage', this)"><i class="fas fa-home"></i><br>Əsas</div>
         <div class="nav-item" onclick="showPage('catalogPage', this)"><i class="fas fa-th-large"></i><br>Kataloq</div>
         <div class="nav-item" onclick="showPage('favPage', this)"><i class="fas fa-heart"></i><br>Favori</div>
         <div class="nav-item" onclick="showPage('cartPage', this)"><i class="fas fa-shopping-cart"></i><div id="cartBadge" class="badge">0</div><br>Səbət</div>
-        <div class="nav-item" onclick="openAdminModal()"><i class="fas fa-user-lock"></i><br>Kabinet</div>
+        <div class="nav-item" onclick="openAdminLogin()"><i class="fas fa-user-lock"></i><br>Admin</div>
     </nav>
 
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
     <script>
-        // FIREBASE CONFIG (Senin melumatlarin)
+        // FIREBASE CONFIG
         const firebaseConfig = {
           apiKey: "AIzaSyA5eb16DAKSVLkEzYsUrgxL9vfrJP7w-es",
           authDomain: "etir-magazasi-d7679.firebaseapp.com",
@@ -252,39 +190,15 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // DEYISENLER
         let products = [], cart = [], favs = [], currentProd = null;
         let selectedRating = 0, currentQty = 1, selectedSize = 30, currentPrice = 10;
         let editMode = false, editId = null;
 
-        // SEHIFE IDARESI
-        function showPage(pId, el) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(pId).classList.add('active');
-            if(el) el.classList.add('active');
-            
-            if(pId === 'favPage') renderFavs();
-            if(pId === 'cartPage') renderCart();
-            window.scrollTo(0,0);
-        }
-
-        function openModal(mId) {
-            document.getElementById(mId).style.display = 'block';
-            document.getElementById('mainNav').style.display = 'none'; // Naviqasiyani gizle
-        }
-
-        function closeModal(mId) {
-            document.getElementById(mId).style.display = 'none';
-            document.getElementById('mainNav').style.display = 'flex'; // Naviqasiyani qaytar
-        }
-
-        // FIREBASE DATA
-        function fetchProducts() {
-            db.collection("products").onSnapshot(snap => {
-                products = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        // FETCH PRODUCTS
+        async function fetchProducts() {
+            db.collection("products").onSnapshot(snapshot => {
+                products = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
                 renderAll();
-                if(document.getElementById('sectList').style.display === 'block') renderAdminList();
             });
         }
 
@@ -299,85 +213,50 @@
             const img = "https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/card_pic.png";
             return `
                 <div class="product-card">
-                    <i class="fas fa-heart" style="position:absolute; top:12px; right:12px; color:${isFav?'#ff4757':'#ddd'}; z-index:10;" onclick="toggleFav(event, '${p.id}')"></i>
-                    <div onclick="openProductDetail('${p.id}')">
+                    <i class="fas fa-heart" style="position:absolute; top:12px; right:12px; color:${isFav?'#ff4757':'#ddd'}" onclick="toggleFav(event, '${p.id}')"></i>
+                    <div onclick="openDetail('${p.id}')">
                         <img src="${img}" style="width:100%; height:120px; object-fit:contain;">
                         <h4>${p.name}</h4>
                         <span class="price-text">10 - 13 AZN</span>
                     </div>
-                    <button class="btn-add" onclick="openProductDetail('${p.id}')">SEÇİM ET</button>
+                    <button class="btn-add" onclick="openDetail('${p.id}')">Seçim et</button>
                 </div>`;
         }
 
-        // DETAL SEHIFESI
-        function openProductDetail(id) {
+        // NAVIGATION
+        function showPage(id, el) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if(el) el.classList.add('active');
+            if(id === 'favPage') renderFavs();
+            if(id === 'cartPage') renderCart();
+        }
+
+        function openDetail(id) {
             currentProd = products.find(p => p.id === id);
-            if(!currentProd) return;
-
-            currentQty = 1; selectedSize = 30; currentPrice = 10;
-            document.getElementById('qtyVal').innerText = currentQty;
-            document.getElementById('detTitle').innerText = currentProd.name;
+            document.getElementById('detHeaderName').innerText = currentProd.name;
             document.getElementById('detPrice').innerText = "10 AZN";
-            document.getElementById('detNotes').innerText = currentProd.notes || "-";
-            document.getElementById('detStay').innerText = currentProd.stay || "-";
-            document.getElementById('detCat').innerText = currentProd.cat.toUpperCase();
-            document.getElementById('detImg').innerHTML = `<img src="https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/card_pic.png" style="max-height:200px;">`;
+            document.getElementById('detNotes').innerText = currentProd.notes;
+            document.getElementById('detStay').innerText = currentProd.stay;
+            document.getElementById('detCat').innerText = currentProd.cat;
+            document.getElementById('detImg').innerHTML = `<img src="https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/card_pic.png" style="width:100%; max-height:250px; object-fit:contain;">`;
             
-            const isFav = favs.some(f => f.id === id);
-            document.getElementById('detFavBtn').style.color = isFav ? '#ff4757' : '#ccc';
-
-            openModal('productDetail');
+            currentQty = 1;
+            document.getElementById('qtyVal').innerText = currentQty;
+            document.getElementById('productDetail').style.display = 'block';
             fetchReviews(id);
         }
 
-        // REY SISTEMI
-        function setRating(r) {
-            selectedRating = r;
-            const stars = document.querySelectorAll('.star-rating i');
-            stars.forEach((s, idx) => s.style.color = idx < r ? '#ff8c00' : '#ccc');
-        }
+        function closeDetail() { document.getElementById('productDetail').style.display = 'none'; }
 
-        async function submitReview() {
-            const name = document.getElementById('reviewerName').value.trim();
-            const text = document.getElementById('reviewText').value.trim();
-            if(!name || !text || selectedRating === 0) return alert("Bütün sahələri doldurun!");
-
-            await db.collection("reviews").add({
-                productId: currentProd.id,
-                userName: name,
-                rating: selectedRating,
-                comment: text,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            
-            document.getElementById('reviewerName').value = "";
-            document.getElementById('reviewText').value = "";
-            setRating(0);
-            alert("Rəyiniz əlavə edildi!");
-        }
-
-        function fetchReviews(pId) {
-            db.collection("reviews").where("productId", "==", pId).orderBy("timestamp", "desc").onSnapshot(snap => {
-                const list = document.getElementById('reviewsList');
-                let html = "";
-                snap.forEach(doc => {
-                    const r = doc.data();
-                    html += `<div style="border-bottom:1px solid #eee; padding:10px 0;">
-                        <b>${r.userName}</b> <span style="color:#ff8c00; font-size:12px;">${'★'.repeat(r.rating)}</span>
-                        <p style="margin:5px 0; font-size:14px; color:#555;">${r.comment}</p>
-                    </div>`;
-                });
-                list.innerHTML = html || "<p style='color:#999'>Hələ rəy yoxdur.</p>";
-            });
-        }
-
-        // SEBET
+        // CART & FAV
         function addToCart() {
-            const item = { ...currentProd, qty: currentQty, size: selectedSize, price: currentPrice };
+            const item = {...currentProd, qty: currentQty, size: selectedSize, price: currentPrice};
             const exist = cart.find(c => c.id === item.id && c.size === item.size);
             if(exist) exist.qty += currentQty; else cart.push(item);
             updateBadge();
-            closeModal('productDetail');
+            closeDetail();
         }
 
         function updateBadge() {
@@ -391,72 +270,59 @@
             const list = document.getElementById('cartList');
             const footer = document.getElementById('cartFooter');
             if(cart.length === 0) {
-                list.innerHTML = "<p style='text-align:center; padding:50px; color:#999;'>Səbətiniz boşdur.</p>";
+                list.innerHTML = "<center style='padding:50px;'>Səbət boşdur</center>";
                 footer.innerHTML = "";
                 return;
             }
             let total = 0;
             list.innerHTML = cart.map((item, i) => {
                 total += item.price * item.qty;
-                return `<div style="background:#fff; padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-                    <div><b>${item.name}</b> (${item.size}ml)<br><small>${item.qty} ədəd x ${item.price} AZN</small></div>
-                    <div style="font-weight:bold;">${item.price * item.qty} AZN <i class="fas fa-trash" style="color:red; margin-left:10px;" onclick="remCart(${i})"></i></div>
+                return `<div style="background:white; padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+                    <div><b>${item.name}</b> (${item.size}ml)<br>${item.qty} x ${item.price} AZN</div>
+                    <i class="fas fa-trash" style="color:red" onclick="remCart(${i})"></i>
                 </div>`;
             }).join('');
-            footer.innerHTML = `<div style="padding:15px; font-size:18px; font-weight:bold; display:flex; justify-content:space-between;"><span>Cəmi:</span><span>${total} AZN</span></div>
-                <button class="btn-add" style="background:var(--main-blue); padding:15px;" onclick="checkout()">SİFARİŞİ TAMAMLA</button>`;
+            footer.innerHTML = `<h3 style="display:flex; justify-content:space-between;">Cəmi: <span>${total} AZN</span></h3>
+            <button class="btn-add" onclick="checkout()" style="background:var(--main-blue); padding:15px;">SİFARİŞİ TAMAMLA</button>`;
         }
 
         function remCart(i) { cart.splice(i, 1); updateBadge(); renderCart(); }
 
-        // WHATSAPP SIFARIS
-        function checkout() {
-            const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-            const html = `
-                <div id="checkoutBox" style="background:#fff; padding:20px; border-radius:20px; margin-top:20px; border:1px solid #ddd;">
-                    <h3>Sifarişi Tamamla</h3>
-                    <p style="font-size:13px;">Ödənişi karta edin və ünvanınızı yazın:</p>
-                    <div style="background:#f0f0f0; padding:10px; border-radius:10px; margin-bottom:15px;">
-                        <small>Kart: <b>4169 7388 2013 3274</b></small>
-                    </div>
-                    <input type="text" id="userAddress" placeholder="Çatdırılma ünvanı..." style="width:100%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #ddd; box-sizing:border-box;">
-                    <button class="btn-add" style="background:#25D366;" onclick="sendToWA(${total})">WHATSAPP İLƏ GÖNDƏR</button>
-                </div>`;
-            document.getElementById('cartFooter').innerHTML += html;
-            window.scrollTo(0, document.body.scrollHeight);
+        function toggleFav(e, id) {
+            e.stopPropagation();
+            const idx = favs.findIndex(f => f.id === id);
+            if(idx > -1) favs.splice(idx, 1);
+            else favs.push(products.find(p => p.id === id));
+            renderAll();
         }
 
-        function sendToWA(total) {
-            const addr = document.getElementById('userAddress').value;
-            if(!addr) return alert("Ünvan yazın!");
-            let msg = "*YENİ SİFARİŞ*\n\n";
-            cart.forEach(i => msg += `• ${i.name} (${i.size}ml) - ${i.qty} ədəd\n`);
-            msg += `\n*Ünvan:* ${addr}\n*Cəmi:* ${total} AZN`;
-            window.location.href = `https://wa.me/994515817772?text=${encodeURIComponent(msg)}`;
-        }
+        // ADMIN LOGIN
+        function openAdminLogin() { document.getElementById('adminLoginModal').style.display = 'flex'; }
+        function closeAdminLogin() { document.getElementById('adminLoginModal').style.display = 'none'; }
 
-        // ADMIN FUNKSIYALARI
-        function openAdminModal() { openModal('adminLoginModal'); }
         async function checkAdminLogin() {
             const id = document.getElementById('adminID').value;
             const pass = document.getElementById('adminPass').value;
             const snap = await db.collection("admins").get();
-            let found = false;
+            let auth = false;
             snap.forEach(doc => {
-                if(doc.data().adminID == id && doc.data().password == pass) found = true;
+                if(doc.data().adminID == id && doc.data().password == pass) auth = true;
             });
-            if(found) {
-                closeModal('adminLoginModal');
-                openModal('adminPage');
-            } else alert("Məlumatlar səhvdir!");
+            if(auth) {
+                closeAdminLogin();
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.getElementById('adminPage').classList.add('active');
+                document.querySelector('.bottom-nav').style.display = 'none';
+                renderAdminList();
+            } else {
+                alert("Yanlış məlumat!");
+            }
         }
 
+        // ADMIN FUNCTIONS
         function switchAdminTab(t) {
             document.getElementById('sectAdd').style.display = t === 'add' ? 'block' : 'none';
             document.getElementById('sectList').style.display = t === 'list' ? 'block' : 'none';
-            document.getElementById('tabAdd').classList.toggle('active', t === 'add');
-            document.getElementById('tabList').classList.toggle('active', t === 'list');
-            if(t === 'list') renderAdminList();
         }
 
         async function saveProductToFirebase() {
@@ -464,7 +330,8 @@
                 name: document.getElementById('adminProdName').value,
                 cat: document.getElementById('adminProdCat').value,
                 notes: document.getElementById('adminProdNotes').value,
-                stay: document.getElementById('adminProdStay').value
+                stay: document.getElementById('adminProdStay').value,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
             };
             if(editMode) await db.collection("products").doc(editId).update(data);
             else await db.collection("products").add(data);
@@ -474,8 +341,8 @@
 
         function renderAdminList() {
             document.getElementById('adminProductList').innerHTML = products.map(p => `
-                <div style="background:#fff; padding:10px; margin-bottom:8px; border-radius:10px; display:flex; justify-content:space-between;">
-                    <span>${p.name}</span>
+                <div style="background:white; padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between;">
+                    <div><b>${p.name}</b><br><small>${p.cat}</small></div>
                     <div>
                         <i class="fas fa-edit" style="color:orange; margin-right:15px;" onclick="editProduct('${p.id}')"></i>
                         <i class="fas fa-trash" style="color:red;" onclick="deleteProduct('${p.id}')"></i>
@@ -483,11 +350,10 @@
                 </div>`).join('');
         }
 
-        function deleteProduct(id) { if(confirm("Silinsin?")) db.collection("products").doc(id).delete(); }
-
         function editProduct(id) {
             const p = products.find(i => i.id === id);
             document.getElementById('adminProdName').value = p.name;
+            document.getElementById('adminProdCat').value = p.cat;
             document.getElementById('adminProdNotes').value = p.notes;
             document.getElementById('adminProdStay').value = p.stay;
             editMode = true; editId = id;
@@ -499,69 +365,34 @@
         function resetAdminForm() {
             editMode = false; editId = null;
             document.getElementById('adminProdName').value = "";
-            document.getElementById('adminSaveBtn').innerText = "YADDA SAXLA";
+            document.getElementById('adminSaveBtn').innerText = "ƏLAVƏ ET";
             document.getElementById('cancelEditBtn').style.display = "none";
         }
 
-        // DIGER
-        function updatePrice(btn, s, p) {
-            selectedSize = s; currentPrice = p;
-            document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById('detPrice').innerText = p + " AZN";
+        async function deleteProduct(id) {
+            if(confirm("Silinsin?")) await db.collection("products").doc(id).delete();
         }
 
-        function changeQty(v) { currentQty = Math.max(1, currentQty + v); document.getElementById('qtyVal').innerText = currentQty; }
-
-        function toggleFav(e, id) {
-            e.stopPropagation();
-            const idx = favs.findIndex(f => f.id === id);
-            if(idx > -1) favs.splice(idx, 1);
-            else favs.push(products.find(p => p.id === id));
-            renderAll();
+        // WHATSAPP
+        function checkout() {
+            const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+            let msg = "*YENİ SİFARİŞ*\n\n";
+            cart.forEach(i => msg += `• ${i.name} (${i.size}ml) - ${i.qty} ədəd\n`);
+            msg += `\n*Cəmi:* ${total} AZN`;
+            window.location.href = `https://wa.me/994515817772?text=${encodeURIComponent(msg)}`;
         }
 
-        function toggleFavFromDetail() {
-            toggleFav({stopPropagation:()=>{}}, currentProd.id);
-            const isFav = favs.some(f => f.id === currentProd.id);
-            document.getElementById('detFavBtn').style.color = isFav ? '#ff4757' : '#ccc';
+        // INFO MODALS
+        function openInfoModal(content) {
+            document.getElementById('infoModal').style.display = 'block';
+            document.querySelector('#infoModal div[style="padding:20px;"]').innerHTML = content;
         }
+        function closeInfoModal() { document.getElementById('infoModal').style.display = 'none'; }
 
-        function renderFavs() {
-            const grid = document.getElementById('favGrid');
-            const empty = document.getElementById('favEmpty');
-            if(favs.length === 0) { grid.innerHTML = ""; empty.style.display = "block"; }
-            else { empty.style.display = "none"; grid.innerHTML = favs.map(p => createCard(p)).join(''); }
-        }
+        function openCampaignModal() { openInfoModal("<h3>Kampaniya</h3>Beş ətir alana çatdırılma pulsuzdur!"); }
+        function openDeliveryModal() { openInfoModal("<h3>Çatdırılma</h3>Rayonlara poçtla göndərilir."); }
 
-        function searchPerfume() {
-            const q = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = products.filter(p => p.name.toLowerCase().includes(q));
-            document.getElementById('homeGrid').innerHTML = filtered.map(p => createCard(p)).join('');
-        }
-
-        function applyFilter(cat, btn) {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            const filtered = cat === 'all' ? products : products.filter(p => p.cat === cat);
-            document.getElementById('catalogGrid').innerHTML = filtered.map(p => createCard(p)).join('');
-        }
-
-        function openCampaignModal() {
-            document.getElementById('infoModalTitle').innerText = "Kampaniya Şərtləri";
-            document.getElementById('infoModalBody').innerHTML = `
-                <p>30 ml ətirlər: 10 AZN, 50 ml ətirlər: 13 AZN.</p>
-                <table><tr><th>Sayı</th><th>30ml</th><th>50ml</th></tr><tr><td>5 ədəd</td><td>32 AZN</td><td>45 AZN</td></tr></table>`;
-            openModal('infoModal');
-        }
-
-        function openDeliveryModal() {
-            document.getElementById('infoModalTitle').innerText = "Çatdırılma";
-            document.getElementById('infoModalBody').innerHTML = "<p>Şəhərdaxili çatdırılma pulsuzdur.</p>";
-            openModal('infoModal');
-        }
-
-        // START
+        // INITIALIZE
         fetchProducts();
     </script>
 </body>
