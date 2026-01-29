@@ -341,9 +341,7 @@
     <div id="adminPage" class="page" style="padding-top: 30px; min-height: 100vh; box-sizing: border-box;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding: 0 5px;">
             <h2 style="margin:0; color:var(--dark-blue); font-size: 24px;">Admin Panel</h2>
-            <button onclick="showPage('homePage', document.querySelector('.nav-item'))">
-    <i class="fas fa-times"></i>
-</button>
+            <button onclick="showPage('homePage', document.querySelector('.nav-item'))" style="border:none; background:#fff; width: 40px; height: 40px; border-radius:12px; cursor:pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.1);"><i class="fas fa-times"></i></button>
         </div>
 
         <div style="display: flex; gap: 10px; margin-bottom: 25px; background: #eee; padding: 6px; border-radius: 18px;">
@@ -529,15 +527,10 @@ function fetchReviews(productId) {
 
 // MODALİ AÇIB-BAĞLAMAQ
 function openAdminLogin() {
-    // 1. Admin login modalını aç
-    const modal = document.getElementById('adminLoginModal');
-    modal.style.display = 'flex';
-    
-    // 2. Aşağıdakı menyunu gizlət
-    const bottomNav = document.querySelector('.bottom-nav');
-    if (bottomNav) {
-        bottomNav.style.display = 'none';
-    }
+    document.getElementById('adminLoginModal').style.display = 'flex';
+}
+function closeAdminLogin() {
+    document.getElementById('adminLoginModal').style.display = 'none';
 }
 
 // FİRESTORE-DAN ADMİNİ YOXLAMAQ
@@ -574,8 +567,7 @@ async function checkAdminLogin() {
 
        if (isMatch) {
     console.log("Giriş uğurludur!");
-    // Login modalını bağlayıb birbaşa admin panelini açırıq
-    showPage('adminPage');
+    closeAdminLogin(); // Login modalını bağla [cite: 106]
     
     // Bütün digər səhifələri gizlət
     document.querySelectorAll('.page').forEach(p => {
@@ -912,34 +904,14 @@ function renderAdminList() {
             grid.innerHTML = filtered.map(p => createCard(p)).join('');
         }
 
-        function showPage(pageId, element) {
-    // 1. Bütün səhifələri gizlət
-    document.querySelectorAll('.page').forEach(p => {
-        p.style.display = 'none';
-        p.classList.remove('active');
-    });
-
-    // 2. Lazımi səhifəni göstər
-    const activePage = document.getElementById(pageId);
-    if (activePage) {
-        activePage.style.display = (pageId === 'adminLoginModal') ? 'flex' : 'block';
-        activePage.classList.add('active');
-    }
-
-    // 3. BOTTOM NAV İDARƏETMƏSİ (Əsas hissə bura)
-    const bottomNav = document.querySelector('.bottom-nav');
-    if (pageId === 'adminPage' || pageId === 'adminLoginModal') {
-        bottomNav.style.display = 'none'; // Admin tərəfdə menyunu gizlət
-    } else {
-        bottomNav.style.display = 'flex'; // Digər səhifələrdə menyunu göstər
-    }
-
-    // 4. Naviqasiya ikonlarını rənglə
-    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-    if(element) element.classList.add('active');
-
-    window.scrollTo(0, 0);
-}
+        function showPage(pId, el) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(pId).classList.add('active');
+            el.classList.add('active');
+            if(pId === 'favPage') renderFavs();
+            if(pId === 'cartPage') renderCart();
+        }
 
         function createCard(p) {
            const isFav = favs.some(f => f.id === p.id);
