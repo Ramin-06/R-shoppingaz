@@ -529,10 +529,15 @@ function fetchReviews(productId) {
 
 // MODALİ AÇIB-BAĞLAMAQ
 function openAdminLogin() {
-    document.getElementById('adminLoginModal').style.display = 'flex';
-}
-function closeAdminLogin() {
-    document.getElementById('adminLoginModal').style.display = 'none';
+    // 1. Admin login modalını aç
+    const modal = document.getElementById('adminLoginModal');
+    modal.style.display = 'flex';
+    
+    // 2. Aşağıdakı menyunu gizlət
+    const bottomNav = document.querySelector('.bottom-nav');
+    if (bottomNav) {
+        bottomNav.style.display = 'none';
+    }
 }
 
 // FİRESTORE-DAN ADMİNİ YOXLAMAQ
