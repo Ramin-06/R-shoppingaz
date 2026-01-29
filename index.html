@@ -92,7 +92,25 @@
         }
         .size-btn.active { border-color: var(--main-blue); background: #eef6ff; color: var(--main-blue); }
 
-        .filter-scroll { display: flex; overflow-x: auto; gap: 10px; margin-bottom: 20px; scrollbar-width: none; }
+        /* Kataloq seçimlərini yuxarıda sabitləyən və ağ fon verən kod */
+#catalogPage .filter-scroll {
+    position: sticky;      /* Səhifəni sürüşdürəndə yapışması üçün */
+    top: 0;               /* Ən yuxarı hissəyə yapışır */
+    background: #ffffff;  /* Arxa fon tam ağ olur */
+    z-index: 1000;        /* Məhsulların üstündə görünməsi üçün */
+    padding: 15px 10px;   /* Kənarlardan səliqəli boşluq */
+    margin: 0 -15px 20px -15px; /* Səhifənin kənarlarına tam sıfırlanması üçün */
+    display: flex; 
+    overflow-x: auto; 
+    gap: 10px; 
+    scrollbar-width: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Alt hissəyə yüngül kölgə (ayırıcı xətt kimi) */
+}
+
+/* Səhifə sürüşəndə scroll görünməsin */
+#catalogPage .filter-scroll::-webkit-scrollbar {
+    display: none;
+}
         .filter-btn { padding: 10px 20px; background: #fff; border: 1px solid #eee; border-radius: 25px; white-space: nowrap; cursor: pointer; color: var(--main-blue); font-weight: 600; font-size: 14px; }
         .filter-btn.active { background: var(--main-blue); color: #fff; }
 
@@ -224,14 +242,15 @@
     </div>
 
     <div id="catalogPage" class="page">
-        <div class="filter-scroll">
-            <button class="filter-btn active" onclick="applyFilter('all', this)">Hamısı</button>
-            <button class="filter-btn" onclick="applyFilter('qadin', this)">Qadın</button>
-            <button class="filter-btn" onclick="applyFilter('kisi', this)">Kişi</button>
-            <button class="filter-btn" onclick="applyFilter('unisex', this)">Unisex</button>
-        </div>
-        <div id="catalogGrid" class="product-grid"></div>
+    <div class="filter-scroll">
+        <button class="filter-btn active" onclick="applyFilter('all', this)">Hamısı</button>
+        <button class="filter-btn" onclick="applyFilter('qadin', this)">Qadın</button>
+        <button class="filter-btn" onclick="applyFilter('kisi', this)">Kişi</button>
+        <button class="filter-btn" onclick="applyFilter('unisex', this)">Unisex</button>
     </div>
+    
+    <div id="catalogGrid" class="product-grid"></div>
+</div>
 
     <div id="favPage" class="page">
         <h4 style="color:var(--dark-blue)">Favorilərim</h4>
