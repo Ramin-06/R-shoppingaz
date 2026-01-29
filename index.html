@@ -92,25 +92,7 @@
         }
         .size-btn.active { border-color: var(--main-blue); background: #eef6ff; color: var(--main-blue); }
 
-        /* Kataloq seçimlərini yuxarıda sabitləyən və ağ fon verən kod */
-#catalogPage .filter-scroll {
-    position: sticky;      /* Səhifəni sürüşdürəndə yapışması üçün */
-    top: 0;               /* Ən yuxarı hissəyə yapışır */
-    background: #ffffff;  /* Arxa fon tam ağ olur */
-    z-index: 1000;        /* Məhsulların üstündə görünməsi üçün */
-    padding: 15px 10px;   /* Kənarlardan səliqəli boşluq */
-    margin: 0 -15px 20px -15px; /* Səhifənin kənarlarına tam sıfırlanması üçün */
-    display: flex; 
-    overflow-x: auto; 
-    gap: 10px; 
-    scrollbar-width: none;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Alt hissəyə yüngül kölgə (ayırıcı xətt kimi) */
-}
-
-/* Səhifə sürüşəndə scroll görünməsin */
-#catalogPage .filter-scroll::-webkit-scrollbar {
-    display: none;
-}
+        .filter-scroll { display: flex; overflow-x: auto; gap: 10px; margin-bottom: 20px; scrollbar-width: none; }
         .filter-btn { padding: 10px 20px; background: #fff; border: 1px solid #eee; border-radius: 25px; white-space: nowrap; cursor: pointer; color: var(--main-blue); font-weight: 600; font-size: 14px; }
         .filter-btn.active { background: var(--main-blue); color: #fff; }
 
@@ -121,42 +103,8 @@
         .price-text { color: var(--main-blue); font-weight: bold; margin-bottom: 10px; display: block; }
         .btn-add { background: var(--bright-orange); color: white; border: none; padding: 10px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; }
 
-        /* Məhsul detalları və Info Modal hər şeyin üstündə olmalıdır */
-#productDetail, #infoModal { 
-    position: fixed; 
-    top: 0; 
-    left: 100%; 
-    width: 100%; 
-    height: 100%; 
-    background: white; 
-    z-index: 20000; 
-    transition: 0.3s; 
-    overflow-y: auto; 
-    border-radius: 0; /* Tam ekran olduğu üçün radiusa ehtiyac yoxdur, istəsən qala bilər */
-}
-
-/* Bu sətir mütləq olmalıdır ki, səhifə sürüşüb gəlsin */
-#productDetail.active, #infoModal.active { 
-    left: 0 !important; 
-}
-
-/* Admin panelini digər səhifələr kimi normal səviyyəyə salaq */
-#adminPage.active {
-    display: block !important;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    background: white;
-    z-index: 8000; 
-    overflow-y: auto;
-}
-
-/* Naviqasiya barı adminin üstündə, amma detalların altında olsun */
-.bottom-nav {
-    z-index: 9000; 
-}
+        #productDetail, #infoModal { position: fixed; top: 40px; left: 100%; width: 100%; height: calc(100% - 40px); background: white; z-index: 9000; transition: 0.3s; overflow-y: auto; border-radius: 20px 20px 0 0; }
+        #productDetail.active, #infoModal.active { left: 0; }
         .det-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
         .det-img-big { width: 100%; height: 200px; background: #f4f4f4; border-radius: 25px; display: flex; align-items: center; justify-content: center; font-size: 50px; color: var(--main-blue); margin-bottom: 20px; }
 
@@ -276,15 +224,14 @@
     </div>
 
     <div id="catalogPage" class="page">
-    <div class="filter-scroll">
-        <button class="filter-btn active" onclick="applyFilter('all', this)">Hamısı</button>
-        <button class="filter-btn" onclick="applyFilter('qadin', this)">Qadın</button>
-        <button class="filter-btn" onclick="applyFilter('kisi', this)">Kişi</button>
-        <button class="filter-btn" onclick="applyFilter('unisex', this)">Unisex</button>
+        <div class="filter-scroll">
+            <button class="filter-btn active" onclick="applyFilter('all', this)">Hamısı</button>
+            <button class="filter-btn" onclick="applyFilter('qadin', this)">Qadın</button>
+            <button class="filter-btn" onclick="applyFilter('kisi', this)">Kişi</button>
+            <button class="filter-btn" onclick="applyFilter('unisex', this)">Unisex</button>
+        </div>
+        <div id="catalogGrid" class="product-grid"></div>
     </div>
-    
-    <div id="catalogGrid" class="product-grid"></div>
-</div>
 
     <div id="favPage" class="page">
         <h4 style="color:var(--dark-blue)">Favorilərim</h4>
@@ -363,23 +310,23 @@
 </div>
        
 
-    <div id="adminLoginModal" class="page" style="background: white !important; display: none; flex-direction: column; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; padding: 25px; box-sizing: border-box; margin: 0;">
-    <div style="width: 100%; max-width: 400px; text-align: center;">
-        <div style="width: 80px; height: 80px; background: #f8f9fa; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; border: 1px solid #eee;">
-            <i class="fas fa-user-shield" style="font-size: 35px; color: var(--main-blue);"></i>
+    <div id="adminLoginModal" class="page" style="background: white; display: none; flex-direction: column; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 4000; padding: 25px; box-sizing: border-box;">
+        <div style="width: 100%; max-width: 400px; text-align: center;">
+            <div style="width: 80px; height: 80px; background: #f8f9fa; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; border: 1px solid #eee;">
+                <i class="fas fa-user-shield" style="font-size: 35px; color: var(--main-blue);"></i>
+            </div>
+            <h2 style="color: var(--dark-blue); margin-bottom: 30px; font-weight: 700;">Admin Girişi</h2>
+
+            <input type="text" id="adminID" placeholder="Admin ID" style="width: 100%; padding: 16px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 15px; box-sizing: border-box; font-size: 16px; outline: none;">
+            <input type="password" id="adminPass" placeholder="Şifrə" style="width: 100%; padding: 16px; margin-bottom: 25px; border: 1px solid #ddd; border-radius: 15px; box-sizing: border-box; font-size: 16px; outline: none;">
+
+            <button class="btn-add" style="width: 100%; padding: 16px; font-size: 16px; font-weight: bold;" onclick="checkAdminLogin()">DAXİL OL</button>
+
+            <p onclick="closeAdminLogin()" style="margin-top: 25px; color: #888; cursor: pointer; font-size: 14px;">
+                <i class="fas fa-arrow-left"></i> Geri qayıt
+            </p>
         </div>
-        <h2 style="color: var(--dark-blue); margin-bottom: 30px; font-weight: 700;">Admin Girişi</h2>
-
-        <input type="text" id="adminID" placeholder="Admin ID" style="width: 100%; padding: 16px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 15px; box-sizing: border-box; font-size: 16px; outline: none; background: white;">
-        <input type="password" id="adminPass" placeholder="Şifrə" style="width: 100%; padding: 16px; margin-bottom: 25px; border: 1px solid #ddd; border-radius: 15px; box-sizing: border-box; font-size: 16px; outline: none; background: white;">
-
-        <button class="btn-add" style="width: 100%; padding: 16px; font-size: 16px; font-weight: bold; cursor: pointer;" onclick="checkAdminLogin()">DAXİL OL</button>
-
-        <p onclick="closeAdminLogin()" style="margin-top: 25px; color: #888; cursor: pointer; font-size: 14px;">
-            <i class="fas fa-arrow-left"></i> Geri qayıt
-        </p>
     </div>
-</div>
 
     <div id="adminPage" class="page" style="padding-top: 30px; min-height: 100vh; box-sizing: border-box;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding: 0 5px;">
@@ -902,14 +849,11 @@ function renderAdminList() {
         }
 
         function openDetail(id) {
-    currentProd = products.find(p => p.id === id);
+            currentProd = products.find(p => p.id === id);
     if (!currentProd) return;
 
-    // Detal açılanda menyunu gizlət
-    const nav = document.querySelector('.bottom-nav');
-    if (nav) nav.style.display = 'none';
-
     const defaultImg = "https://raw.githubusercontent.com/Ramin-06/R-Shoppingaz/main/card_pic.png";
+
     currentQty = 1;
     selectedSize = 30;
     currentPrice = 10;
@@ -918,6 +862,7 @@ function renderAdminList() {
     document.getElementById('detTitle').innerText = currentProd.name;
     document.getElementById('detPrice').innerText = "10 AZN";
     
+    // Böyük şəkli tam göstərmək üçün 'contain' istifadə edirik
     document.getElementById('detImg').innerHTML = `
         <div style="width:100%; height:250px; display:flex; align-items:center; justify-content:center; background:#fff; border-radius:20px; overflow:hidden; border:1px solid #eee; padding:10px; box-sizing:border-box;">
             <img src="${defaultImg}" style="max-width:100%; max-height:100%; object-fit:contain;">
@@ -934,38 +879,9 @@ function renderAdminList() {
     document.getElementById('detCat').innerText = displayCat;
     document.getElementById('productDetail').classList.add('active');
 
+    // Rəyləri həmin an çəkib gətirir:
     fetchReviews(id);
-}
-
-// BU FUNKSİYANI YENİLƏ - Menyunun geri gəlməsi üçün əsas yer buradır
-function closeDetail() { 
-    document.getElementById('productDetail').classList.remove('active');
-    
-    // Menyunun yenidən görünməsini təmin et
-    const nav = document.querySelector('.bottom-nav');
-    if (nav) nav.style.display = 'flex';
-}
-
-// HƏR EHTİMALA QARŞI showPage funksiyasına da bunu əlavə et
-function showPage(pId, el) {
-    document.querySelectorAll('.page').forEach(p => {
-        p.classList.remove('active');
-        p.style.display = 'none';
-    });
-    
-    document.getElementById(pId).classList.add('active');
-    document.getElementById(pId).style.display = 'block';
-
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    el.classList.add('active');
-
-    // Əgər nəsə xəta olubsa və menyu gizli qalıbsa, səhifə dəyişəndə onu mütləq geri gətir
-    const nav = document.querySelector('.bottom-nav');
-    if (nav) nav.style.display = 'flex';
-
-    if(pId === 'favPage') renderFavs();
-    if(pId === 'cartPage') renderCart();
-}
+        }
 
         function closeDetail() { document.getElementById('productDetail').classList.remove('active'); }
         function searchPerfume() {
@@ -979,31 +895,13 @@ function showPage(pId, el) {
         }
 
         function showPage(pId, el) {
-    // Bütün səhifələri gizlət
-    document.querySelectorAll('.page').forEach(p => {
-        p.classList.remove('active');
-        p.style.display = 'none';
-    });
-
-    // Admin panelini də gizlət (əgər açıqdırsa)
-    const adminPage = document.getElementById('adminPage');
-    if(adminPage) {
-        adminPage.classList.remove('active');
-        adminPage.style.display = 'none';
-    }
-
-    // Seçilən səhifəni göstər
-    const activePage = document.getElementById(pId);
-    activePage.classList.add('active');
-    activePage.style.display = 'block';
-
-    // Naviqasiya aktivliyini yenilə
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    el.classList.add('active');
-
-    if(pId === 'favPage') renderFavs();
-    if(pId === 'cartPage') renderCart();
-}
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(pId).classList.add('active');
+            el.classList.add('active');
+            if(pId === 'favPage') renderFavs();
+            if(pId === 'cartPage') renderCart();
+        }
 
         function createCard(p) {
            const isFav = favs.some(f => f.id === p.id);
