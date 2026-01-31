@@ -258,15 +258,25 @@
         </div>
     </div>
 
-    <div id="catalogPage" class="page">
-        <div class="filter-scroll">
+    <div id="catalogPage" class="page" style="height: calc(100vh - 65px); padding: 0; overflow: hidden;">
+
+    <div style="background: var(--light-bg); padding: 45px 0 15px 25px; border-bottom: 1px solid rgba(0,0,0,0.05);">
+        <div style="font-size: 22px; font-weight: 800; color: var(--dark-blue); text-align: left; margin-bottom: 15px;">
+            Kataloq
+        </div>
+
+        <div class="filter-scroll" style="margin-bottom: 0; padding-right: 15px;">
             <button class="filter-btn active" onclick="applyFilter('all', this)">Hamısı</button>
             <button class="filter-btn" onclick="applyFilter('qadin', this)">Qadın</button>
             <button class="filter-btn" onclick="applyFilter('kisi', this)">Kişi</button>
             <button class="filter-btn" onclick="applyFilter('unisex', this)">Unisex</button>
         </div>
+    </div>
+
+    <div style="height: 100%; overflow-y: auto; padding: 20px 15px 150px 15px;">
         <div id="catalogGrid" class="product-grid"></div>
     </div>
+</div>
 
     <div id="favPage" class="page">
         <h4 style="color:var(--dark-blue)">Favorilərim</h4>
