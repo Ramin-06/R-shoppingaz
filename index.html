@@ -203,7 +203,7 @@
             <div style="width:100%; height:200px; background:var(--main-blue); border-radius:20px; margin-bottom:20px; display:flex; align-items:center; justify-content:center; color:white; font-size:40px;"><i class="fas fa-gift"></i></div>
             <h2 style="color:var(--dark-blue);">Xüsusi Təklif!</h2>
             <p style="color:#666; line-height:1.6;">Bütün yeni istifadəçilərə ilk sifarişdə 10% endirim!</p>
-            <button class="btn-add" style="margin-top:20px;" onclick="closeInfoModal()">ANLADIM</button>
+            
         </div>
     </div>
 
@@ -790,7 +790,7 @@ function renderAdminList() {
                         Əlavə məlumatlar <b>Xidmətlər və çatdırılma</b>-da verilmişdir. 
                        
                     </p>
-                    <button class="btn-add" style="margin-top:15px;" onclick="closeInfoModal()">ANLADIM</button>
+                    
                 </div>
             `;
             
@@ -806,13 +806,34 @@ function renderAdminList() {
             const deliveryHTML = `
                 <div style="padding:10px; font-size:14px; color:#444; line-height:1.6;">
                     <h3 style="color:var(--dark-blue); margin-bottom:10px;">Hörmətli alıcılar!</h3>
-                    <p>
-                        Ətirlərin tək-tək sifarişi zamanı <b>30 ml</b> ətirlər üçün biri <b>10 AZN</b>, <b>50 ml</b> ətirlər üçün isə biri <b>13 AZN</b> olacaq. 
-                        Belə olan halda <b>çatdırılma xərci ödəmirsiniz.</b>
-                    </p>
-                    <p style="background:#fff3e0; padding:10px; border-radius:10px; border-left:4px solid var(--bright-orange);">
-                        Əgər topdansatış olaraq sifariş etsəniz, çatdırılma xərci alıcıya aid olur. Sifariş sayından asılı olaraq müxtəlif hədiyyələr və güzəştlər edilir.
-                    </p>
+                    <div style="background:#fff3e0; padding:15px; border-radius:10px; border-left:4px solid var(--bright-orange); font-family: 'Segoe UI', sans-serif;">
+                    <p style="margin: 0 0 8px 0; color: var(--dark-blue); font-weight: bold;">
+                Sifariş və Çatdırılma Şərtləri:</p>
+
+    <ul style="list-style-type: circle; padding-left: 20px; color: #333; margin: 0; line-height: 1.8; font-size: 14px;">
+        <li><b>30 ml</b> ətirlər: <b>10 AZN</b></li>
+        <li><b>50 ml</b> ətirlər: <b>13 AZN</b></li>
+        <li><b>Naxçıvana çatdırılma<b>: <b>Sürət karqo</b> filiallarına</li>
+        <li><b>20 Yanvar</b> metrosuna çatdırılma: <b>Pulsuzdur Çatdırılma saatı: 17:30</b></li>
+        <li>Digər metrolara <b>kuryer</b> vasitəsilə çatdılır.<b>(Öncədən kuryer sizinlə əlaqə saxlayacaq). Çatdırılma xərci 3 AZN</b></li>
+        <li>Poçt, Expargo və Sürət karqo filiallarına çatdırılma.</li>
+        <li><b>Sumqayıta çatdırılma<b>: Hər gün şəhər mərkəzində aviakassa yaxınlığına çatdırılma <b>3 AZN, ünvana çatdırılma 5 AZN</b></li>
+
+    </ul>
+</div>
+
+                <div style="background:#fff5f5; padding:15px; border-radius:10px; border-left:4px solid #e74c3c; font-family: 'Segoe UI', sans-serif; margin-top: 10px;">
+    <p style="margin: 0 0 8px 0; color: #c0392b; font-weight: bold;">
+        Poçt və karqo haqqında:
+    </p>
+
+    <ul style="padding-left: 0; color: #333; margin: 0; line-height: 1.8; font-size: 14px;">
+        <li style="list-style: none;">
+            <i class="fas fa-exclamation-circle" style="color: #c0392b; font-size: 16px; margin-right: 8px;"></i>
+            <b>Poçt və karqo</b> ilə çatdırılma zamanı, çatdırılma xərcləri və müddəti daşıyıcı qurumların daxili şərtləri əsasında nizamlanır.
+        </li>
+    </ul>
+</div>
 
                     <h3 style="color:var(--main-blue); margin-top:20px;"><i class="fas fa-coins"></i> Bonus Sistemi (Rcoin)</h3>
                     <p>
@@ -839,7 +860,7 @@ function renderAdminList() {
                         <b>Diqqət:</b> Rcoin R-Shoppingaz onlayn platformasının rəsmi tokeni olaraq qəbul edilmişdir.
                     </p>
                     
-                    <button class="btn-add" style="margin-top:15px;" onclick="closeInfoModal()">ANLADIM</button>
+                    
                 </div>
             `;
             
